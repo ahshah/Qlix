@@ -1,19 +1,17 @@
 //Copyright 2007 Ali Shah
 //Qlix is distributed under the terms of the GNU General Public License
 
-
 #ifndef __MTPPORTAL__
 #define __MTPPORTAL__
 #include "types.h"
 #include "MtpDevice.h"
-#include "MtpParent.h"
 #include <libmtp.h>
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-class MtpPortal : protected MtpParent 
+class MtpPortal 
 {
 public:
     MtpPortal ()

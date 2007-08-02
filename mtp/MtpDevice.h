@@ -6,7 +6,6 @@
 #define __MTPDEVICE__
 #include <iostream>
 #include <libmtp.h>
-#include "MtpParent.h"
 #include "types.h"
 #include <vector>
 #include <string>
@@ -15,7 +14,7 @@
 #include "MtpFS.h"
 using namespace std;
 
-class MtpDevice : protected MtpParent
+class MtpDevice 
 {
 public:
     MtpDevice( LIBMTP_mtpdevice_t* in_device );
@@ -48,6 +47,9 @@ private:
     void getFriendlyName();
     void getSyncPartner();
     void getBatteryLevel();
+
+    void GetErrors (LIBMTP_mtpdevice_t* in_device);
+    bool isTerminal (LIBMTP_error_number_t in_err);
 };
 
 #endif

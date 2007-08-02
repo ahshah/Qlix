@@ -20,7 +20,6 @@ HEADERS += mtp/BmpStructs.h \
            mtp/MtpDevice.h \
            mtp/MtpDir.h \
            mtp/MtpFS.h \
-           mtp/MtpParent.h \
            mtp/MtpPortal.h \
            mtp/MtpThread.h \
            mtp/types.h \

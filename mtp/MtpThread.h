@@ -37,7 +37,6 @@ signals:
     void DirectoryRemoved(bool, index_t);
 
 private:
-
     MtpPortal _portal;
     MtpDevice* _device;
     MtpFS* _mtpFileSystem;

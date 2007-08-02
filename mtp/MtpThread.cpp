@@ -3,10 +3,7 @@
 
 #include "MtpThread.h"
 MtpThread::MtpThread (QObject* parent) : QThread (parent)
-
-{
-//        start();
-}
+{ }
 
 void MtpThread::IssueCommand (MtpCommand* in_command)
 {
