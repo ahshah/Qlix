@@ -1,0 +1,110 @@
+//Copyright 2007 Ali Shah
+//Qlix and this program are distributed under the terms of the GNU General Public License
+
+
+#include "MtpDevice.h"
+#include "MtpFS.h"
+
+MtpFS::MtpFS( LIBMTP_folder_t* in_root, MtpDevice* in_dev)
+{
+    _device = in_dev;
+    _root = new DirNode(in_root);
+    _root->CreateMapping(_dirMap);
+    _superRoot.AddChild(_root);
+    _root->SetParent(&_superRoot);
+
+}
+
+DirNode* MtpFS::GetRoot()
+{
+    return (DirNode*) (&_superRoot);
+}
+
+void MtpFS::SetRootName (const string& in_rootname)
+{
+    _root->SetName(in_rootname);
+}
+
+void MtpFS::Print()
+{
+        _superRoot.Print();
+}
+
+count_t MtpFS::GetHeight(uint32_t in_id)
+{
+    DirNode* temp = _dirMap[in_id];
+    if (temp) 
+        return temp->GetHeight();
+    return 0;
+}
+
+DirNode* MtpFS::GetDirectory (uint32_t in_id)
+{
+    DirNode* temp = _dirMap[in_id];
+    if (!temp)
+        return NULL;
+   return temp;
+}
+
+DirNode* MtpFS::GetDirectory (DirNode* in_parent, uint32_t in_index)
+{
+    if (!in_parent)
+        return NULL;
+    if (in_parent == &_superRoot)
+        return in_parent->GetChildDirectory(in_index);
+    DirNode* parent =_dirMap[in_parent->GetID()];
+    DirNode* temp   = parent->GetChildDirectory(in_index);
+    return temp;
+
+}
+
+DirNode* MtpFS::GetParent (DirNode* in_dirnode)
+{
+    return in_dirnode->GetParent();
+}
+
+void MtpFS::InsertFileList (LIBMTP_file_t* in_rootFile)
+{
+    for (int i = 0; in_rootFile; i++)
+    {
+        FileNode temp(in_rootFile, i);
+        DirNode* parent =  _dirMap[temp.GetParent()];
+        if (!parent)
+        {
+            cout << "Fatal error, map out of sync"<< endl;
+            in_rootFile = in_rootFile->next;
+            continue;
+        }
+        parent->AddFile(temp);
+        in_rootFile = in_rootFile->next;
+    }
+}
+
+count_t MtpFS::GetRootFileCount()
+{
+    return _root->GetFileCount();
+}
+
+void MtpFS::TransferFile(FileNode& in_file)
+{
+    cout << "File system handling" << endl;
+    LIBMTP_file_t mtpfile;
+    string temp2 = in_file.GetName();
+    const char* temp = temp2.c_str();
+    mtpfile.filename = const_cast<char*> (temp); 
+    mtpfile.parent_id = in_file.GetParent();
+    mtpfile.filesize = in_file.GetSize();
+    mtpfile.filetype = in_file.GetMtpType();
+    in_file.Sanity(mtpfile.filetype);
+    mtpfile.next = NULL;
+
+
+    //dir stuff
+    DirNode* tempDir = _dirMap[mtpfile.parent_id];
+    if (!tempDir)
+        return;
+    tempDir->AddFile(in_file);
+    //now transfer the file!!
+
+}
+

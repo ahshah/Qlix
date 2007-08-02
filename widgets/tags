@@ -1,0 +1,494 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.5.4	//
+AddFile	DeviceFileModel.h	/^    void AddFile (FileNode& File)$/;"	f	class:DeviceFileModel	access:public	signature:(FileNode& File)
+ConnectComplete	DeviceExplorer.h	/^    void ConnectComplete ( MtpFS* in_fs) \/\/ fix this$/;"	f	class:DeviceExplorer	access:public	signature:( MtpFS* in_fs)
+ConnectDevice	DeviceExplorer.h	/^    void ConnectDevice ( void )$/;"	f	class:DeviceExplorer	access:public	signature:( void )
+ConsoleWidget	ConsoleWidget.h	/^    ConsoleWidget (QWidget* parent = NULL) : QWidget (parent)$/;"	f	class:ConsoleWidget	access:public	signature:(QWidget* parent = NULL)
+ConsoleWidget	ConsoleWidget.h	/^class ConsoleWidget : public QWidget$/;"	c	inherits:QWidget
+ConsoleWidget::ConsoleWidget	ConsoleWidget.h	/^    ConsoleWidget (QWidget* parent = NULL) : QWidget (parent)$/;"	f	class:ConsoleWidget	access:public	signature:(QWidget* parent = NULL)
+ConsoleWidget::GetLayout	ConsoleWidget.h	/^    QVBoxLayout* GetLayout ( void )$/;"	f	class:ConsoleWidget	access:public	signature:( void )
+ConsoleWidget::InsertText	ConsoleWidget.h	/^    virtual void InsertText(const QString& in_text)$/;"	f	class:ConsoleWidget	access:public	signature:(const QString& in_text)
+ConsoleWidget::NewText	ConsoleWidget.h	/^    void NewText(const QString& txt);$/;"	p	class:ConsoleWidget	access:public	signature:(const QString& txt)
+ConsoleWidget::OnReturn	ConsoleWidget.h	/^    virtual void OnReturn( void )$/;"	f	class:ConsoleWidget	access:public	signature:( void )
+ConsoleWidget::_commandLine	ConsoleWidget.h	/^    QLineEdit* _commandLine;$/;"	m	class:ConsoleWidget	access:private
+ConsoleWidget::_commandLineLabel	ConsoleWidget.h	/^    QLabel*    _commandLineLabel;$/;"	m	class:ConsoleWidget	access:private
+ConsoleWidget::_cursor	ConsoleWidget.h	/^    QTextCursor* _cursor;$/;"	m	class:ConsoleWidget	access:private
+ConsoleWidget::_doc	ConsoleWidget.h	/^    QTextDocument* _doc;$/;"	m	class:ConsoleWidget	access:private
+ConsoleWidget::_editor	ConsoleWidget.h	/^    QTextEdit* _editor;$/;"	m	class:ConsoleWidget	access:private
+ConsoleWidget::_editorScroller	ConsoleWidget.h	/^    QScrollBar* _editorScroller;$/;"	m	class:ConsoleWidget	access:private
+ConsoleWidget::_layout	ConsoleWidget.h	/^    QVBoxLayout* _layout;$/;"	m	class:ConsoleWidget	access:private
+ConsoleWidget::_needCmdLine	ConsoleWidget.h	/^    bool       _needCmdLine; $/;"	m	class:ConsoleWidget	access:private
+ConsoleWidget::addCommandLine	ConsoleWidget.h	/^    virtual void addCommandLine ( void )$/;"	f	class:ConsoleWidget	access:public	signature:( void )
+ConsoleWidget::processCommand	ConsoleWidget.h	/^    virtual void processCommand(const QString& in_cmd)$/;"	f	class:ConsoleWidget	access:public	signature:(const QString& in_cmd)
+ConsoleWidget::setupCommandLine	ConsoleWidget.h	/^    void setupCommandLine()$/;"	f	class:ConsoleWidget	access:private	signature:()
+ConsoleWidget::setupConnections	ConsoleWidget.h	/^    void setupConnections()$/;"	f	class:ConsoleWidget	access:private	signature:()
+ConsoleWidget::setupEditor	ConsoleWidget.h	/^    void setupEditor()$/;"	f	class:ConsoleWidget	access:private	signature:()
+CreateDirectory	DeviceFileView.cpp	/^void DeviceFileView::CreateDirectory(const QString& in_file)$/;"	f	class:DeviceFileView	signature:(const QString& in_file)
+CreateDirectory	DeviceFileView.h	/^    void CreateDirectory(const QString&  in_file);$/;"	p	class:DeviceFileView	access:public	signature:(const QString& in_file)
+CurrentDirectory	DeviceFileView.cpp	/^void DeviceFileView::CurrentDirectory(DirNode** out_node)$/;"	f	class:DeviceFileView	signature:(DirNode** out_node)
+CurrentFSDirectory	DirView.cpp	/^void DirView::CurrentFSDirectory(QString* in_filename)$/;"	f	class:DirView	signature:(QString* in_filename)
+CurrentFSDirectory	DirView.h	/^    void CurrentFSDirectory(QString* in_filename);$/;"	p	class:DirView	access:public	signature:(QString* in_filename)
+CurrentFSDirectory	FileView.cpp	/^void FileView::CurrentFSDirectory(QString* in_filename)$/;"	f	class:FileView	signature:(QString* in_filename)
+CurrentFSDirectory	FileView.h	/^    void CurrentFSDirectory(QString* in_filename);$/;"	p	class:FileView	access:public	signature:(QString* in_filename)
+CurrentFolder	DeviceFileModel.h	/^    uint32_t CurrentFolder ()$/;"	f	class:DeviceFileModel	access:public	signature:()
+CurrentSelection	FileView.cpp	/^void FileView::CurrentSelection (QList<QString>* listout)$/;"	f	class:FileView	signature:(QList<QString>* listout)
+CurrentSelection	FileView.h	/^    void CurrentSelection (QList<QString>* listout); $/;"	p	class:FileView	access:public	signature:(QList<QString>* listout)
+DeleteFile	DeviceDirModel.cpp	/^void DeviceDirModel::DeleteFile (const FileNode& in_file)$/;"	f	class:DeviceDirModel	signature:(const FileNode& in_file)
+DeleteFile	DeviceDirModel.h	/^    void DeleteFile (const FileNode& in_file);$/;"	p	class:DeviceDirModel	access:public	signature:(const FileNode& in_file)
+DeviceConsole	DeviceConsole.h	/^    DeviceConsole (QWidget* parent = NULL) : QWidget(parent)$/;"	f	class:DeviceConsole	access:public	signature:(QWidget* parent = NULL)
+DeviceConsole	DeviceConsole.h	/^class DeviceConsole : public QWidget$/;"	c	inherits:QWidget
+DeviceConsole::DeviceConsole	DeviceConsole.h	/^    DeviceConsole (QWidget* parent = NULL) : QWidget(parent)$/;"	f	class:DeviceConsole	access:public	signature:(QWidget* parent = NULL)
+DeviceConsole::_deviceFreeSpace	DeviceConsole.h	/^        QLabel* _deviceFreeSpace;$/;"	m	class:DeviceConsole	access:private
+DeviceConsole::_deviceImage	DeviceConsole.h	/^        QPixmap _deviceImage;$/;"	m	class:DeviceConsole	access:private
+DeviceConsole::_deviceLabel	DeviceConsole.h	/^        QLabel* _deviceLabel;$/;"	m	class:DeviceConsole	access:private
+DeviceConsole::_deviceTotalSpace	DeviceConsole.h	/^        QLabel* _deviceTotalSpace;$/;"	m	class:DeviceConsole	access:private
+DeviceConsole::_layout	DeviceConsole.h	/^        QGridLayout* _layout;$/;"	m	class:DeviceConsole	access:private
+DeviceConsole::changeWidgetBackground	DeviceConsole.h	/^        void changeWidgetBackground()$/;"	f	class:DeviceConsole	access:private	signature:()
+DeviceConsole::getRawImage	DeviceConsole.h	/^        bool getRawImage(const QString& in_path, QPixmap& in_pixmap)$/;"	f	class:DeviceConsole	access:private	signature:(const QString& in_path, QPixmap& in_pixmap)
+DeviceConsole::resetRootImage	DeviceConsole.h	/^    void resetRootImage()$/;"	f	class:DeviceConsole	access:public	signature:()
+DeviceConsole::setupLabels	DeviceConsole.h	/^        void setupLabels()$/;"	f	class:DeviceConsole	access:private	signature:()
+DeviceConsole::setupWidget	DeviceConsole.h	/^        void setupWidget()$/;"	f	class:DeviceConsole	access:private	signature:()
+DeviceDirModel	DeviceDirModel.cpp	/^DeviceDirModel::DeviceDirModel (QObject* parent = NULL) : QAbstractItemModel(parent)$/;"	f	class:DeviceDirModel	signature:(QObject* parent = NULL)
+DeviceDirModel	DeviceDirModel.h	/^    DeviceDirModel (QObject* parent);$/;"	p	class:DeviceDirModel	access:public	signature:(QObject* parent)
+DeviceDirModel	DeviceDirModel.h	/^class DeviceDirModel : public QAbstractItemModel$/;"	c	inherits:QAbstractItemModel
+DeviceDirModel::DeleteFile	DeviceDirModel.cpp	/^void DeviceDirModel::DeleteFile (const FileNode& in_file)$/;"	f	class:DeviceDirModel	signature:(const FileNode& in_file)
+DeviceDirModel::DeleteFile	DeviceDirModel.h	/^    void DeleteFile (const FileNode& in_file);$/;"	p	class:DeviceDirModel	access:public	signature:(const FileNode& in_file)
+DeviceDirModel::DeviceDirModel	DeviceDirModel.cpp	/^DeviceDirModel::DeviceDirModel (QObject* parent = NULL) : QAbstractItemModel(parent)$/;"	f	class:DeviceDirModel	signature:(QObject* parent = NULL)
+DeviceDirModel::DeviceDirModel	DeviceDirModel.h	/^    DeviceDirModel (QObject* parent);$/;"	p	class:DeviceDirModel	access:public	signature:(QObject* parent)
+DeviceDirModel::DirectoryAdded	DeviceDirModel.cpp	/^void DeviceDirModel::DirectoryAdded(DirNode* parent, index_t height)$/;"	f	class:DeviceDirModel	signature:(DirNode* parent, index_t height)
+DeviceDirModel::DirectoryAdded	DeviceDirModel.h	/^    void DirectoryAdded(DirNode* parent, index_t height);$/;"	p	class:DeviceDirModel	access:public	signature:(DirNode* parent, index_t height)
+DeviceDirModel::DirectoryRemoved	DeviceDirModel.cpp	/^void DeviceDirModel::DirectoryRemoved(uint32_t id, int depth)$/;"	f	class:DeviceDirModel	signature:(uint32_t id, int depth)
+DeviceDirModel::DirectoryRemoved	DeviceDirModel.h	/^    void DirectoryRemoved(uint32_t id, int depth);$/;"	p	class:DeviceDirModel	access:public	signature:(uint32_t id, int depth)
+DeviceDirModel::GetDir	DeviceDirModel.cpp	/^DirNode* DeviceDirModel::GetDir(uint32_t id)$/;"	f	class:DeviceDirModel	signature:(uint32_t id)
+DeviceDirModel::GetDir	DeviceDirModel.h	/^    DirNode* GetDir(uint32_t id);$/;"	p	class:DeviceDirModel	access:public	signature:(uint32_t id)
+DeviceDirModel::Set	DeviceDirModel.cpp	/^void DeviceDirModel::Set (MtpFS* in_fs)$/;"	f	class:DeviceDirModel	signature:(MtpFS* in_fs)
+DeviceDirModel::Set	DeviceDirModel.h	/^    void Set (MtpFS* in_fs);$/;"	p	class:DeviceDirModel	access:public	signature:(MtpFS* in_fs)
+DeviceDirModel::Unset	DeviceDirModel.cpp	/^void DeviceDirModel::Unset ()$/;"	f	class:DeviceDirModel	signature:()
+DeviceDirModel::Unset	DeviceDirModel.h	/^    void Unset ();$/;"	p	class:DeviceDirModel	access:public	signature:()
+DeviceDirModel::_mtpFileSystem	DeviceDirModel.h	/^    MtpFS*     _mtpFileSystem;$/;"	m	class:DeviceDirModel	access:private
+DeviceDirModel::columnCount	DeviceDirModel.cpp	/^int DeviceDirModel::columnCount(const QModelIndex& ) const$/;"	f	class:DeviceDirModel	signature:(const QModelIndex& ) const
+DeviceDirModel::columnCount	DeviceDirModel.h	/^    int columnCount(const QModelIndex& ) const;$/;"	p	class:DeviceDirModel	access:public	signature:(const QModelIndex& ) const
+DeviceDirModel::data	DeviceDirModel.cpp	/^QVariant DeviceDirModel::data(const QModelIndex &index, int role) const$/;"	f	class:DeviceDirModel	signature:(const QModelIndex &index, int role) const
+DeviceDirModel::data	DeviceDirModel.h	/^    QVariant data(const QModelIndex &index, int role) const;$/;"	p	class:DeviceDirModel	access:public	signature:(const QModelIndex &index, int role) const
+DeviceDirModel::dirFromIndex	DeviceDirModel.cpp	/^DirNode* DeviceDirModel::dirFromIndex(const QModelIndex& index) const$/;"	f	class:DeviceDirModel	signature:(const QModelIndex& index) const
+DeviceDirModel::dirFromIndex	DeviceDirModel.h	/^    DirNode* dirFromIndex(const QModelIndex& index) const;$/;"	p	class:DeviceDirModel	access:private	signature:(const QModelIndex& index) const
+DeviceDirModel::headerData	DeviceDirModel.cpp	/^QVariant DeviceDirModel::headerData(int section, Qt::Orientation orientation, int role) const$/;"	f	class:DeviceDirModel	signature:(int section, Qt::Orientation orientation, int role) const
+DeviceDirModel::headerData	DeviceDirModel.h	/^    QVariant headerData(int section, Qt::Orientation orientation, int role) const;$/;"	p	class:DeviceDirModel	access:public	signature:(int section, Qt::Orientation orientation, int role) const
+DeviceDirModel::index	DeviceDirModel.cpp	/^QModelIndex DeviceDirModel::index (int row, int column, const QModelIndex& parent) const$/;"	f	class:DeviceDirModel	signature:(int row, int column, const QModelIndex& parent) const
+DeviceDirModel::index	DeviceDirModel.h	/^    QModelIndex index (int row, int column, const QModelIndex& parent) const;$/;"	p	class:DeviceDirModel	access:public	signature:(int row, int column, const QModelIndex& parent) const
+DeviceDirModel::parent	DeviceDirModel.cpp	/^QModelIndex DeviceDirModel::parent (const QModelIndex &child) const$/;"	f	class:DeviceDirModel	signature:(const QModelIndex &child) const
+DeviceDirModel::parent	DeviceDirModel.h	/^    QModelIndex parent (const QModelIndex &child) const;$/;"	p	class:DeviceDirModel	access:public	signature:(const QModelIndex &child) const
+DeviceDirModel::rowCount	DeviceDirModel.cpp	/^int DeviceDirModel::rowCount(const QModelIndex &parent) const$/;"	f	class:DeviceDirModel	signature:(const QModelIndex &parent) const
+DeviceDirModel::rowCount	DeviceDirModel.h	/^    int rowCount(const QModelIndex &parent) const;$/;"	p	class:DeviceDirModel	access:public	signature:(const QModelIndex &parent) const
+DeviceDirModel::~DeviceDirModel	DeviceDirModel.cpp	/^DeviceDirModel::~DeviceDirModel ( void )$/;"	f	class:DeviceDirModel	signature:( void )
+DeviceDirModel::~DeviceDirModel	DeviceDirModel.h	/^    ~DeviceDirModel ( void );$/;"	p	class:DeviceDirModel	access:public	signature:( void )
+DeviceDirView	DeviceDirView.cpp	/^DeviceDirView::DeviceDirView (QWidget* parent = NULL, MtpThread* in_thread) : QTreeView(parent)$/;"	f	class:DeviceDirView	signature:(QWidget* parent = NULL, MtpThread* in_thread)
+DeviceDirView	DeviceDirView.h	/^    DeviceDirView (QWidget*);$/;"	p	class:DeviceDirView	access:public	signature:(QWidget*)
+DeviceDirView	DeviceDirView.h	/^class DeviceDirView : public QTreeView$/;"	c	inherits:QTreeView
+DeviceDirView::DeviceDirView	DeviceDirView.cpp	/^DeviceDirView::DeviceDirView (QWidget* parent = NULL, MtpThread* in_thread) : QTreeView(parent)$/;"	f	class:DeviceDirView	signature:(QWidget* parent = NULL, MtpThread* in_thread)
+DeviceDirView::DeviceDirView	DeviceDirView.h	/^    DeviceDirView (QWidget*);$/;"	p	class:DeviceDirView	access:public	signature:(QWidget*)
+DeviceDirView::_createFolderAct	DeviceDirView.h	/^    QAction* _createFolderAct;$/;"	m	class:DeviceDirView	access:private
+DeviceDirView::_deleteFolderAct	DeviceDirView.h	/^    QAction* _deleteFolderAct;$/;"	m	class:DeviceDirView	access:private
+DeviceDirView::_thread	DeviceDirView.h	/^    MtpThread* _thread;$/;"	m	class:DeviceDirView	access:private
+DeviceDirView::_transferFolderAct	DeviceDirView.h	/^    QAction* _transferFolderAct;$/;"	m	class:DeviceDirView	access:private
+DeviceDirView::createFolder	DeviceDirView.cpp	/^void DeviceDirView::createFolder ( void )$/;"	f	class:DeviceDirView	signature:( void )
+DeviceDirView::createFolder	DeviceDirView.h	/^    void createFolder ( void );$/;"	p	class:DeviceDirView	access:private	signature:( void )
+DeviceDirView::currentDirectory	DeviceDirView.h	/^    void currentDirectory(DirNode** out_node);$/;"	p	class:DeviceDirView	access:private	signature:(DirNode** out_node)
+DeviceDirView::deleteFolder	DeviceDirView.cpp	/^void DeviceDirView::deleteFolder ( void ) $/;"	f	class:DeviceDirView	signature:( void )
+DeviceDirView::deleteFolder	DeviceDirView.h	/^    void deleteFolder ( void );$/;"	p	class:DeviceDirView	access:private	signature:( void )
+DeviceDirView::selectedDirectories	DeviceDirView.cpp	/^QModelIndexList DeviceDirView::selectedDirectories()$/;"	f	class:DeviceDirView	signature:()
+DeviceDirView::setupMenus	DeviceDirView.cpp	/^void DeviceDirView::setupMenus (void)$/;"	f	class:DeviceDirView	signature:(void)
+DeviceDirView::setupMenus	DeviceDirView.h	/^    void setupMenus (void);$/;"	p	class:DeviceDirView	access:public	signature:(void)
+DeviceDirView::transferFolder	DeviceDirView.cpp	/^void DeviceDirView::transferFolder ( void )$/;"	f	class:DeviceDirView	signature:( void )
+DeviceDirView::transferFolder	DeviceDirView.h	/^    void transferFolder ( void );$/;"	p	class:DeviceDirView	access:private	signature:( void )
+DeviceExplorer	DeviceExplorer.h	/^    DeviceExplorer (QWidget* parent = NULL) : QWidget (parent), _mtpThread(parent)$/;"	f	class:DeviceExplorer	access:public	signature:(QWidget* parent = NULL)
+DeviceExplorer	DeviceExplorer.h	/^class DeviceExplorer : public QWidget$/;"	c	inherits:QWidget
+DeviceExplorer::ConnectComplete	DeviceExplorer.h	/^    void ConnectComplete ( MtpFS* in_fs) \/\/ fix this$/;"	f	class:DeviceExplorer	access:public	signature:( MtpFS* in_fs)
+DeviceExplorer::ConnectDevice	DeviceExplorer.h	/^    void ConnectDevice ( void )$/;"	f	class:DeviceExplorer	access:public	signature:( void )
+DeviceExplorer::DeviceExplorer	DeviceExplorer.h	/^    DeviceExplorer (QWidget* parent = NULL) : QWidget (parent), _mtpThread(parent)$/;"	f	class:DeviceExplorer	access:public	signature:(QWidget* parent = NULL)
+DeviceExplorer::DisconnectDevice	DeviceExplorer.h	/^    void DisconnectDevice ( void )$/;"	f	class:DeviceExplorer	access:public	signature:( void )
+DeviceExplorer::EXB	DeviceExplorer.h	/^    void EXB (const QModelIndex& temp)$/;"	f	class:DeviceExplorer	access:public	signature:(const QModelIndex& temp)
+DeviceExplorer::GetDeviceDirView	DeviceExplorer.h	/^    DeviceDirView* GetDeviceDirView ( void )$/;"	f	class:DeviceExplorer	access:public	signature:( void )
+DeviceExplorer::GetDeviceFileView	DeviceExplorer.h	/^    DeviceFileView* GetDeviceFileView ( void ) $/;"	f	class:DeviceExplorer	access:public	signature:( void )
+DeviceExplorer::SetDeviceConsole	DeviceExplorer.h	/^    void SetDeviceConsole (DeviceConsole* in_console)$/;"	f	class:DeviceExplorer	access:public	signature:(DeviceConsole* in_console)
+DeviceExplorer::SetFSFileView	DeviceExplorer.h	/^    void SetFSFileView(FileView* in_fsfileview)$/;"	f	class:DeviceExplorer	access:public	signature:(FileView* in_fsfileview)
+DeviceExplorer::_console	DeviceExplorer.h	/^    DeviceConsole* _console;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_dirModel	DeviceExplorer.h	/^    DeviceDirModel* _dirModel;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_dirView	DeviceExplorer.h	/^    DeviceDirView* _dirView;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_fileModel	DeviceExplorer.h	/^    DeviceFileModel* _fileModel;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_fileView	DeviceExplorer.h	/^    DeviceFileView* _fileView;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_fsFileView	DeviceExplorer.h	/^    FileView* _fsFileView;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_layout	DeviceExplorer.h	/^    QHBoxLayout* _layout;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_mtpThread	DeviceExplorer.h	/^    MtpThread _mtpThread;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_splitter	DeviceExplorer.h	/^    QSplitter* _splitter;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::init	DeviceExplorer.h	/^    void init()$/;"	f	class:DeviceExplorer	access:private	signature:()
+DeviceExplorer::setupConnections	DeviceExplorer.h	/^    void setupConnections()$/;"	f	class:DeviceExplorer	access:private	signature:()
+DeviceExplorer::setupDirView	DeviceExplorer.h	/^    void setupDirView ( void )$/;"	f	class:DeviceExplorer	access:private	signature:( void )
+DeviceExplorer::setupFileView	DeviceExplorer.h	/^    void setupFileView ( void )$/;"	f	class:DeviceExplorer	access:private	signature:( void )
+DeviceExplorer::sort	DeviceExplorer.h	/^    void sort (int idx)$/;"	f	class:DeviceExplorer	access:public	signature:(int idx)
+DeviceExplorer::~DeviceExplorer	DeviceExplorer.h	/^    ~DeviceExplorer() { }$/;"	f	class:DeviceExplorer	access:public	signature:()
+DeviceFileModel	DeviceFileModel.h	/^    DeviceFileModel (QObject* parent = 0) : QAbstractListModel(parent)$/;"	f	class:DeviceFileModel	access:public	signature:(QObject* parent = 0)
+DeviceFileModel	DeviceFileModel.h	/^class DeviceFileModel : public QAbstractListModel$/;"	c	inherits:QAbstractListModel
+DeviceFileModel::AddFile	DeviceFileModel.h	/^    void AddFile (FileNode& File)$/;"	f	class:DeviceFileModel	access:public	signature:(FileNode& File)
+DeviceFileModel::CurrentFolder	DeviceFileModel.h	/^    uint32_t CurrentFolder ()$/;"	f	class:DeviceFileModel	access:public	signature:()
+DeviceFileModel::DeviceFileModel	DeviceFileModel.h	/^    DeviceFileModel (QObject* parent = 0) : QAbstractListModel(parent)$/;"	f	class:DeviceFileModel	access:public	signature:(QObject* parent = 0)
+DeviceFileModel::FileFromIndex	DeviceFileModel.h	/^    FileNode FileFromIndex(QModelIndex* in_index)$/;"	f	class:DeviceFileModel	access:public	signature:(QModelIndex* in_index)
+DeviceFileModel::GetCurrentDirectory	DeviceFileModel.h	/^    DirNode* GetCurrentDirectory ( void )$/;"	f	class:DeviceFileModel	access:public	signature:( void )
+DeviceFileModel::Set	DeviceFileModel.h	/^    void Set (MtpFS* in_fs)$/;"	f	class:DeviceFileModel	access:public	signature:(MtpFS* in_fs)
+DeviceFileModel::SetFolder	DeviceFileModel.h	/^    void SetFolder ( uint32_t folder_id)$/;"	f	class:DeviceFileModel	access:public	signature:( uint32_t folder_id)
+DeviceFileModel::Unset	DeviceFileModel.h	/^    void Unset()$/;"	f	class:DeviceFileModel	access:public	signature:()
+DeviceFileModel::_dir	DeviceFileModel.h	/^    DirNode* _dir;$/;"	m	class:DeviceFileModel	access:private
+DeviceFileModel::_listSize	DeviceFileModel.h	/^    count_t _listSize;$/;"	m	class:DeviceFileModel	access:private
+DeviceFileModel::_mtpFileSystem	DeviceFileModel.h	/^    MtpFS*  _mtpFileSystem;$/;"	m	class:DeviceFileModel	access:private
+DeviceFileModel::_sortedType	DeviceFileModel.h	/^    FileSortType _sortedType;$/;"	m	class:DeviceFileModel	access:private
+DeviceFileModel::columnCount	DeviceFileModel.h	/^    int columnCount (const QModelIndex& ) const$/;"	f	class:DeviceFileModel	access:public	signature:(const QModelIndex& ) const
+DeviceFileModel::data	DeviceFileModel.h	/^    QVariant data(const QModelIndex &index, int role) const$/;"	f	class:DeviceFileModel	access:public	signature:(const QModelIndex &index, int role) const
+DeviceFileModel::headerData	DeviceFileModel.h	/^    QVariant headerData(int section, Qt::Orientation orientation, int role) const$/;"	f	class:DeviceFileModel	access:public	signature:(int section, Qt::Orientation orientation, int role) const
+DeviceFileModel::rowCount	DeviceFileModel.h	/^    int rowCount (const QModelIndex& ) const$/;"	f	class:DeviceFileModel	access:public	signature:(const QModelIndex& ) const
+DeviceFileModel::sort	DeviceFileModel.h	/^    void sort ( int column = -1)$/;"	f	class:DeviceFileModel	access:public	signature:( int column = -1)
+DeviceFileView	DeviceFileView.cpp	/^DeviceFileView::DeviceFileView (QWidget* parent = NULL, $/;"	f	class:DeviceFileView	signature:(QWidget* parent = NULL, MtpThread* in_thread = NULL )
+DeviceFileView	DeviceFileView.h	/^    DeviceFileView (QWidget* parent,  MtpThread* in_thread);$/;"	p	class:DeviceFileView	access:public	signature:(QWidget* parent, MtpThread* in_thread)
+DeviceFileView	DeviceFileView.h	/^class DeviceFileView : public QTreeView$/;"	c	inherits:QTreeView
+DeviceFileView::CreateDirectory	DeviceFileView.cpp	/^void DeviceFileView::CreateDirectory(const QString& in_file)$/;"	f	class:DeviceFileView	signature:(const QString& in_file)
+DeviceFileView::CreateDirectory	DeviceFileView.h	/^    void CreateDirectory(const QString&  in_file);$/;"	p	class:DeviceFileView	access:public	signature:(const QString& in_file)
+DeviceFileView::CurrentDirectory	DeviceFileView.cpp	/^void DeviceFileView::CurrentDirectory(DirNode** out_node)$/;"	f	class:DeviceFileView	signature:(DirNode** out_node)
+DeviceFileView::DeviceFileView	DeviceFileView.cpp	/^DeviceFileView::DeviceFileView (QWidget* parent = NULL, $/;"	f	class:DeviceFileView	signature:(QWidget* parent = NULL, MtpThread* in_thread = NULL )
+DeviceFileView::DeviceFileView	DeviceFileView.h	/^    DeviceFileView (QWidget* parent,  MtpThread* in_thread);$/;"	p	class:DeviceFileView	access:public	signature:(QWidget* parent, MtpThread* in_thread)
+DeviceFileView::GetCurrentFSPath	DeviceFileView.h	/^    void GetCurrentFSPath(QString* path);$/;"	p	class:DeviceFileView	access:public	signature:(QString* path)
+DeviceFileView::TransferSystemDirectory	DeviceFileView.cpp	/^void DeviceFileView::TransferSystemDirectory(const QString& in_file)$/;"	f	class:DeviceFileView	signature:(const QString& in_file)
+DeviceFileView::TransferSystemDirectory	DeviceFileView.h	/^    void TransferSystemDirectory(const QString&  in_file); $/;"	p	class:DeviceFileView	access:public	signature:(const QString& in_file)
+DeviceFileView::TransferToDevice	DeviceFileView.cpp	/^void DeviceFileView::TransferToDevice(const QString& in_file, DirNode* directory)$/;"	f	class:DeviceFileView	signature:(const QString& in_file, DirNode* directory)
+DeviceFileView::TransferToDevice	DeviceFileView.h	/^    void TransferToDevice(const QString& in_file, DirNode* directory);$/;"	p	class:DeviceFileView	access:public	signature:(const QString& in_file, DirNode* directory)
+DeviceFileView::_FSfileView	DeviceFileView.h	/^    FileView* _FSfileView;$/;"	m	class:DeviceFileView	access:private
+DeviceFileView::_deleteFileAct	DeviceFileView.h	/^    QAction* _deleteFileAct;$/;"	m	class:DeviceFileView	access:private
+DeviceFileView::_thread	DeviceFileView.h	/^    MtpThread* _thread;$/;"	m	class:DeviceFileView	access:private
+DeviceFileView::_transferFileAct	DeviceFileView.h	/^    QAction* _transferFileAct;$/;"	m	class:DeviceFileView	access:private
+DeviceFileView::deleteFile	DeviceFileView.cpp	/^void DeviceFileView::deleteFile ( void ) $/;"	f	class:DeviceFileView	signature:( void )
+DeviceFileView::deleteFile	DeviceFileView.h	/^    void deleteFile ( void ) ;$/;"	p	class:DeviceFileView	access:private	signature:( void )
+DeviceFileView::selectedDirectories	DeviceFileView.h	/^    QModelIndexList selectedDirectories();$/;"	p	class:DeviceFileView	access:public	signature:()
+DeviceFileView::setFileView	DeviceFileView.cpp	/^void DeviceFileView::setFileView (FileView* in_fileView)$/;"	f	class:DeviceFileView	signature:(FileView* in_fileView)
+DeviceFileView::setFileView	DeviceFileView.h	/^    void setFileView (FileView* in_fileView);$/;"	p	class:DeviceFileView	access:public	signature:(FileView* in_fileView)
+DeviceFileView::setupMenus	DeviceFileView.cpp	/^void DeviceFileView::setupMenus (void)$/;"	f	class:DeviceFileView	signature:(void)
+DeviceFileView::setupMenus	DeviceFileView.h	/^    void setupMenus (void);$/;"	p	class:DeviceFileView	access:public	signature:(void)
+DeviceFileView::transferFile	DeviceFileView.cpp	/^void DeviceFileView::transferFile ( void )$/;"	f	class:DeviceFileView	signature:( void )
+DeviceFileView::transferFile	DeviceFileView.h	/^    void transferFile ( void );$/;"	p	class:DeviceFileView	access:private	signature:( void )
+DirFilter	DirFilter.h	/^    DirFilter(QObject* parent = NULL) : QSortFilterProxyModel (parent)$/;"	f	class:DirFilter	access:public	signature:(QObject* parent = NULL)
+DirFilter	DirFilter.h	/^class DirFilter : public QSortFilterProxyModel$/;"	c	inherits:QSortFilterProxyModel
+DirFilter::DirFilter	DirFilter.h	/^    DirFilter(QObject* parent = NULL) : QSortFilterProxyModel (parent)$/;"	f	class:DirFilter	access:public	signature:(QObject* parent = NULL)
+DirFilter::_dirFilter	DirFilter.h	/^    bool _dirFilter;$/;"	m	class:DirFilter	access:private
+DirFilter::fileFilter	DirFilter.h	/^    bool fileFilter ( int sourceRow, const QModelIndex& sourceParent) const$/;"	f	class:DirFilter	access:private	signature:( int sourceRow, const QModelIndex& sourceParent) const
+DirFilter::filterAcceptsRow	DirFilter.h	/^    bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const$/;"	f	class:DirFilter	access:protected	signature:(int sourceRow, const QModelIndex& sourceParent) const
+DirFilter::setDirectoryFilter	DirFilter.h	/^    void setDirectoryFilter ( void )$/;"	f	class:DirFilter	access:public	signature:( void )
+DirFilter::setFileFilter	DirFilter.h	/^    void setFileFilter ( void )$/;"	f	class:DirFilter	access:public	signature:( void )
+DirView	DirView.cpp	/^DirView::DirView (QWidget* parent = NULL) : QTreeView(parent)$/;"	f	class:DirView	signature:(QWidget* parent = NULL)
+DirView	DirView.h	/^    DirView (QWidget*);$/;"	p	class:DirView	access:public	signature:(QWidget*)
+DirView	DirView.h	/^class DirView : public QTreeView$/;"	c	inherits:QTreeView
+DirView::CurrentFSDirectory	DirView.cpp	/^void DirView::CurrentFSDirectory(QString* in_filename)$/;"	f	class:DirView	signature:(QString* in_filename)
+DirView::CurrentFSDirectory	DirView.h	/^    void CurrentFSDirectory(QString* in_filename);$/;"	p	class:DirView	access:public	signature:(QString* in_filename)
+DirView::DirView	DirView.cpp	/^DirView::DirView (QWidget* parent = NULL) : QTreeView(parent)$/;"	f	class:DirView	signature:(QWidget* parent = NULL)
+DirView::DirView	DirView.h	/^    DirView (QWidget*);$/;"	p	class:DirView	access:public	signature:(QWidget*)
+DirView::GetCurrentDeviceDirectory	DirView.h	/^    void GetCurrentDeviceDirectory(DirNode** path);$/;"	p	class:DirView	access:public	signature:(DirNode** path)
+DirView::TransferSystemDirectory	DirView.h	/^    void TransferSystemDirectory(const QString&);$/;"	p	class:DirView	access:public	signature:(const QString&)
+DirView::TransferToDevice	DirView.h	/^    void TransferToDevice(const QString&, DirNode*);$/;"	p	class:DirView	access:public	signature:(const QString&, DirNode*)
+DirView::_deviceFileView	DirView.h	/^    DeviceFileView* _deviceFileView;$/;"	m	class:DirView	access:private
+DirView::_transferDirAct	DirView.h	/^    QAction* _transferDirAct;$/;"	m	class:DirView	access:private
+DirView::setDeviceFileView	DirView.cpp	/^void DirView::setDeviceFileView(DeviceFileView* in_devfileview)$/;"	f	class:DirView	signature:(DeviceFileView* in_devfileview)
+DirView::setDeviceFileView	DirView.h	/^    void setDeviceFileView(DeviceFileView* );$/;"	p	class:DirView	access:public	signature:(DeviceFileView* )
+DirView::setupMenus	DirView.cpp	/^void DirView::setupMenus (void)$/;"	f	class:DirView	signature:(void)
+DirView::setupMenus	DirView.h	/^    void setupMenus (void);$/;"	p	class:DirView	access:public	signature:(void)
+DirView::transferDir	DirView.cpp	/^void DirView::transferDir ( void )$/;"	f	class:DirView	signature:( void )
+DirView::transferDir	DirView.h	/^    void transferDir ( void );$/;"	p	class:DirView	access:private	signature:( void )
+DirectoryAdded	DeviceDirModel.cpp	/^void DeviceDirModel::DirectoryAdded(DirNode* parent, index_t height)$/;"	f	class:DeviceDirModel	signature:(DirNode* parent, index_t height)
+DirectoryAdded	DeviceDirModel.h	/^    void DirectoryAdded(DirNode* parent, index_t height);$/;"	p	class:DeviceDirModel	access:public	signature:(DirNode* parent, index_t height)
+DirectoryRemoved	DeviceDirModel.cpp	/^void DeviceDirModel::DirectoryRemoved(uint32_t id, int depth)$/;"	f	class:DeviceDirModel	signature:(uint32_t id, int depth)
+DirectoryRemoved	DeviceDirModel.h	/^    void DirectoryRemoved(uint32_t id, int depth);$/;"	p	class:DeviceDirModel	access:public	signature:(uint32_t id, int depth)
+DisconnectDevice	DeviceExplorer.h	/^    void DisconnectDevice ( void )$/;"	f	class:DeviceExplorer	access:public	signature:( void )
+EX	FileExplorer.h	/^    void EX (const QModelIndex& temp)$/;"	f	class:FileExplorer	access:public	signature:(const QModelIndex& temp)
+EXB	DeviceExplorer.h	/^    void EXB (const QModelIndex& temp)$/;"	f	class:DeviceExplorer	access:public	signature:(const QModelIndex& temp)
+FileExplorer	FileExplorer.h	/^    FileExplorer (QWidget* parent = NULL, MtpThread* in_thread = NULL) : QWidget (parent), _fsWatch(this)$/;"	f	class:FileExplorer	access:public	signature:(QWidget* parent = NULL, MtpThread* in_thread = NULL)
+FileExplorer	FileExplorer.h	/^class FileExplorer : public QWidget$/;"	c	inherits:QWidget
+FileExplorer::EX	FileExplorer.h	/^    void EX (const QModelIndex& temp)$/;"	f	class:FileExplorer	access:public	signature:(const QModelIndex& temp)
+FileExplorer::FileExplorer	FileExplorer.h	/^    FileExplorer (QWidget* parent = NULL, MtpThread* in_thread = NULL) : QWidget (parent), _fsWatch(this)$/;"	f	class:FileExplorer	access:public	signature:(QWidget* parent = NULL, MtpThread* in_thread = NULL)
+FileExplorer::GetFSDirView	FileExplorer.h	/^    void* GetFSDirView ( void )$/;"	f	class:FileExplorer	access:public	signature:( void )
+FileExplorer::GetFSFileView	FileExplorer.h	/^    FileView* GetFSFileView ( void )$/;"	f	class:FileExplorer	access:public	signature:( void )
+FileExplorer::RequestFile	FileExplorer.h	/^    void RequestFile(const FileNode& temp, const string& path);$/;"	p	class:FileExplorer	access:public	signature:(const FileNode& temp, const string& path)
+FileExplorer::SetDeviceFileView	FileExplorer.h	/^    void SetDeviceFileView (DeviceFileView* in_view)$/;"	f	class:FileExplorer	access:public	signature:(DeviceFileView* in_view)
+FileExplorer::TransferFileToDevice	FileExplorer.h	/^    void TransferFileToDevice(const QFileInfo& temp);$/;"	p	class:FileExplorer	access:public	signature:(const QFileInfo& temp)
+FileExplorer::_currentDir	FileExplorer.h	/^    QString _currentDir;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_deviceDirView	FileExplorer.h	/^    DeviceDirView*  _deviceDirView;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_deviceFileView	FileExplorer.h	/^    DeviceFileView* _deviceFileView;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_dirModel	FileExplorer.h	/^    QDirModel* _dirModel;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_dirSelection	FileExplorer.h	/^    QItemSelectionModel* _dirSelection;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_dirView	FileExplorer.h	/^    DirView* _dirView;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_fileModel	FileExplorer.h	/^    QDirModel* _fileModel;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_fileSelection	FileExplorer.h	/^    QItemSelectionModel* _fileSelection;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_fileView	FileExplorer.h	/^    FileView* _fileView;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_fsWatch	FileExplorer.h	/^    QFileSystemWatcher _fsWatch;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_layout	FileExplorer.h	/^    QHBoxLayout* _layout;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_mtpThread	FileExplorer.h	/^    MtpThread* _mtpThread;$/;"	m	class:FileExplorer	access:private
+FileExplorer::_splitter	FileExplorer.h	/^    QSplitter* _splitter;$/;"	m	class:FileExplorer	access:private
+FileExplorer::refreshDirView	FileExplorer.h	/^    void refreshDirView ( void )$/;"	f	class:FileExplorer	access:public	signature:( void )
+FileExplorer::refreshFileView	FileExplorer.h	/^    void refreshFileView ( void )$/;"	f	class:FileExplorer	access:public	signature:( void )
+FileExplorer::setupConnections	FileExplorer.h	/^    void setupConnections ( void )$/;"	f	class:FileExplorer	access:private	signature:( void )
+FileExplorer::setupDirModel	FileExplorer.h	/^    void setupDirModel ( void )$/;"	f	class:FileExplorer	access:private	signature:( void )
+FileExplorer::setupDirView	FileExplorer.h	/^    void setupDirView ( void )$/;"	f	class:FileExplorer	access:private	signature:( void )
+FileExplorer::setupFileModel	FileExplorer.h	/^    void setupFileModel()$/;"	f	class:FileExplorer	access:private	signature:()
+FileExplorer::setupFileView	FileExplorer.h	/^    void setupFileView ( void )$/;"	f	class:FileExplorer	access:private	signature:( void )
+FileExplorer::setupFsWatch	FileExplorer.h	/^    void setupFsWatch()$/;"	f	class:FileExplorer	access:private	signature:()
+FileExplorer::~FileExplorer	FileExplorer.h	/^    ~FileExplorer()$/;"	f	class:FileExplorer	access:public	signature:()
+FileFromIndex	DeviceFileModel.h	/^    FileNode FileFromIndex(QModelIndex* in_index)$/;"	f	class:DeviceFileModel	access:public	signature:(QModelIndex* in_index)
+FileView	FileView.cpp	/^FileView::FileView (QWidget* parent = NULL) : QTreeView(parent)$/;"	f	class:FileView	signature:(QWidget* parent = NULL)
+FileView	FileView.h	/^    FileView (QWidget*);$/;"	p	class:FileView	access:public	signature:(QWidget*)
+FileView	FileView.h	/^class FileView : public QTreeView$/;"	c	inherits:QTreeView
+FileView::CurrentFSDirectory	FileView.cpp	/^void FileView::CurrentFSDirectory(QString* in_filename)$/;"	f	class:FileView	signature:(QString* in_filename)
+FileView::CurrentFSDirectory	FileView.h	/^    void CurrentFSDirectory(QString* in_filename);$/;"	p	class:FileView	access:public	signature:(QString* in_filename)
+FileView::CurrentSelection	FileView.cpp	/^void FileView::CurrentSelection (QList<QString>* listout)$/;"	f	class:FileView	signature:(QList<QString>* listout)
+FileView::CurrentSelection	FileView.h	/^    void CurrentSelection (QList<QString>* listout); $/;"	p	class:FileView	access:public	signature:(QList<QString>* listout)
+FileView::FileView	FileView.cpp	/^FileView::FileView (QWidget* parent = NULL) : QTreeView(parent)$/;"	f	class:FileView	signature:(QWidget* parent = NULL)
+FileView::FileView	FileView.h	/^    FileView (QWidget*);$/;"	p	class:FileView	access:public	signature:(QWidget*)
+FileView::GetCurrentDeviceDirectory	FileView.h	/^   void GetCurrentDeviceDirectory (DirNode** in_node);$/;"	p	class:FileView	access:public	signature:(DirNode** in_node)
+FileView::TransferToDevice	FileView.h	/^   void TransferToDevice (const QString&, DirNode*);$/;"	p	class:FileView	access:public	signature:(const QString&, DirNode*)
+FileView::_deviceFileView	FileView.h	/^    DeviceFileView* _deviceFileView;$/;"	m	class:FileView	access:private
+FileView::_transferFileAct	FileView.h	/^    QAction* _transferFileAct;$/;"	m	class:FileView	access:private
+FileView::setDeviceFileView	FileView.cpp	/^void FileView::setDeviceFileView(DeviceFileView* in_devfileview)$/;"	f	class:FileView	signature:(DeviceFileView* in_devfileview)
+FileView::setDeviceFileView	FileView.h	/^    void setDeviceFileView(DeviceFileView* in_devfileview);$/;"	p	class:FileView	access:public	signature:(DeviceFileView* in_devfileview)
+FileView::setupMenus	FileView.cpp	/^void FileView::setupMenus (void)$/;"	f	class:FileView	signature:(void)
+FileView::setupMenus	FileView.h	/^    void setupMenus (void);$/;"	p	class:FileView	access:public	signature:(void)
+FileView::transferFile	FileView.cpp	/^void FileView::transferFile ( void )$/;"	f	class:FileView	signature:( void )
+FileView::transferFile	FileView.h	/^    void transferFile (void);$/;"	p	class:FileView	access:private	signature:(void)
+GetCurrentDeviceDirectory	DirView.h	/^    void GetCurrentDeviceDirectory(DirNode** path);$/;"	p	class:DirView	access:public	signature:(DirNode** path)
+GetCurrentDeviceDirectory	FileView.h	/^   void GetCurrentDeviceDirectory (DirNode** in_node);$/;"	p	class:FileView	access:public	signature:(DirNode** in_node)
+GetCurrentDirectory	DeviceFileModel.h	/^    DirNode* GetCurrentDirectory ( void )$/;"	f	class:DeviceFileModel	access:public	signature:( void )
+GetCurrentFSPath	DeviceFileView.h	/^    void GetCurrentFSPath(QString* path);$/;"	p	class:DeviceFileView	access:public	signature:(QString* path)
+GetDeviceDirView	DeviceExplorer.h	/^    DeviceDirView* GetDeviceDirView ( void )$/;"	f	class:DeviceExplorer	access:public	signature:( void )
+GetDeviceFileView	DeviceExplorer.h	/^    DeviceFileView* GetDeviceFileView ( void ) $/;"	f	class:DeviceExplorer	access:public	signature:( void )
+GetDir	DeviceDirModel.cpp	/^DirNode* DeviceDirModel::GetDir(uint32_t id)$/;"	f	class:DeviceDirModel	signature:(uint32_t id)
+GetDir	DeviceDirModel.h	/^    DirNode* GetDir(uint32_t id);$/;"	p	class:DeviceDirModel	access:public	signature:(uint32_t id)
+GetFSDirView	FileExplorer.h	/^    void* GetFSDirView ( void )$/;"	f	class:FileExplorer	access:public	signature:( void )
+GetFSFileView	FileExplorer.h	/^    FileView* GetFSFileView ( void )$/;"	f	class:FileExplorer	access:public	signature:( void )
+GetLayout	ConsoleWidget.h	/^    QVBoxLayout* GetLayout ( void )$/;"	f	class:ConsoleWidget	access:public	signature:( void )
+InsertText	ConsoleWidget.h	/^    virtual void InsertText(const QString& in_text)$/;"	f	class:ConsoleWidget	access:public	signature:(const QString& in_text)
+NewText	ConsoleWidget.h	/^    void NewText(const QString& txt);$/;"	p	class:ConsoleWidget	access:public	signature:(const QString& txt)
+OnReturn	ConsoleWidget.h	/^    virtual void OnReturn( void )$/;"	f	class:ConsoleWidget	access:public	signature:( void )
+QlixMainWindow	QlixMainWindow.h	/^    QlixMainWindow ()$/;"	f	class:QlixMainWindow	access:public	signature:()
+QlixMainWindow	QlixMainWindow.h	/^class QlixMainWindow : public QMainWindow$/;"	c	inherits:QMainWindow
+QlixMainWindow::QlixMainWindow	QlixMainWindow.h	/^    QlixMainWindow ()$/;"	f	class:QlixMainWindow	access:public	signature:()
+QlixMainWindow::_aboutAct	QlixMainWindow.h	/^    QAction* _aboutAct;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_alignmentGroup	QlixMainWindow.h	/^    QActionGroup* _alignmentGroup;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_connectAct	QlixMainWindow.h	/^    QAction* _connectAct;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_console	QlixMainWindow.h	/^    DeviceConsole* _console; $/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_deviceExp	QlixMainWindow.h	/^    DeviceExplorer* _deviceExp;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_exitAct	QlixMainWindow.h	/^    QAction* _exitAct;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_fileExp	QlixMainWindow.h	/^    FileExplorer* _fileExp;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_layout	QlixMainWindow.h	/^    QGridLayout* _layout;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_mainToolBar	QlixMainWindow.h	/^    QToolBar* _mainToolBar;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_mainWidget	QlixMainWindow.h	/^    QWidget*       _mainWidget;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_menuMenu	QlixMainWindow.h	/^    QMenu* _menuMenu;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_parent	QlixMainWindow.h	/^    QWidget* _parent;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_splitter	QlixMainWindow.h	/^    QSplitter* _splitter;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_widgetSizes	QlixMainWindow.h	/^    QList<int>      _widgetSizes;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::connectDevice	QlixMainWindow.h	/^    void connectDevice()$/;"	f	class:QlixMainWindow	access:private	signature:()
+QlixMainWindow::contextMenuEvent	QlixMainWindow.h	/^     void contextMenuEvent(QContextMenuEvent *) {}$/;"	f	class:QlixMainWindow	access:protected	signature:(QContextMenuEvent *)
+QlixMainWindow::createActions	QlixMainWindow.h	/^    void createActions()$/;"	f	class:QlixMainWindow	access:private	signature:()
+QlixMainWindow::createMenus	QlixMainWindow.h	/^    void createMenus()$/;"	f	class:QlixMainWindow	access:private	signature:()
+QlixMainWindow::createToolBars	QlixMainWindow.h	/^    void createToolBars()$/;"	f	class:QlixMainWindow	access:private	signature:()
+QlixMainWindow::setupConnections	QlixMainWindow.h	/^    void setupConnections ( void )$/;"	f	class:QlixMainWindow	access:private	signature:( void )
+QlixMainWindow::setupConsole	QlixMainWindow.h	/^    void setupConsole (void)$/;"	f	class:QlixMainWindow	access:private	signature:(void)
+QlixMainWindow::setupDeviceList	QlixMainWindow.h	/^    void setupDeviceList (void)$/;"	f	class:QlixMainWindow	access:private	signature:(void)
+QlixMainWindow::setupFileList	QlixMainWindow.h	/^    void setupFileList (void)$/;"	f	class:QlixMainWindow	access:private	signature:(void)
+QlixMainWindow::setupLayoutAndSplits	QlixMainWindow.h	/^    void setupLayoutAndSplits ( void )$/;"	f	class:QlixMainWindow	access:private	signature:( void )
+QlixMainWindow::~QlixMainWindow	QlixMainWindow.h	/^    ~QlixMainWindow()$/;"	f	class:QlixMainWindow	access:public	signature:()
+RequestFile	FileExplorer.h	/^    void RequestFile(const FileNode& temp, const string& path);$/;"	p	class:FileExplorer	access:public	signature:(const FileNode& temp, const string& path)
+Set	DeviceDirModel.cpp	/^void DeviceDirModel::Set (MtpFS* in_fs)$/;"	f	class:DeviceDirModel	signature:(MtpFS* in_fs)
+Set	DeviceDirModel.h	/^    void Set (MtpFS* in_fs);$/;"	p	class:DeviceDirModel	access:public	signature:(MtpFS* in_fs)
+Set	DeviceFileModel.h	/^    void Set (MtpFS* in_fs)$/;"	f	class:DeviceFileModel	access:public	signature:(MtpFS* in_fs)
+SetDeviceConsole	DeviceExplorer.h	/^    void SetDeviceConsole (DeviceConsole* in_console)$/;"	f	class:DeviceExplorer	access:public	signature:(DeviceConsole* in_console)
+SetDeviceFileView	FileExplorer.h	/^    void SetDeviceFileView (DeviceFileView* in_view)$/;"	f	class:FileExplorer	access:public	signature:(DeviceFileView* in_view)
+SetFSFileView	DeviceExplorer.h	/^    void SetFSFileView(FileView* in_fsfileview)$/;"	f	class:DeviceExplorer	access:public	signature:(FileView* in_fsfileview)
+SetFolder	DeviceFileModel.h	/^    void SetFolder ( uint32_t folder_id)$/;"	f	class:DeviceFileModel	access:public	signature:( uint32_t folder_id)
+TransferFileToDevice	FileExplorer.h	/^    void TransferFileToDevice(const QFileInfo& temp);$/;"	p	class:FileExplorer	access:public	signature:(const QFileInfo& temp)
+TransferSystemDirectory	DeviceFileView.cpp	/^void DeviceFileView::TransferSystemDirectory(const QString& in_file)$/;"	f	class:DeviceFileView	signature:(const QString& in_file)
+TransferSystemDirectory	DeviceFileView.h	/^    void TransferSystemDirectory(const QString&  in_file); $/;"	p	class:DeviceFileView	access:public	signature:(const QString& in_file)
+TransferSystemDirectory	DirView.h	/^    void TransferSystemDirectory(const QString&);$/;"	p	class:DirView	access:public	signature:(const QString&)
+TransferToDevice	DeviceFileView.cpp	/^void DeviceFileView::TransferToDevice(const QString& in_file, DirNode* directory)$/;"	f	class:DeviceFileView	signature:(const QString& in_file, DirNode* directory)
+TransferToDevice	DeviceFileView.h	/^    void TransferToDevice(const QString& in_file, DirNode* directory);$/;"	p	class:DeviceFileView	access:public	signature:(const QString& in_file, DirNode* directory)
+TransferToDevice	DirView.h	/^    void TransferToDevice(const QString&, DirNode*);$/;"	p	class:DirView	access:public	signature:(const QString&, DirNode*)
+TransferToDevice	FileView.h	/^   void TransferToDevice (const QString&, DirNode*);$/;"	p	class:FileView	access:public	signature:(const QString&, DirNode*)
+Unset	DeviceDirModel.cpp	/^void DeviceDirModel::Unset ()$/;"	f	class:DeviceDirModel	signature:()
+Unset	DeviceDirModel.h	/^    void Unset ();$/;"	p	class:DeviceDirModel	access:public	signature:()
+Unset	DeviceFileModel.h	/^    void Unset()$/;"	f	class:DeviceFileModel	access:public	signature:()
+_FSfileView	DeviceFileView.h	/^    FileView* _FSfileView;$/;"	m	class:DeviceFileView	access:private
+__CONSOLEWIDGET__	ConsoleWidget.h	6;"	d
+__DEVICECONSOLE__	DeviceConsole.h	5;"	d
+__DEVICEDIRMODEL__	DeviceDirModel.h	5;"	d
+__DEVICEDIRVIEW__	DeviceDirView.h	5;"	d
+__DEVICEEXPLORER__	DeviceExplorer.h	5;"	d
+__DEVICEFILEMODEL__	DeviceFileModel.h	5;"	d
+__DEVICEFILEVIEW__	DeviceFileView.h	5;"	d
+__DIRFILTER__	DirFilter.h	5;"	d
+__DIRVIEWER__	DirView.h	5;"	d
+__FILEEXPLORER__	FileExplorer.h	5;"	d
+__FILEVIEWER__	FileView.h	5;"	d
+__QLIXMAINWINDOW__	QlixMainWindow.h	5;"	d
+_aboutAct	QlixMainWindow.h	/^    QAction* _aboutAct;$/;"	m	class:QlixMainWindow	access:private
+_alignmentGroup	QlixMainWindow.h	/^    QActionGroup* _alignmentGroup;$/;"	m	class:QlixMainWindow	access:private
+_commandLine	ConsoleWidget.h	/^    QLineEdit* _commandLine;$/;"	m	class:ConsoleWidget	access:private
+_commandLineLabel	ConsoleWidget.h	/^    QLabel*    _commandLineLabel;$/;"	m	class:ConsoleWidget	access:private
+_connectAct	QlixMainWindow.h	/^    QAction* _connectAct;$/;"	m	class:QlixMainWindow	access:private
+_console	DeviceExplorer.h	/^    DeviceConsole* _console;$/;"	m	class:DeviceExplorer	access:private
+_console	QlixMainWindow.h	/^    DeviceConsole* _console; $/;"	m	class:QlixMainWindow	access:private
+_createFolderAct	DeviceDirView.h	/^    QAction* _createFolderAct;$/;"	m	class:DeviceDirView	access:private
+_currentDir	FileExplorer.h	/^    QString _currentDir;$/;"	m	class:FileExplorer	access:private
+_cursor	ConsoleWidget.h	/^    QTextCursor* _cursor;$/;"	m	class:ConsoleWidget	access:private
+_deleteFileAct	DeviceFileView.h	/^    QAction* _deleteFileAct;$/;"	m	class:DeviceFileView	access:private
+_deleteFolderAct	DeviceDirView.h	/^    QAction* _deleteFolderAct;$/;"	m	class:DeviceDirView	access:private
+_deviceDirView	FileExplorer.h	/^    DeviceDirView*  _deviceDirView;$/;"	m	class:FileExplorer	access:private
+_deviceExp	QlixMainWindow.h	/^    DeviceExplorer* _deviceExp;$/;"	m	class:QlixMainWindow	access:private
+_deviceFileView	DirView.h	/^    DeviceFileView* _deviceFileView;$/;"	m	class:DirView	access:private
+_deviceFileView	FileExplorer.h	/^    DeviceFileView* _deviceFileView;$/;"	m	class:FileExplorer	access:private
+_deviceFileView	FileView.h	/^    DeviceFileView* _deviceFileView;$/;"	m	class:FileView	access:private
+_deviceFreeSpace	DeviceConsole.h	/^        QLabel* _deviceFreeSpace;$/;"	m	class:DeviceConsole	access:private
+_deviceImage	DeviceConsole.h	/^        QPixmap _deviceImage;$/;"	m	class:DeviceConsole	access:private
+_deviceLabel	DeviceConsole.h	/^        QLabel* _deviceLabel;$/;"	m	class:DeviceConsole	access:private
+_deviceTotalSpace	DeviceConsole.h	/^        QLabel* _deviceTotalSpace;$/;"	m	class:DeviceConsole	access:private
+_dir	DeviceFileModel.h	/^    DirNode* _dir;$/;"	m	class:DeviceFileModel	access:private
+_dirFilter	DirFilter.h	/^    bool _dirFilter;$/;"	m	class:DirFilter	access:private
+_dirModel	DeviceExplorer.h	/^    DeviceDirModel* _dirModel;$/;"	m	class:DeviceExplorer	access:private
+_dirModel	FileExplorer.h	/^    QDirModel* _dirModel;$/;"	m	class:FileExplorer	access:private
+_dirSelection	FileExplorer.h	/^    QItemSelectionModel* _dirSelection;$/;"	m	class:FileExplorer	access:private
+_dirView	DeviceExplorer.h	/^    DeviceDirView* _dirView;$/;"	m	class:DeviceExplorer	access:private
+_dirView	FileExplorer.h	/^    DirView* _dirView;$/;"	m	class:FileExplorer	access:private
+_doc	ConsoleWidget.h	/^    QTextDocument* _doc;$/;"	m	class:ConsoleWidget	access:private
+_editor	ConsoleWidget.h	/^    QTextEdit* _editor;$/;"	m	class:ConsoleWidget	access:private
+_editorScroller	ConsoleWidget.h	/^    QScrollBar* _editorScroller;$/;"	m	class:ConsoleWidget	access:private
+_exitAct	QlixMainWindow.h	/^    QAction* _exitAct;$/;"	m	class:QlixMainWindow	access:private
+_fileExp	QlixMainWindow.h	/^    FileExplorer* _fileExp;$/;"	m	class:QlixMainWindow	access:private
+_fileModel	DeviceExplorer.h	/^    DeviceFileModel* _fileModel;$/;"	m	class:DeviceExplorer	access:private
+_fileModel	FileExplorer.h	/^    QDirModel* _fileModel;$/;"	m	class:FileExplorer	access:private
+_fileSelection	FileExplorer.h	/^    QItemSelectionModel* _fileSelection;$/;"	m	class:FileExplorer	access:private
+_fileView	DeviceExplorer.h	/^    DeviceFileView* _fileView;$/;"	m	class:DeviceExplorer	access:private
+_fileView	FileExplorer.h	/^    FileView* _fileView;$/;"	m	class:FileExplorer	access:private
+_fsFileView	DeviceExplorer.h	/^    FileView* _fsFileView;$/;"	m	class:DeviceExplorer	access:private
+_fsWatch	FileExplorer.h	/^    QFileSystemWatcher _fsWatch;$/;"	m	class:FileExplorer	access:private
+_layout	ConsoleWidget.h	/^    QVBoxLayout* _layout;$/;"	m	class:ConsoleWidget	access:private
+_layout	DeviceConsole.h	/^        QGridLayout* _layout;$/;"	m	class:DeviceConsole	access:private
+_layout	DeviceExplorer.h	/^    QHBoxLayout* _layout;$/;"	m	class:DeviceExplorer	access:private
+_layout	FileExplorer.h	/^    QHBoxLayout* _layout;$/;"	m	class:FileExplorer	access:private
+_layout	QlixMainWindow.h	/^    QGridLayout* _layout;$/;"	m	class:QlixMainWindow	access:private
+_listSize	DeviceFileModel.h	/^    count_t _listSize;$/;"	m	class:DeviceFileModel	access:private
+_mainToolBar	QlixMainWindow.h	/^    QToolBar* _mainToolBar;$/;"	m	class:QlixMainWindow	access:private
+_mainWidget	QlixMainWindow.h	/^    QWidget*       _mainWidget;$/;"	m	class:QlixMainWindow	access:private
+_menuMenu	QlixMainWindow.h	/^    QMenu* _menuMenu;$/;"	m	class:QlixMainWindow	access:private
+_mtpFileSystem	DeviceDirModel.h	/^    MtpFS*     _mtpFileSystem;$/;"	m	class:DeviceDirModel	access:private
+_mtpFileSystem	DeviceFileModel.h	/^    MtpFS*  _mtpFileSystem;$/;"	m	class:DeviceFileModel	access:private
+_mtpThread	DeviceExplorer.h	/^    MtpThread _mtpThread;$/;"	m	class:DeviceExplorer	access:private
+_mtpThread	FileExplorer.h	/^    MtpThread* _mtpThread;$/;"	m	class:FileExplorer	access:private
+_needCmdLine	ConsoleWidget.h	/^    bool       _needCmdLine; $/;"	m	class:ConsoleWidget	access:private
+_parent	QlixMainWindow.h	/^    QWidget* _parent;$/;"	m	class:QlixMainWindow	access:private
+_sortedType	DeviceFileModel.h	/^    FileSortType _sortedType;$/;"	m	class:DeviceFileModel	access:private
+_splitter	DeviceExplorer.h	/^    QSplitter* _splitter;$/;"	m	class:DeviceExplorer	access:private
+_splitter	FileExplorer.h	/^    QSplitter* _splitter;$/;"	m	class:FileExplorer	access:private
+_splitter	QlixMainWindow.h	/^    QSplitter* _splitter;$/;"	m	class:QlixMainWindow	access:private
+_thread	DeviceDirView.h	/^    MtpThread* _thread;$/;"	m	class:DeviceDirView	access:private
+_thread	DeviceFileView.h	/^    MtpThread* _thread;$/;"	m	class:DeviceFileView	access:private
+_transferDirAct	DirView.h	/^    QAction* _transferDirAct;$/;"	m	class:DirView	access:private
+_transferFileAct	DeviceFileView.h	/^    QAction* _transferFileAct;$/;"	m	class:DeviceFileView	access:private
+_transferFileAct	FileView.h	/^    QAction* _transferFileAct;$/;"	m	class:FileView	access:private
+_transferFolderAct	DeviceDirView.h	/^    QAction* _transferFolderAct;$/;"	m	class:DeviceDirView	access:private
+_widgetSizes	QlixMainWindow.h	/^    QList<int>      _widgetSizes;$/;"	m	class:QlixMainWindow	access:private
+addCommandLine	ConsoleWidget.h	/^    virtual void addCommandLine ( void )$/;"	f	class:ConsoleWidget	access:public	signature:( void )
+changeWidgetBackground	DeviceConsole.h	/^        void changeWidgetBackground()$/;"	f	class:DeviceConsole	access:private	signature:()
+columnCount	DeviceDirModel.cpp	/^int DeviceDirModel::columnCount(const QModelIndex& ) const$/;"	f	class:DeviceDirModel	signature:(const QModelIndex& ) const
+columnCount	DeviceDirModel.h	/^    int columnCount(const QModelIndex& ) const;$/;"	p	class:DeviceDirModel	access:public	signature:(const QModelIndex& ) const
+columnCount	DeviceFileModel.h	/^    int columnCount (const QModelIndex& ) const$/;"	f	class:DeviceFileModel	access:public	signature:(const QModelIndex& ) const
+connectDevice	QlixMainWindow.h	/^    void connectDevice()$/;"	f	class:QlixMainWindow	access:private	signature:()
+contextMenuEvent	QlixMainWindow.h	/^     void contextMenuEvent(QContextMenuEvent *) {}$/;"	f	class:QlixMainWindow	access:protected	signature:(QContextMenuEvent *)
+createActions	QlixMainWindow.h	/^    void createActions()$/;"	f	class:QlixMainWindow	access:private	signature:()
+createFolder	DeviceDirView.cpp	/^void DeviceDirView::createFolder ( void )$/;"	f	class:DeviceDirView	signature:( void )
+createFolder	DeviceDirView.h	/^    void createFolder ( void );$/;"	p	class:DeviceDirView	access:private	signature:( void )
+createMenus	QlixMainWindow.h	/^    void createMenus()$/;"	f	class:QlixMainWindow	access:private	signature:()
+createToolBars	QlixMainWindow.h	/^    void createToolBars()$/;"	f	class:QlixMainWindow	access:private	signature:()
+currentDirectory	DeviceDirView.h	/^    void currentDirectory(DirNode** out_node);$/;"	p	class:DeviceDirView	access:private	signature:(DirNode** out_node)
+data	DeviceDirModel.cpp	/^QVariant DeviceDirModel::data(const QModelIndex &index, int role) const$/;"	f	class:DeviceDirModel	signature:(const QModelIndex &index, int role) const
+data	DeviceDirModel.h	/^    QVariant data(const QModelIndex &index, int role) const;$/;"	p	class:DeviceDirModel	access:public	signature:(const QModelIndex &index, int role) const
+data	DeviceFileModel.h	/^    QVariant data(const QModelIndex &index, int role) const$/;"	f	class:DeviceFileModel	access:public	signature:(const QModelIndex &index, int role) const
+deleteFile	DeviceFileView.cpp	/^void DeviceFileView::deleteFile ( void ) $/;"	f	class:DeviceFileView	signature:( void )
+deleteFile	DeviceFileView.h	/^    void deleteFile ( void ) ;$/;"	p	class:DeviceFileView	access:private	signature:( void )
+deleteFolder	DeviceDirView.cpp	/^void DeviceDirView::deleteFolder ( void ) $/;"	f	class:DeviceDirView	signature:( void )
+deleteFolder	DeviceDirView.h	/^    void deleteFolder ( void );$/;"	p	class:DeviceDirView	access:private	signature:( void )
+dirFromIndex	DeviceDirModel.cpp	/^DirNode* DeviceDirModel::dirFromIndex(const QModelIndex& index) const$/;"	f	class:DeviceDirModel	signature:(const QModelIndex& index) const
+dirFromIndex	DeviceDirModel.h	/^    DirNode* dirFromIndex(const QModelIndex& index) const;$/;"	p	class:DeviceDirModel	access:private	signature:(const QModelIndex& index) const
+fileFilter	DirFilter.h	/^    bool fileFilter ( int sourceRow, const QModelIndex& sourceParent) const$/;"	f	class:DirFilter	access:private	signature:( int sourceRow, const QModelIndex& sourceParent) const
+filterAcceptsRow	DirFilter.h	/^    bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const$/;"	f	class:DirFilter	access:protected	signature:(int sourceRow, const QModelIndex& sourceParent) const
+getRawImage	DeviceConsole.h	/^        bool getRawImage(const QString& in_path, QPixmap& in_pixmap)$/;"	f	class:DeviceConsole	access:private	signature:(const QString& in_path, QPixmap& in_pixmap)
+headerData	DeviceDirModel.cpp	/^QVariant DeviceDirModel::headerData(int section, Qt::Orientation orientation, int role) const$/;"	f	class:DeviceDirModel	signature:(int section, Qt::Orientation orientation, int role) const
+headerData	DeviceDirModel.h	/^    QVariant headerData(int section, Qt::Orientation orientation, int role) const;$/;"	p	class:DeviceDirModel	access:public	signature:(int section, Qt::Orientation orientation, int role) const
+headerData	DeviceFileModel.h	/^    QVariant headerData(int section, Qt::Orientation orientation, int role) const$/;"	f	class:DeviceFileModel	access:public	signature:(int section, Qt::Orientation orientation, int role) const
+index	DeviceDirModel.cpp	/^QModelIndex DeviceDirModel::index (int row, int column, const QModelIndex& parent) const$/;"	f	class:DeviceDirModel	signature:(int row, int column, const QModelIndex& parent) const
+index	DeviceDirModel.h	/^    QModelIndex index (int row, int column, const QModelIndex& parent) const;$/;"	p	class:DeviceDirModel	access:public	signature:(int row, int column, const QModelIndex& parent) const
+init	DeviceExplorer.h	/^    void init()$/;"	f	class:DeviceExplorer	access:private	signature:()
+parent	DeviceDirModel.cpp	/^QModelIndex DeviceDirModel::parent (const QModelIndex &child) const$/;"	f	class:DeviceDirModel	signature:(const QModelIndex &child) const
+parent	DeviceDirModel.h	/^    QModelIndex parent (const QModelIndex &child) const;$/;"	p	class:DeviceDirModel	access:public	signature:(const QModelIndex &child) const
+processCommand	ConsoleWidget.h	/^    virtual void processCommand(const QString& in_cmd)$/;"	f	class:ConsoleWidget	access:public	signature:(const QString& in_cmd)
+refreshDirView	FileExplorer.h	/^    void refreshDirView ( void )$/;"	f	class:FileExplorer	access:public	signature:( void )
+refreshFileView	FileExplorer.h	/^    void refreshFileView ( void )$/;"	f	class:FileExplorer	access:public	signature:( void )
+resetRootImage	DeviceConsole.h	/^    void resetRootImage()$/;"	f	class:DeviceConsole	access:public	signature:()
+rowCount	DeviceDirModel.cpp	/^int DeviceDirModel::rowCount(const QModelIndex &parent) const$/;"	f	class:DeviceDirModel	signature:(const QModelIndex &parent) const
+rowCount	DeviceDirModel.h	/^    int rowCount(const QModelIndex &parent) const;$/;"	p	class:DeviceDirModel	access:public	signature:(const QModelIndex &parent) const
+rowCount	DeviceFileModel.h	/^    int rowCount (const QModelIndex& ) const$/;"	f	class:DeviceFileModel	access:public	signature:(const QModelIndex& ) const
+selectedDirectories	DeviceDirView.cpp	/^QModelIndexList DeviceDirView::selectedDirectories()$/;"	f	class:DeviceDirView	signature:()
+selectedDirectories	DeviceFileView.h	/^    QModelIndexList selectedDirectories();$/;"	p	class:DeviceFileView	access:public	signature:()
+setDeviceFileView	DirView.cpp	/^void DirView::setDeviceFileView(DeviceFileView* in_devfileview)$/;"	f	class:DirView	signature:(DeviceFileView* in_devfileview)
+setDeviceFileView	DirView.h	/^    void setDeviceFileView(DeviceFileView* );$/;"	p	class:DirView	access:public	signature:(DeviceFileView* )
+setDeviceFileView	FileView.cpp	/^void FileView::setDeviceFileView(DeviceFileView* in_devfileview)$/;"	f	class:FileView	signature:(DeviceFileView* in_devfileview)
+setDeviceFileView	FileView.h	/^    void setDeviceFileView(DeviceFileView* in_devfileview);$/;"	p	class:FileView	access:public	signature:(DeviceFileView* in_devfileview)
+setDirectoryFilter	DirFilter.h	/^    void setDirectoryFilter ( void )$/;"	f	class:DirFilter	access:public	signature:( void )
+setFileFilter	DirFilter.h	/^    void setFileFilter ( void )$/;"	f	class:DirFilter	access:public	signature:( void )
+setFileView	DeviceFileView.cpp	/^void DeviceFileView::setFileView (FileView* in_fileView)$/;"	f	class:DeviceFileView	signature:(FileView* in_fileView)
+setFileView	DeviceFileView.h	/^    void setFileView (FileView* in_fileView);$/;"	p	class:DeviceFileView	access:public	signature:(FileView* in_fileView)
+setupCommandLine	ConsoleWidget.h	/^    void setupCommandLine()$/;"	f	class:ConsoleWidget	access:private	signature:()
+setupConnections	ConsoleWidget.h	/^    void setupConnections()$/;"	f	class:ConsoleWidget	access:private	signature:()
+setupConnections	DeviceExplorer.h	/^    void setupConnections()$/;"	f	class:DeviceExplorer	access:private	signature:()
+setupConnections	FileExplorer.h	/^    void setupConnections ( void )$/;"	f	class:FileExplorer	access:private	signature:( void )
+setupConnections	QlixMainWindow.h	/^    void setupConnections ( void )$/;"	f	class:QlixMainWindow	access:private	signature:( void )
+setupConsole	QlixMainWindow.h	/^    void setupConsole (void)$/;"	f	class:QlixMainWindow	access:private	signature:(void)
+setupDeviceList	QlixMainWindow.h	/^    void setupDeviceList (void)$/;"	f	class:QlixMainWindow	access:private	signature:(void)
+setupDirModel	FileExplorer.h	/^    void setupDirModel ( void )$/;"	f	class:FileExplorer	access:private	signature:( void )
+setupDirView	DeviceExplorer.h	/^    void setupDirView ( void )$/;"	f	class:DeviceExplorer	access:private	signature:( void )
+setupDirView	FileExplorer.h	/^    void setupDirView ( void )$/;"	f	class:FileExplorer	access:private	signature:( void )
+setupEditor	ConsoleWidget.h	/^    void setupEditor()$/;"	f	class:ConsoleWidget	access:private	signature:()
+setupFileList	QlixMainWindow.h	/^    void setupFileList (void)$/;"	f	class:QlixMainWindow	access:private	signature:(void)
+setupFileModel	FileExplorer.h	/^    void setupFileModel()$/;"	f	class:FileExplorer	access:private	signature:()
+setupFileView	DeviceExplorer.h	/^    void setupFileView ( void )$/;"	f	class:DeviceExplorer	access:private	signature:( void )
+setupFileView	FileExplorer.h	/^    void setupFileView ( void )$/;"	f	class:FileExplorer	access:private	signature:( void )
+setupFsWatch	FileExplorer.h	/^    void setupFsWatch()$/;"	f	class:FileExplorer	access:private	signature:()
+setupLabels	DeviceConsole.h	/^        void setupLabels()$/;"	f	class:DeviceConsole	access:private	signature:()
+setupLayoutAndSplits	QlixMainWindow.h	/^    void setupLayoutAndSplits ( void )$/;"	f	class:QlixMainWindow	access:private	signature:( void )
+setupMenus	DeviceDirView.cpp	/^void DeviceDirView::setupMenus (void)$/;"	f	class:DeviceDirView	signature:(void)
+setupMenus	DeviceDirView.h	/^    void setupMenus (void);$/;"	p	class:DeviceDirView	access:public	signature:(void)
+setupMenus	DeviceFileView.cpp	/^void DeviceFileView::setupMenus (void)$/;"	f	class:DeviceFileView	signature:(void)
+setupMenus	DeviceFileView.h	/^    void setupMenus (void);$/;"	p	class:DeviceFileView	access:public	signature:(void)
+setupMenus	DirView.cpp	/^void DirView::setupMenus (void)$/;"	f	class:DirView	signature:(void)
+setupMenus	DirView.h	/^    void setupMenus (void);$/;"	p	class:DirView	access:public	signature:(void)
+setupMenus	FileView.cpp	/^void FileView::setupMenus (void)$/;"	f	class:FileView	signature:(void)
+setupMenus	FileView.h	/^    void setupMenus (void);$/;"	p	class:FileView	access:public	signature:(void)
+setupWidget	DeviceConsole.h	/^        void setupWidget()$/;"	f	class:DeviceConsole	access:private	signature:()
+sort	DeviceExplorer.h	/^    void sort (int idx)$/;"	f	class:DeviceExplorer	access:public	signature:(int idx)
+sort	DeviceFileModel.h	/^    void sort ( int column = -1)$/;"	f	class:DeviceFileModel	access:public	signature:( int column = -1)
+transferDir	DirView.cpp	/^void DirView::transferDir ( void )$/;"	f	class:DirView	signature:( void )
+transferDir	DirView.h	/^    void transferDir ( void );$/;"	p	class:DirView	access:private	signature:( void )
+transferFile	DeviceFileView.cpp	/^void DeviceFileView::transferFile ( void )$/;"	f	class:DeviceFileView	signature:( void )
+transferFile	DeviceFileView.h	/^    void transferFile ( void );$/;"	p	class:DeviceFileView	access:private	signature:( void )
+transferFile	FileView.cpp	/^void FileView::transferFile ( void )$/;"	f	class:FileView	signature:( void )
+transferFile	FileView.h	/^    void transferFile (void);$/;"	p	class:FileView	access:private	signature:(void)
+transferFolder	DeviceDirView.cpp	/^void DeviceDirView::transferFolder ( void )$/;"	f	class:DeviceDirView	signature:( void )
+transferFolder	DeviceDirView.h	/^    void transferFolder ( void );$/;"	p	class:DeviceDirView	access:private	signature:( void )
+~DeviceDirModel	DeviceDirModel.cpp	/^DeviceDirModel::~DeviceDirModel ( void )$/;"	f	class:DeviceDirModel	signature:( void )
+~DeviceDirModel	DeviceDirModel.h	/^    ~DeviceDirModel ( void );$/;"	p	class:DeviceDirModel	access:public	signature:( void )
+~DeviceExplorer	DeviceExplorer.h	/^    ~DeviceExplorer() { }$/;"	f	class:DeviceExplorer	access:public	signature:()
+~FileExplorer	FileExplorer.h	/^    ~FileExplorer()$/;"	f	class:FileExplorer	access:public	signature:()
+~QlixMainWindow	QlixMainWindow.h	/^    ~QlixMainWindow()$/;"	f	class:QlixMainWindow	access:public	signature:()
