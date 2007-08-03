@@ -1,6 +1,7 @@
 #include "MtpDevice.h"
-MtpDevice::MtpDevice( LIBMTP_mtpdevice_t* in_device )
+MtpDevice::MtpDevice( LIBMTP_mtpdevice_t* in_device, count_t in_id)
 {
+    _deviceID = in_id;
     if (!in_device)
         return;
     _device = in_device;
@@ -23,6 +24,11 @@ MtpDevice::~MtpDevice()
         LIBMTP_Release_Device(_device);
         _device = NULL;
     }
+}
+
+count_t MtpDevice::GetID()
+{
+    return _deviceID;
 }
 
 void MtpDevice::DumpInformation ( void )

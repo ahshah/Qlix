@@ -36,7 +36,10 @@ void MtpThread::run (void)
             case Connect:
             {
                 MtpCommandConnect* _cmd = static_cast<MtpCommandConnect*> (currentJob);
-                _portal.Connect();
+                if (!_portal.Connect())
+                {
+                    continue;
+                }
                 _device = _portal.GetDevice();
                 _mtpFileSystem = _device->GetFileSystem();
                 delete _cmd;

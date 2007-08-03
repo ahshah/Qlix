@@ -14,54 +14,17 @@ using namespace std;
 class MtpPortal 
 {
 public:
-    MtpPortal ()
-    {
-        _deviceCount = 0;
-        _device = NULL;
-        LIBMTP_Init();
-    }
+    MtpPortal ();
+    ~MtpPortal();
 
-    ~MtpPortal()
-    {
-        if (_device)
-        {
-            delete _device;
-            _device = NULL;
-        }
-    }
-
-    void Connect()
-    {
-        _connected = true;
-       _device = new MtpDevice (LIBMTP_Get_First_Device());
-       _deviceCount++;
-    }
-    
-    void Disconnect()
-    {
-        if (!_device)
-        {
-            _connected = false;
-            return;
-        }
-
-        delete _device;
-        _device = NULL;
-        _connected = false;
-
-    }
-    MtpDevice* GetDevice ( void )
-    {
-        return _device;
-    }
-    bool IsConnected()
-    {
-        return _connected;
-    }
+    bool Connect();
+    void Disconnect();
+    MtpDevice* GetDevice ( void );
+    bool IsConnected();
 
 private:
     bool _connected;
-    MtpDevice* _device;
+    vector<MtpDevice*> _deviceList;
     count_t _deviceCount;
 };
 #endif

@@ -38,6 +38,7 @@ SOURCES += main.cpp \
            mtp/DirNode.cpp \
            mtp/MtpDevice.cpp \
            mtp/MtpFS.cpp \
+           mtp/MtpPortal.cpp \
            mtp/MtpThread.cpp \
            widgets/DeviceConsole.cpp \
            widgets/DeviceDirModel.cpp \

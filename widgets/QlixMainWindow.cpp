@@ -3,7 +3,8 @@ QlixMainWindow::QlixMainWindow ()
 {
     QWidget* _mainWidget = new QWidget();
     setCentralWidget(_mainWidget);
-    _layout = new QGridLayout(_mainWidget);
+    _layout = new QVBoxLayout(_mainWidget);
+//    _layout->addStretch(1);
     _splitter = new QSplitter(_mainWidget);
     _splitter->setOrientation(Qt::Vertical);
     setMinimumSize(800,500);
@@ -69,9 +70,8 @@ void QlixMainWindow::setupLayoutAndSplits ( void )
     _deviceExp->setContentsMargins(-10, -10, -10, -10);
     _fileExp->setContentsMargins(-10, -10, -10, -10);
 */
-
-    _console->setContentsMargins  ( 0, -25,  0, -20);
-    _fileExp->setContentsMargins  (-8, -5, -5, -8);
+    _console->setContentsMargins  (-8, -15, -5, -18);
+    _fileExp->setContentsMargins  (-8, -8, -5, -8);
     _deviceExp->setContentsMargins(-8, -5, -5, -9);
     _statusBar->setContentsMargins(-8, -5, -5, 0);
 //    _progressBar->setContentsMargins(0,-20,0,-20);
@@ -130,8 +130,8 @@ void QlixMainWindow::createActions()
     _connectAct = new QAction(QIcon("./pixmaps/connect.png"),"Connect", this);
     _connectAct->setShortcut(tr("Ctrl+C"));
     _connectAct->setCheckable(true);
-
     _connectAct->setStatusTip("Connect to first MTP-enabled device");
+//    _connectAct->set
     connect(_connectAct, SIGNAL(triggered() ), this, SLOT(connectDevice()));
 }
 

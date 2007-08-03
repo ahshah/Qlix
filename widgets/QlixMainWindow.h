@@ -7,7 +7,6 @@
 #include "DeviceExplorer.h"
 #include "DeviceConsole.h"
 #include <QWidget>
-#include <QGridLayout>
 #include <QSplitter>
 #include <QMainWindow>
 #include <QToolBar>
@@ -37,7 +36,7 @@ private:
     QWidget*       _mainWidget;
 
 /* Required Layout objects */
-    QGridLayout* _layout;
+    QVBoxLayout* _layout;
     QSplitter* _splitter;
     QList<int>      _widgetSizes;
     QWidget* _parent;

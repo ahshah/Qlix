@@ -17,7 +17,7 @@ using namespace std;
 class MtpDevice 
 {
 public:
-    MtpDevice( LIBMTP_mtpdevice_t* in_device );
+    MtpDevice( LIBMTP_mtpdevice_t* in_device, count_t id);
     ~MtpDevice();
     void DumpInformation ( void );
     void GetFolders ( void );
@@ -27,12 +27,13 @@ public:
     bool SendFileToDevice(const QFileInfo& file,uint32_t in_parentID);
     bool DeleteObject(uint32_t in_parentID, int in_depth);
     bool GetFileFromDevice(uint32_t fileID, const string& target); 
+    count_t GetID();
 
 
 private:
     LIBMTP_mtpdevice_t* _device;
     MtpFS* _mtpFS;
-
+    count_t _deviceID;
     string _serial;
     string _modelName;
     string _deviceVersion;
