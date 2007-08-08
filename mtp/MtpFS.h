@@ -46,7 +46,7 @@ private:
     DirNode* _root;
     LIBMTP_folder_t* _mtpRoot;
     LIBMTP_mtpdevice_t* _device;
-    LIBMTP_devicestorage_struct* _storage;
+    LIBMTP_devicestorage_t* _storage;
     map <uint32_t, DirNode*> _dirMap;
     DeviceConsole* _console;
 };

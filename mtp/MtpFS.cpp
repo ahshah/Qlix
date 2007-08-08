@@ -12,6 +12,10 @@ MtpFS::MtpFS( LIBMTP_folder_t* in_root, LIBMTP_mtpdevice_t* in_dev) : QObject(NU
     _root->SortDirectories();
     _root->CreateMapping(_dirMap);
     _root->SortDirectories();
+    cout << "FS internal storage is: " << _storage << endl;
+    cout <<"Device storage is: " << _device->storage<<endl;
+    cout << "Initial total size reported:" << _storage->MaxCapacity<< endl;
+    cout << "Initial Free size reported:" << _storage->FreeSpaceInBytes<< endl;
     _console = NULL;
 }
 
@@ -186,10 +190,10 @@ int MtpFS::ProgressWrapper(uint64_t const sent, uint64_t const total, void const
 
 void MtpFS::updateConsole()
 {
-    cout << "Total size reported:" << _storage->MaxCapacity<< endl;
-    cout << "Free size reported:" << _storage->FreeSpaceInBytes<< endl;
-    if (_storage)
-        emit updateDeviceStats(quint64((_storage->MaxCapacity)), (quint64((_storage->FreeSpaceInBytes))));
+    cout << "Total size reported:" << (long long)_device->storage->MaxCapacity<< endl;
+    cout << "Free size reported:" << (long long)_device->storage->FreeSpaceInBytes<< endl;
+    if (_device->storage)
+        emit updateDeviceStats(quint64((_device->storage->MaxCapacity)), (quint64((_device->storage->FreeSpaceInBytes))));
     else
         cout << "No storage" << endl;
 }

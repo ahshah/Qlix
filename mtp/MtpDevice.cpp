@@ -12,7 +12,9 @@ MtpDevice::MtpDevice( LIBMTP_mtpdevice_t* in_device, count_t in_id)
     getFriendlyName();
     getBatteryLevel();
     GetFolders();
-    LIBMTP_Get_Storage(in_device, 0);
+    int ret = LIBMTP_Get_Storage(in_device, 0);
+    cout << "Getting storage properties returned: " << ret << endl;
+    GetErrors(_device);
 }
 
 MtpDevice::~MtpDevice()
