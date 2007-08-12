@@ -11,6 +11,7 @@
 #include "MtpThread.h"
 #include "DeviceFileView.h"
 #include "DirNode.h"
+#include <QtDebug>
 class DeviceFileView;
 class FileView : public QTreeView
 {
@@ -23,14 +24,18 @@ public:
 
 signals:
    void TransferToDevice (const QString&, DirNode*);
+   void TransferTrackToDevice (const QString&, DirNode*);
 
 public slots:
     void CurrentSelection (QList<QString>* listout); 
 
 private slots:
     void transferFile (void);
+    void transferTrack (void);
 private:
     QAction* _transferFileAct;
+    QAction* _transferTrackAct;
     DeviceFileView* _deviceFileView;
+    bool isMultimedia(const QString&);
 };
 #endif
