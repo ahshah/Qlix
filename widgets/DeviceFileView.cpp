@@ -46,15 +46,16 @@ DirNode* DeviceFileView::CurrentDirectory ()
 
 //public slots:
 
-void DeviceFileView::TransferToDevice(const QString& in_file, DirNode* directory)
+void DeviceFileView::TransferToDevice(const QString& in_file, DirNode* directory, bool isTrack)
 {
-    cout << "Device recevied transfer request to device. Here is the path: " << in_file.toStdString() << endl;
-    cout << "To directory: " << directory->GetName() << endl;
-    DirNode* currentDir = CurrentDirectory();
-    if (currentDir == NULL)
-        return;
-    cout << "Selected dir for file transfer: " <<  currentDir->GetName() << " id: " << currentDir->GetID()  << endl;
-    MtpCommandSendFile* cmd = new MtpCommandSendFile(in_file.toStdString(), currentDir->GetID());
+//    cout << "Device recevied transfer request to device. Here is the path: " << in_file.toStdString() << endl;
+//    cout << "To directory: " << directory->GetName() << endl;
+    //DirNode* currentDir = CurrentDirectory();
+ //   if (currentDir == NULL)
+  //      return;
+ //   cout << "Selected dir for file transfer: " <<  currentDir->GetName() << " id: " << currentDir->GetID()  << endl;
+//    MtpCommandSendFile* cmd = new MtpCommandSendFile(in_file.toStdString(), currentDir->GetID(), isTrack);
+    MtpCommandSendFile* cmd = new MtpCommandSendFile(in_file.toStdString(), 0,isTrack);
     _thread->IssueCommand(cmd);
 }
 

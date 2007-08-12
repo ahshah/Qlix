@@ -122,10 +122,12 @@ struct MtpCommandSendFile : MtpCommand
 {
     string Path;
     uint32_t ParentID;
-    MtpCommandSendFile (string in_path, uint32_t in_ParentID) 
+    bool IsTrack;
+    MtpCommandSendFile (string in_path, uint32_t in_ParentID, bool in_asTrack = false) 
     {
         ParentID = in_ParentID;
         Path = in_path;
+        IsTrack = in_asTrack;
         ComCode = SendFile;
     }
 };

@@ -12,6 +12,9 @@
 #include "DirNode.h"
 #include "FileNode.h"
 #include "MtpFS.h"
+#include <fileref.h>
+#include <tfile.h>
+#include <tag.h>
 using namespace std;
 
 class MtpDevice 
@@ -24,7 +27,9 @@ public:
     MtpFS* GetFileSystem ( void );
     LIBMTP_mtpdevice_t* rawDevice();
     uint32_t CreateFolder (string in_FolderName, uint32_t in_parentID, int* newmodelindex);
+
     bool SendFileToDevice(const QFileInfo& file,uint32_t in_parentID);
+    bool SendTrackToDevice(const QFileInfo& file,uint32_t in_parentID);
     bool DeleteObject(uint32_t in_parentID, int in_depth);
     bool GetFileFromDevice(uint32_t fileID, const string& target); 
     count_t GetID();

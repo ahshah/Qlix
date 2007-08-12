@@ -24,7 +24,7 @@ public:
 signals:
 
 public slots:
-    void TransferToDevice(const QString& in_file, DirNode* directory);
+    void TransferToDevice(const QString& in_file, DirNode* directory, bool isTrack);
     void CreateDirectory(const QString&  in_file);
     void TransferSystemDirectory(const QString&  in_file); 
 

@@ -65,12 +65,16 @@ void MtpThread::run (void)
                 MtpCommandSendFile* _cmd = static_cast<MtpCommandSendFile*>  (currentJob);
                 string in_filepath = _cmd->Path;
                 uint32_t parentID = _cmd->ParentID;
+                bool IsTrack = _cmd->IsTrack;
                 delete _cmd;
-                
+
+                //Get prarent, make sure it exists 
                 DirNode* parentDir = _mtpFileSystem->GetDirectory(parentID);
                 assert(parentDir);
-
                 QFileInfo fromFile(in_filepath.c_str());
+
+
+                // Does this file/track already exist on the device?
                 if (parentDir->FileExists(fromFile.fileName().toStdString()))
                 {
                     cout << "Duplicate file found.. ignroed" << endl;
@@ -78,7 +82,13 @@ void MtpThread::run (void)
                 }
 
                 QFileInfo newfile(in_filepath.c_str());
-                bool ret = _device->SendFileToDevice(newfile, parentID);
+                // If you are trying to send a track, send it through the device sendTrack interface
+                bool ret = false;
+                if (IsTrack)
+                    ret = _device->SendTrackToDevice(newfile, parentID);
+                else
+                    ret = _device->SendFileToDevice(newfile, parentID);
+
                 cout << "transfer done, emitting result" << endl;
                 emit FileTransferDone(ret);
                 continue;
@@ -231,7 +241,7 @@ void MtpThread::run (void)
                             continue;
                         }
  //                       cout << "Sending file: " <<thisFile.fileName().toStdString() << endl;
-                        bool ret = _device->SendFileToDevice(thisFile, thisParent);
+                        bool ret = _device->SendTrackToDevice(thisFile, thisParent);
                         emit FileTransferDone(ret);
 
                     }

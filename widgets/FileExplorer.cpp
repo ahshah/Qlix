@@ -103,7 +103,7 @@ DeviceDirView*  _deviceDirView;
 void FileExplorer::setupDirModel ()
 {
     _dirModel = new QDirModel();
-    _dirModel->setFilter(QDir::AllDirs);
+    _dirModel->setFilter(QDir::AllDirs| QDir::NoDotAndDotDot);
     setupDirView();
 }
 
@@ -174,7 +174,7 @@ void FileExplorer::setupConnections ()
 
 void FileExplorer::setupFsWatch()
 {
-    QModelIndex _currentPathIndex = _dirModel->index(QDir::currentPath());
+    QModelIndex _currentPathIndex = _dirModel->index( QString("/mnt/media/Documents/Music"));
     _dirSelection->setCurrentIndex(_currentPathIndex, QItemSelectionModel::ClearAndSelect |QItemSelectionModel::Rows );
     QModelIndexList temp = _dirSelection->selectedRows();
     _currentDir = QDir::currentPath();

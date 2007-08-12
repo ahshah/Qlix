@@ -23,8 +23,7 @@ public:
     QString CurrentDirectory();
 
 signals:
-   void TransferToDevice (const QString&, DirNode*);
-   void TransferTrackToDevice (const QString&, DirNode*);
+   void TransferToDevice (const QString&, DirNode*, bool isTrack = false);
 
 public slots:
     void CurrentSelection (QList<QString>* listout); 

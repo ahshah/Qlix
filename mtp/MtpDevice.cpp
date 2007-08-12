@@ -145,13 +145,130 @@ bool MtpDevice::DeleteObject (uint32_t in_parentID, int in_FileID)
 }
 
 
+
+
+
+//Messy function
+bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
+                                  uint32_t in_parentID)
+{
+    if (!_device)
+    {
+        cout << "No device for file transfer" << endl;
+        return false;
+    }
+
+    string loc = fileinfo.canonicalFilePath().toStdString();
+    TagLib::FileRef tagFile(loc.c_str());
+    cout <<"File path is: " + fileinfo.canonicalFilePath().toStdString() << endl;
+    if (tagFile.isNull())
+    {
+        cout << "Not a recognizable track format" << endl;
+        return false;
+    }
+    cout << "Sending track, filename is: " << tagFile.file()->name() << endl;
+    
+    LIBMTP_track_t* newtrack = LIBMTP_new_track_t();
+
+    if (LIBMTP_Track_Exists(_device, newtrack->item_id))
+    {
+        cout << "Track Exists already!" << endl;
+        return false;
+    }
+
+    string temp;
+    int titleLength     = tagFile.tag()->title().size();
+    temp = tagFile.tag()->title().to8Bit();
+    
+    TagLib::String::String actualTitleTemp(tagFile.tag()->title().data(TagLib::String::UTF8), TagLib::String::UTF8); 
+    const char* actualTitle    = actualTitleTemp.toCString();
+    
+    char* title =    new char[titleLength+1];
+    memcpy(title, actualTitle, titleLength+1);
+
+    cout << "TagLib title: " << title << endl;;
+    return false;
+
+
+
+
+
+    int artistLength         = tagFile.tag()->artist().size();
+
+    const char* actualArtist = tagFile.tag()->artist().to8Bit().c_str();
+
+    char* artist =   new char[artistLength+1];
+    memcpy(artist, actualArtist, artistLength+1);
+    cout << "TagLib Artist: " << artist << endl;;
+
+
+
+
+
+    int genreLength          = tagFile.tag()->genre().size();
+    char* genre =    new char[genreLength+1];
+
+    const char* actualGenre = tagFile.tag()->genre().to8Bit().c_str();
+
+    memcpy(genre, actualGenre, genreLength+1);
+    cout << "TagLib genre: " << genre << endl;;
+
+
+
+
+    int albumLength          = tagFile.tag()->album().size();
+
+    const char* actualAlbum= tagFile.tag()->album().to8Bit().c_str();
+
+    char* album =    new char[albumLength+1];
+    memcpy(album, actualAlbum, albumLength+1);
+    cout << "TagLib album: " << album<< endl;;
+
+    int filenameLength         = fileinfo.fileName().toStdString().size();
+    const char* actualFilename = fileinfo.fileName().toStdString().c_str();
+
+    char* filename = new char[filenameLength+1];
+    memcpy(filename, actualFilename, filenameLength+1);
+
+    newtrack->parent_id = in_parentID;
+    newtrack->title = title;
+    newtrack->artist = artist;
+    newtrack->genre = genre;
+    newtrack->album = album;
+    newtrack->filename= filename;
+    newtrack->tracknumber = tagFile.tag()->track();
+    newtrack->duration  = tagFile.audioProperties()->length()*1000;
+    newtrack->bitrate   = tagFile.audioProperties()->bitrate();
+    newtrack->filesize  = QFile(fileinfo.canonicalFilePath()).size();
+    newtrack->filetype = FileNode::GetMtpType((fileinfo.suffix()));
+    newtrack->next = NULL;
+    LIBMTP_progressfunc_t staticProgressFunc = MtpFS::ProgressWrapper; 
+
+    string filepath = fileinfo.canonicalFilePath().toStdString();
+    int ret =LIBMTP_Send_Track_From_File( _device, filepath.c_str(),
+                                         newtrack,
+                                         staticProgressFunc, (void*)_mtpFS, newtrack->parent_id);
+    cout <<"track transfer returned: " << ret << endl;
+    if (ret != 0)
+    {
+        cout << "TRACK XFER FAIL" << ret << endl;
+        LIBMTP_Dump_Errorstack(_device);
+        LIBMTP_Clear_Errorstack(_device);
+        LIBMTP_destroy_track_t(newtrack);
+        return false;
+    }
+
+    LIBMTP_destroy_track_t(newtrack);
+    return true;
+}
+
 bool MtpDevice::SendFileToDevice(const QFileInfo& fileinfo,
                                  uint32_t in_parentID)
 {
     if (!_device)
     {
         cout << "No device for file transfer" << endl;
-        return -1;
+        return false;
     }
 
     //const char* filepath = (file.filePath().toStdString()).c_str();
@@ -189,6 +306,7 @@ bool MtpDevice::SendFileToDevice(const QFileInfo& fileinfo,
         cout << "FAIL" << ret << endl;
         LIBMTP_Dump_Errorstack(_device);
         LIBMTP_Clear_Errorstack(_device);
+        LIBMTP_destroy_file_t(mtpfile);
         return false;
     }
     DirNode* parent = _mtpFS->GetDirectory(in_parentID);

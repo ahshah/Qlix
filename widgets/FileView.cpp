@@ -23,9 +23,9 @@ void FileView::setDeviceFileView(DeviceFileView* in_devfileview)
 {
     _deviceFileView = in_devfileview;
     connect (this,
-             SIGNAL(TransferToDevice (const QString&, DirNode*)),
+             SIGNAL(TransferToDevice (const QString&, DirNode*, bool)),
              _deviceFileView, 
-             SLOT(TransferToDevice(const QString&, DirNode*)));
+             SLOT(TransferToDevice(const QString&, DirNode*, bool)));
 }
 
 QString FileView::CurrentDirectory()
@@ -86,23 +86,17 @@ void FileView::transferTrack ( void )
     if (CurrentDirectory == NULL)
     {
         cout << "No directory selected" << endl;
-        return;
+//        return;
     }
 
-    cout <<"Got current directory.. it is: " << CurrentDirectory->GetName() << endl;
+    //cout <<"Got current directory.. it is: " << CurrentDirectory->GetName() << endl;
     for (int i = 0; i < fileList.size(); i++)
     {
-        if (!isMultimedia(fileList[i]))
-        {
-            qDebug() << "Is not a multimedia file, try sending file instead";
-            continue;
-        }
-
-        emit TransferTrackToDevice(fileList[i], CurrentDirectory);
+        emit TransferToDevice(fileList[i], CurrentDirectory, true);
         cout<< "attempt track transfer" << fileList[i].toStdString() << endl;
     }
 }
-
+/*
 bool FileView::isMultimedia(const QString& in_path)
 {
     QFileInfo temp(in_path);
@@ -116,3 +110,4 @@ bool FileView::isMultimedia(const QString& in_path)
         return true;
     return false;
 }
+*/
