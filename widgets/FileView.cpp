@@ -86,14 +86,14 @@ void FileView::transferTrack ( void )
     if (CurrentDirectory == NULL)
     {
         cout << "No directory selected" << endl;
-//        return;
+        return;
     }
 
-    //cout <<"Got current directory.. it is: " << CurrentDirectory->GetName() << endl;
+    cout <<"Got current directory.. it is: " << CurrentDirectory->GetName() << endl;
     for (int i = 0; i < fileList.size(); i++)
     {
         emit TransferToDevice(fileList[i], CurrentDirectory, true);
-        cout<< "attempt track transfer" << fileList[i].toStdString() << endl;
+        cout<< "attempt track transfer: " << fileList[i].toStdString() << endl;
     }
 }
 /*

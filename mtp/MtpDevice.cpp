@@ -145,9 +145,6 @@ bool MtpDevice::DeleteObject (uint32_t in_parentID, int in_FileID)
 }
 
 
-
-
-
 //Messy function
 bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
                                   uint32_t in_parentID)
@@ -187,11 +184,6 @@ bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
     memcpy(title, actualTitle, titleLength+1);
 
     cout << "TagLib title: " << title << endl;;
-    return false;
-
-
-
-
 
     int artistLength         = tagFile.tag()->artist().size();
 
@@ -201,10 +193,6 @@ bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
     memcpy(artist, actualArtist, artistLength+1);
     cout << "TagLib Artist: " << artist << endl;;
 
-
-
-
-
     int genreLength          = tagFile.tag()->genre().size();
     char* genre =    new char[genreLength+1];
 
@@ -213,13 +201,8 @@ bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
     memcpy(genre, actualGenre, genreLength+1);
     cout << "TagLib genre: " << genre << endl;;
 
-
-
-
     int albumLength          = tagFile.tag()->album().size();
-
     const char* actualAlbum= tagFile.tag()->album().to8Bit().c_str();
-
     char* album =    new char[albumLength+1];
     memcpy(album, actualAlbum, albumLength+1);
     cout << "TagLib album: " << album<< endl;;
@@ -243,7 +226,6 @@ bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
     newtrack->filetype = FileNode::GetMtpType((fileinfo.suffix()));
     newtrack->next = NULL;
     LIBMTP_progressfunc_t staticProgressFunc = MtpFS::ProgressWrapper; 
-
     string filepath = fileinfo.canonicalFilePath().toStdString();
     int ret =LIBMTP_Send_Track_From_File( _device, filepath.c_str(),
                                          newtrack,
@@ -257,6 +239,98 @@ bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
         LIBMTP_destroy_track_t(newtrack);
         return false;
     }
+
+
+
+
+    LIBMTP_album_t* albums = LIBMTP_Get_Album_List(_device);
+    while (albums)
+    {
+        if (albums->name == newtrack->album && albums->artist == newtrack->artist)
+        {
+            qDebug() << "album already on player";
+            break;
+        }
+        albums = albums->next;
+    }
+
+    if (!albums)
+    {
+        LIBMTP_album_t* new_album = LIBMTP_new_album_t();
+        
+        //setup albumartist
+        char* albumArtist= new char[artistLength+1];
+        memcpy(albumArtist, artist, artistLength);
+        albumArtist[artistLength+1] = '\0';
+        new_album->artist = albumArtist;
+
+        //setup albumname
+        char* albumName = new char[albumLength+1];
+        memcpy(albumName, album, albumLength);
+        albumName[albumLength+1] = '\0';
+        new_album->name = albumName;
+
+        //setup track count
+        new_album->no_tracks = 1;
+        uint32_t* track_array = new uint32_t(newtrack->item_id);
+        new_album->tracks = track_array;
+
+        //update album on device
+        int ret = LIBMTP_Create_New_Album(_device, new_album, 0);
+        if (ret != 0)
+        {
+            qDebug()<< "Album creation FAILED" << ret << endl;
+            LIBMTP_Dump_Errorstack(_device);
+            LIBMTP_Clear_Errorstack(_device);
+            LIBMTP_destroy_album_t(new_album);
+            return false;
+            //should crash here
+ //           delete track_array;
+        }
+
+        QDir search_dir(fileinfo.canonicalPath());
+        QFileInfoList children = search_dir.entryInfoList(QDir::Files);
+        for (int i =0; i < children.size(); i++)
+        {
+            QFileInfo temp = children[i];
+            if (temp.fileName() == "cover.jpg")
+            {
+                qDebug() << "Found a cover" << endl;
+                QImage img(temp.canonicalFilePath());
+                QImage imgResized(img.scaled(QSize(64,64), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+                imgResized.save("/home/nerve/cb.jpg");
+                QByteArray barray;
+
+                QBuffer buffer(&barray);
+                buffer.open(QIODevice::WriteOnly);
+                imgResized.save(&buffer, "JPEG");
+
+                LIBMTP_filesampledata_t* sample = LIBMTP_new_filesampledata_t();
+                sample->width = 64;
+                sample->height = 64;
+                sample->filetype = LIBMTP_FILETYPE_JPEG;
+                sample->size = barray.size();
+                qDebug() << "Should be "<< sample->size << " bytes";
+                sample->data = barray.data();
+//                sample.data = (char*) imgResized.bits();
+//                sample.data = sampleFileBits.data();
+ //               assert(sampleFileBits.size() == sample.size);
+
+                ret = LIBMTP_Send_Representative_Sample(_device, new_album->album_id, sample);
+                if (ret != 0)
+                {
+                    LIBMTP_Dump_Errorstack(_device);
+                    LIBMTP_Clear_Errorstack(_device);
+                }
+                qDebug() << "Sending representative data returned: " << ret;
+                break;
+            }
+            qDebug() << "no cover found in this path:" << search_dir.dirName();
+        }
+            LIBMTP_destroy_album_t(new_album);
+            //should crash here
+//            delete track_array;
+   }
 
     LIBMTP_destroy_track_t(newtrack);
     return true;

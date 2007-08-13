@@ -15,6 +15,8 @@
 #include <fileref.h>
 #include <tfile.h>
 #include <tag.h>
+#include <QDebug>
+#include <QBuffer>
 using namespace std;
 
 class MtpDevice 

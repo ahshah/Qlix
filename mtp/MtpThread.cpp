@@ -243,7 +243,6 @@ void MtpThread::run (void)
  //                       cout << "Sending file: " <<thisFile.fileName().toStdString() << endl;
                         bool ret = _device->SendTrackToDevice(thisFile, thisParent);
                         emit FileTransferDone(ret);
-
                     }
                     delete _cmd;
                 }
