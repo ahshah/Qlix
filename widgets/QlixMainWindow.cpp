@@ -73,7 +73,7 @@ void QlixMainWindow::setupLayoutAndSplits ( void )
     _console->setContentsMargins  (-8, -15, -5, -18);
     _fileExp->setContentsMargins  (-8, -8, -5, -8);
     _deviceExp->setContentsMargins(-8, -5, -5, -9);
-    _statusBar->setContentsMargins(-8, -5, -5, 0);
+    _statusBar->setContentsMargins(-8, -3, -5, 0);
 //    _progressBar->setContentsMargins(0,-20,0,-20);
     _layout->setSpacing(0);
     _layout->addWidget(_console);
@@ -94,13 +94,13 @@ void QlixMainWindow::setupLayoutAndSplits ( void )
 void QlixMainWindow::createToolBars()
 {
     _statusBar = statusBar(); 
-    QFont font("Sans", 8);
+    QFont font("Sans", 9);
     _statusBar->setFont(font);
 
     _progressSpacer = new QSpacerItem(700,25);
     _progressBar = new QProgressBar(_statusBar);
     _progressBar->setMaximumWidth(100);
-    _progressBar->setMaximumHeight(12);
+    _progressBar->setMaximumHeight(15);
     _statusBar->insertPermanentWidget(0, _progressBar, 0);
 
 /*

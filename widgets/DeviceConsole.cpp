@@ -8,6 +8,7 @@ DeviceConsole::DeviceConsole (QWidget* parent ) : QFrame(parent)
     _deviceImage = temp.scaled(48,48,Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     _connectButton = new QToolButton(this);
     _connectButton->setIconSize(QSize(32,32));
+    _connectButton->setText("Connect");
     _layout = new QGridLayout(this);
     _layout->setRowMinimumHeight(0, 20);
     _layout->setRowMinimumHeight(1, 20);
@@ -130,7 +131,6 @@ void DeviceConsole::setupLabels()
     _deviceTotalSpace->setFont(font);
     _deviceTotalSpace->setAlignment(Qt::AlignTop);
 
-
     QSpacerItem* _deviceSpacer = new QSpacerItem (700, 10 , QSizePolicy::MinimumExpanding);
     QSpacerItem* _tagSpacer = new QSpacerItem (10, 1, QSizePolicy::Fixed);
     QSpacerItem* _endTagSpacer = new QSpacerItem (40, 1, QSizePolicy::Minimum);
@@ -148,6 +148,8 @@ void DeviceConsole::setupLabels()
 void DeviceConsole::AddAction(QAction* in_action)
 {
     _connectButton->setDefaultAction(in_action);
+    _connectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    qDebug() << in_action->iconText()<< endl;
 }
 
 bool DeviceConsole::getRawImage(const QString& in_path, QPixmap& in_pixmap)

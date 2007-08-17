@@ -162,8 +162,9 @@ bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
         return SendFileToDevice(fileinfo, in_parentID);
     }
     LIBMTP_progressfunc_t staticProgressFunc = MtpFS::ProgressWrapper; 
-    string filepath = fileinfo.canonicalFilePath().toStdString();
-    int ret =LIBMTP_Send_Track_From_File( _device, filepath.c_str(),
+    QByteArray tempUtfFilepath = fileinfo.canonicalFilePath().toUtf8();
+    const char* actualFilePath = tempUtfFilepath.data();
+    int ret =LIBMTP_Send_Track_From_File( _device, actualFilePath,
                                          newtrack,
                                          staticProgressFunc, (void*)_mtpFS, newtrack->parent_id);
     if (ret != 0)
@@ -234,63 +235,22 @@ bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id)
 
 bool MtpDevice::CreateAlbum(LIBMTP_track_t* in_track, uint32_t* albumID_out)
 {
-    QString artist(in_track->artist);
-    QString album(in_track->album);
-    QString genre(in_track->genre);
-    const char* artistCString = artist.toUtf8().constData();
-    const char* albumCString  = album.toUtf8().constData();
-    const char* genreCString= genre.toUtf8().constData();
-
-    count_t  albumNameLength  = album.toUtf8().size();
-    count_t  artistNameLength = artist.toUtf8().size();
-    count_t  genreNameLength  = genre.toUtf8().size();
-
-
-
     LIBMTP_album_t* newAlbum = LIBMTP_new_album_t();
-    //setup albumname
-    char* albumName = new char[albumNameLength+1];
-    memcpy(albumName, albumCString, albumNameLength);
-    albumName[albumNameLength] = '\0';
-    newAlbum->name = albumName;
 
-    //setup albumartist
-    char* artistName = new char[artistNameLength+1];
-    memcpy(artistName, artistCString, artistNameLength);
-    artistName[artistNameLength] = '\0';
-    newAlbum->artist = artistName;
+    newAlbum->name = strdup(in_track->album);
+    newAlbum->artist = strdup(in_track->artist);
+    newAlbum->genre = strdup(in_track->genre);
 
-    char* genreName= new char[genreNameLength+1];
-    memcpy(genreName, genreCString, genreNameLength);
-    genreName[genreNameLength] = '\0';
-    newAlbum->genre = genreName;
+    qDebug()<< "Create album album:" << newAlbum->name;
+    qDebug()<< "Create album artist:" << newAlbum->artist;
+    qDebug() << "Create album genre:" << newAlbum->genre; 
+
+    QString album = QString::fromUtf8(newAlbum->name);
+
 
     LIBMTP_album_t* albums;
-    LIBMTP_album_t* albumSanity;
-    LIBMTP_album_t* backups;
-/*
-    for (int i = 0; i < 10; i ++)
-    {
-        qDebug() << "Pass: " << i << "=============" << endl;
-        albums = LIBMTP_Get_Album_List(_device);
-        albumSanity = albums;
-        while (albumSanity)
-        {
-            qDebug() << "Device album: " << albumSanity->name << endl;
-            albumSanity = albumSanity->next;
-        }
-        qDebug() << "End of Pass: " << i << "=============" << endl;
-        sleep(1);
-    }
-    */
 
     albums= LIBMTP_Get_Album_List(_device);
-    albumSanity = albums;
-    backups = albums;
-
-    if (!albumSanity)
-        qDebug() << "No albums on device";
-
     while (albums)
     {
         QString currentName(albums->name);
@@ -444,56 +404,74 @@ bool MtpDevice::GetFileFromDevice (uint32_t in_ParentID, const string& target)
 
 bool MtpDevice::setupTrackForTransfer(const QString& in_location, uint32_t in_parentID, LIBMTP_track_t* newtrack)
 {
-    string loc = in_location.toStdString();
-    QFileInfo fileinfo(loc.c_str());
-    TagLib::FileRef tagFile(loc.c_str());
+    QString unknownString("Unknown");
+    QFileInfo fileinfo(in_location);
+
+    QByteArray tempUtfLocation = fileinfo.canonicalFilePath().toUtf8();
+    const char* UtfLocation = tempUtfLocation.data();
+    TagLib::FileRef tagFile(UtfLocation, true, TagLib::AudioProperties::Accurate);
     //cout <<"File path is: " + loc << endl; 
     if (tagFile.isNull())
     {
         cout << "Not a recognizable track format" << endl;
         return false;
     }
-//    cout << "Sending track, filename is: " << tagFile.file()->name() << endl;
     
-    string temp;
-    int titleLength     = tagFile.tag()->title().size();
-    temp = tagFile.tag()->title().to8Bit();
-    
-    TagLib::String::String actualTitleTemp(tagFile.tag()->title().data(TagLib::String::UTF8), TagLib::String::UTF8); 
-    const char* actualTitle    = actualTitleTemp.toCString();
-    
-    char* title =    new char[titleLength+1];
-    memcpy(title, actualTitle, titleLength+1);
+   // TagLib::String::String actualTitleTemp(tagFile.tag()->title().data(TagLib::String::UTF8), TagLib::String::UTF8); 
 
- //   cout << "TagLib title: " << title << endl;;
 
-    int artistLength         = tagFile.tag()->artist().size();
+ ////////////////////Copy the album
+ //
+    QString qAlbumTag = TStringToQString(tagFile.tag()->album());
+    char* album;
+    if (qAlbumTag.isEmpty() || qAlbumTag.toUpper() == "UNKNOWN")
+        album = strdup(unknownString.toUtf8().data());
+    else
+        album = strdup(qAlbumTag.toUtf8().data());
 
-    const char* actualArtist = tagFile.tag()->artist().to8Bit().c_str();
+    QString qalbum2 = QString::fromUtf8(album);
+    qDebug() << "Album sanity check2: " << qalbum2;
+    qDebug() << "Album sanity check3: " << qAlbumTag;
 
-    char* artist =   new char[artistLength+1];
-    memcpy(artist, actualArtist, artistLength+1);
-  //  cout << "TagLib Artist: " << artist << endl;;
+////////////////////Copy the title
+    QString qTitleTag = TStringToQString(tagFile.tag()->title());
+    char* title;
+    if (qTitleTag.isEmpty() || qTitleTag.toUpper() == "UNKNOWN")
+        title = strdup(unknownString.toUtf8().data());
+    else
+        title = strdup(qTitleTag.toUtf8().data());
 
-    int genreLength          = tagFile.tag()->genre().size();
-    char* genre =    new char[genreLength+1];
+    QString qtitle2 = QString::fromUtf8(title);
+    qDebug() << "Title sanity check2: " << qtitle2;
+    qDebug() << "Title sanity check3: " << qTitleTag;
 
-    const char* actualGenre = tagFile.tag()->genre().to8Bit().c_str();
+////////////////////Copy the artist
+    QString qArtistTag = TStringToQString(tagFile.tag()->artist());
+    char* artist;
+    if (qArtistTag.isEmpty() || qArtistTag.toUpper() == "UNKNOWN")
+        artist = strdup(unknownString.toUtf8().data());
+    else
+        artist = strdup(qArtistTag.toUtf8().data());
 
-    memcpy(genre, actualGenre, genreLength+1);
-//    cout << "TagLib genre: " << genre << endl;;
+    QString qartist2 = QString::fromUtf8(artist);
+    qDebug() << "Artist sanity check2: " << qartist2;
+    qDebug() << "Artist sanity check3: " << qArtistTag;
 
-    int albumLength          = tagFile.tag()->album().size();
-    const char* actualAlbum= tagFile.tag()->album().to8Bit().c_str();
-    char* album =    new char[albumLength+1];
-    memcpy(album, actualAlbum, albumLength+1);
-//    cout << "TagLib album: " << album<< endl;;
+////////////////////Copy the genre
+    QString qGenreTag = TStringToQString(tagFile.tag()->genre());
+    char* genre;
+    if (qGenreTag.isEmpty() || qGenreTag.toUpper() == "UNKNOWN")
+        genre =  strdup(unknownString.toUtf8().data());
+    else
+        genre = strdup(qGenreTag.toUtf8().data());
 
-    int filenameLength         = fileinfo.fileName().toStdString().size();
-    const char* actualFilename = fileinfo.fileName().toStdString().c_str();
+    QString qgenre2 = QString::fromUtf8(genre);
+    qDebug() << "Genre sanity check2: " << qgenre2;
+    qDebug() << "Genre sanity check3: " << qGenreTag;
 
-    char* filename = new char[filenameLength+1];
-    memcpy(filename, actualFilename, filenameLength+1);
+////////////////////Copy the filename
+    const char* actualFilename = fileinfo.fileName().toUtf8().data();
+    char* filename = strdup(actualFilename);
 
     newtrack->parent_id = in_parentID;
     newtrack->title = title;

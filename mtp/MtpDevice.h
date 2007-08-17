@@ -18,6 +18,8 @@
 #include <QDebug>
 #include <QBuffer>
 #include <QByteArray>
+#include <tstring.h>
+#include <tbytevector.h>
 using namespace std;
 
 class MtpDevice 

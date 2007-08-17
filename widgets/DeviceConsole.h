@@ -17,6 +17,8 @@
 #include <QStatusBar>
 #include <QToolButton>
 #include <QString>
+#include <QDebug>
+#include <QAction>
 
 using namespace std;
 class DeviceConsole : public QFrame

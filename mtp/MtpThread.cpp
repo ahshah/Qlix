@@ -125,9 +125,9 @@ void MtpThread::run (void)
                     {
                         uint32_t DeleteThisFolder = joblist[i]; 
                         DirNode* SubDir = _mtpFileSystem->GetDirectory(DeleteThisFolder);
-                        for (count_t j =0; j < SubDir->GetFileCount(); j++)
+                        while(SubDir->GetFileCount() > 0)
                         {
-                            FileNode DeleteThisFile = SubDir->GetFile(j);
+                            FileNode DeleteThisFile = SubDir->GetFile(0);
                             bool ret = _device->DeleteObject(DeleteThisFolder, DeleteThisFile.GetID());
                             emit FileRemoved(ret, DeleteThisFolder, DeleteThisFile.GetID());
                         }
