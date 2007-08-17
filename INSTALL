@@ -1,3 +1,5 @@
+Please keep in mind that you need TagLib 1.4 (other versions might work as well)
+Checkout: http://developer.kde.org/~wheeler/taglib.html
 To create a useable Makefile for your system configuration:
 $qmake -o Makefile Qlix.pro
 
