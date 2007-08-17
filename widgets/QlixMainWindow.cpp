@@ -127,7 +127,7 @@ void QlixMainWindow::createActions()
     _exitAct->setStatusTip("Quit Qlix");
     connect(_exitAct, SIGNAL(triggered() ), this, SLOT(close()));
 
-    _connectAct = new QAction(QIcon("./pixmaps/connect.png"),"Connect", this);
+    _connectAct = new QAction(QIcon(":/pixmaps/connect.png"),"Connect", this);
     _connectAct->setShortcut(tr("Ctrl+C"));
     _connectAct->setCheckable(true);
     _connectAct->setStatusTip("Connect to first MTP-enabled device");

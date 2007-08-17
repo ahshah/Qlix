@@ -173,11 +173,25 @@ void MtpThread::run (void)
                 break;
             }
 
-            case CreateFolder:
+            case CreateDirectory:
             {
-                cout << "Create folder stub" << endl;
+                MtpCommandNewDirectory* in_cmd =
+                    static_cast<MtpCommandNewDirectory*> (currentJob);
+
+                QString name = in_cmd->Name;
+                uint32_t parentID = in_cmd->ParentID;
+                delete in_cmd;
+                int model_index;
+                int newParentID = _device->CreateFolder(name.toStdString(), parentID, &model_index);
+                if (model_index == -1)
+                    cout << "invalid model index!" << endl;
+                if (newParentID== 0)
+                    continue;
+                DirNode* tempParent = _device->GetDirectory(parentID);
+                emit DirectoryAdded(tempParent, model_index);
                 break;
             }
+
             case TransferDeviceFolder:
             {
                 cout << "Transfer device folder stub" << endl;
@@ -213,8 +227,8 @@ void MtpThread::run (void)
 
                     /*time to create the folder; */
                     int model_index;
-                    int thisParent= _device->CreateFolder(_cmd->DirName.toStdString(), parent->GetID(), &model_index);
-                    if (thisParent == 0)
+                    int newParentID= _device->CreateFolder(_cmd->DirName.toStdString(), parent->GetID(), &model_index);
+                    if (newParentID == 0)
                         continue;
                     if (model_index == -1)
                         cout << "invalid model index!" << endl;
@@ -234,15 +248,18 @@ void MtpThread::run (void)
                         if (thisFile.isDir()) //place it on the queue
                         {
                             cout <<"Found subdirectory: " << thisFile.fileName().toStdString() << endl;
+                            DirNode* new_Parent_Dir= _device->GetDirectory(newParentID);
+                            assert (new_Parent_Dir);
                             QDir tempFSDir(thisFile.filePath());
                             MtpCommandTransferSystemFolder* temp =
-                                new MtpCommandTransferSystemFolder(tempFSDir, parent);
+                                new MtpCommandTransferSystemFolder(tempFSDir, new_Parent_Dir);
                             transferQueue.push(temp);
                             continue;
                         }
  //                       cout << "Sending file: " <<thisFile.fileName().toStdString() << endl;
-                        bool ret = _device->SendTrackToDevice(thisFile, thisParent);
+                        bool ret = _device->SendTrackToDevice(thisFile, newParentID);
                         emit FileTransferDone(ret);
+
                     }
                     delete _cmd;
                 }

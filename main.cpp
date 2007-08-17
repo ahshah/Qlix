@@ -7,6 +7,7 @@
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
+    Q_INIT_RESOURCE(Qlix);
     QlixMainWindow qmw;
     app.setStyle("Plastique");
     qmw.show();

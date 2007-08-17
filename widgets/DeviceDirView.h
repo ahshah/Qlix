@@ -5,6 +5,7 @@
 #define __DEVICEDIRVIEW__
 #include <QTreeView>
 #include <QAction>
+#include <QInputDialog>
 #include "DirNode.h"
 #include "DeviceDirModel.h"
 #include "MtpThread.h"

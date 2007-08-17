@@ -20,6 +20,7 @@ public:
     void setupMenus (void);
     void setFileView (FileView* in_fileView);
     DirNode* CurrentDirectory();
+    void reset();
 
 signals:
 

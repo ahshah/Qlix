@@ -14,9 +14,11 @@ DeviceDirView::DeviceDirView (QWidget* parent = NULL, MtpThread* in_thread = NUL
 
 void DeviceDirView::setupMenus (void)
 {
+    /* for next release
     _transferFolderAct = new QAction("Transfer Folder", this);
     connect (_transferFolderAct, SIGNAL(triggered()), this, SLOT(transferFolder()));
     insertAction(NULL, _transferFolderAct);
+    */
 
     _createFolderAct = new QAction("Create folder", this);
     connect (_createFolderAct, SIGNAL(triggered()), this, SLOT(createFolder()));
@@ -42,7 +44,22 @@ void DeviceDirView::reset (void )
 void DeviceDirView::transferFolder ( void )
 { }
 void DeviceDirView::createFolder ( void )
-{ }
+{ 
+    bool ok;
+    QString text = QInputDialog::getText(this, "Create Directory", "New directory name",
+                                         QLineEdit::Normal,"", &ok);
+    QModelIndexList selected = selectedDirectories();
+    DeviceDirModel* cur_model = static_cast<DeviceDirModel*> (model());
+    if (ok && !text.isEmpty() && selected.size() > 0)
+    {
+        QModelIndex thisSelection = selected[0];
+        DirNode* selected_node = reinterpret_cast <DirNode*> (thisSelection.internalPointer() );
+        MtpCommandNewDirectory* _cmd = new MtpCommandNewDirectory(text, selected_node->GetID());
+        _thread->IssueCommand(_cmd);
+    }
+    else 
+        return;
+}
 void DeviceDirView::deleteFolder ( void ) 
 {
     QModelIndexList selected = selectedDirectories();

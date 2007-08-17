@@ -100,13 +100,13 @@ QVariant DeviceDirModel::data(const QModelIndex &index, int role) const
                 QPixmap temp2 = temp.pixmap(32, 32);
                 return temp2;
             }
-            QIcon temp("./pixmaps/rootDevice.png");
+            QIcon temp(":/pixmaps/rootDevice.png");
             QPixmap temp2 = temp.pixmap(32, 32);
             return temp2;
         }
         if (role == Qt::DecorationRole)
         {
-            QIcon temp("./pixmaps/folder.png");
+            QIcon temp(":/pixmaps/folder.png");
             QPixmap temp2 = temp.pixmap(18, 18);
             return temp2;
         }
@@ -157,20 +157,23 @@ void DeviceDirModel::DirectoryAdded(DirNode* , index_t )
 }
 void DeviceDirModel::DirectoryRemoved(bool in_success, index_t in_folderID)
 {
-    DirNode* childDir = _mtpFileSystem->GetDirectory(in_folderID);
-    DirNode* parent = childDir->GetParentDir();
-    assert(parent != NULL); // can't delete root.
-
-    QModelIndex parentIndex = createIndex(parent->GetSortedOrder(), 0, parent);
-    QModelIndex currentIndex = createIndex(childDir->GetSortedOrder(), 0, childDir);
-
-    beginRemoveRows(parentIndex, childDir->GetSortedOrder(), childDir->GetSortedOrder());
-
-    removeRow(childDir->GetSortedOrder(), parentIndex);
     if (in_success)
+    {
+        DirNode* childDir = _mtpFileSystem->GetDirectory(in_folderID);
+        DirNode* parent = childDir->GetParentDir();
+        assert(parent != NULL); // can't delete root.
+
+        QModelIndex parentIndex = createIndex(parent->GetSortedOrder(), 0, parent);
+        QModelIndex currentIndex = createIndex(childDir->GetSortedOrder(), 0, childDir);
+
+        beginRemoveRows(parentIndex, childDir->GetSortedOrder()-1, childDir->GetSortedOrder()+1);
+
+        removeRow(childDir->GetSortedOrder(), parentIndex);
         _mtpFileSystem->DeleteFolder(in_folderID);
-    cout << "Notfied about directory deletion: " << in_folderID << endl;
-    endRemoveRows();
+        cout << "Notified about directory deletion: " << in_folderID << endl;
+        endRemoveRows();
+    }
+    return;
 //    emit dataChanged(currentIndex, currentIndex);
 //    revert();
 //    emit layoutChanged();

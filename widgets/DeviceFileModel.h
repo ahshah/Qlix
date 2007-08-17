@@ -100,7 +100,7 @@ public:
 
         if (role == Qt::DecorationRole && index.column() == 0)
         {
-                QIcon temp("/home/ahshah/Qlix/pixmaps/file.png");
+                QIcon temp(":/pixmaps/file.png");
                 QPixmap temp2 = temp.pixmap(18, 18);
                 return temp2;
         }

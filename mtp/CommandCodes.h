@@ -23,7 +23,7 @@ enum MtpCommandCode
     GetFileMetaData,
     GetSampleData,
     SendSampleData,
-    CreateFolder,
+    CreateDirectory,
     TransferDeviceFolder,
     TransferSystemFolder
 }; 
@@ -141,6 +141,19 @@ struct MtpCommandDelete : MtpCommand
         FolderID = in_Folderid;
         FileID = in_FileID;
         ComCode = Delete;
+    }
+};
+
+
+struct MtpCommandNewDirectory : MtpCommand
+{
+    uint32_t ParentID;
+    QString Name;
+    MtpCommandNewDirectory(const QString& in_name, uint32_t in_parent_id)
+    {
+        ComCode = CreateDirectory; 
+        ParentID = in_parent_id;
+        Name = in_name;
     }
 };
 

@@ -36,6 +36,19 @@ public:
             _height = in_height;
     }
 
+
+    FileNode(LIBMTP_track_t* in_head, count_t in_height)
+    {
+            _itemId = in_head->item_id;
+            _parentId = in_head->parent_id;
+            _name = in_head->filename;
+            _fileSize = in_head->filesize;
+            _type = typeToString(in_head->filetype).c_str();
+            _height = in_height;
+    }
+
+
+
     string GetName() const
     {
         return _name;

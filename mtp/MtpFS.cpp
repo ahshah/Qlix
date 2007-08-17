@@ -101,7 +101,7 @@ void MtpFS::AddFile (const FileNode& in_file)
 
 bool MtpFS::FindRootImage( uint32_t* idOut)
 {
-    if (_root->FindFile("DevIcon.fil", idOut) )
+    if (_root->FindFile("devicon.fil", idOut) || _root->FindFile("DevIcon.fil", idOut ))
     {
         return true;
     }

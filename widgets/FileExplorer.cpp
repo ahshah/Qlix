@@ -174,7 +174,7 @@ void FileExplorer::setupConnections ()
 
 void FileExplorer::setupFsWatch()
 {
-    QModelIndex _currentPathIndex = _dirModel->index( QString("/mnt/media/Documents/Music"));
+    QModelIndex _currentPathIndex = _dirModel->index( QString("/mnt/media/Documents/Music/Picaresque"));
     _dirSelection->setCurrentIndex(_currentPathIndex, QItemSelectionModel::ClearAndSelect |QItemSelectionModel::Rows );
     QModelIndexList temp = _dirSelection->selectedRows();
     _currentDir = QDir::currentPath();

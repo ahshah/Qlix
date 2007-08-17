@@ -22,6 +22,7 @@
 #include "MtpThread.h"
 #include "CommandCodes.h"
 #include "FileView.h"
+
 class DeviceExplorer : public QWidget
 {
     Q_OBJECT

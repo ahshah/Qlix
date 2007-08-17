@@ -11,12 +11,23 @@ DeviceFileView::DeviceFileView (QWidget* parent = NULL,
     setAlternatingRowColors(true);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     QHeaderView* tempHeader = header();
-    tempHeader->resizeSection(0, 260);
-    tempHeader->resizeSection(1, 60);
-    tempHeader->resizeSection(2, 40);
+    tempHeader->setCascadingSectionResizes(true);
+//    tempHeader->setMinimumSectionSize(300);
+ //   tempHeader->resizeSection(0, 300);
+ //
+    resizeColumnToContents(0);
+    tempHeader->setMinimumSectionSize(-1);
+    tempHeader->setResizeMode(QHeaderView::Stretch);
     tempHeader->setClickable(true);
-    setViewportMargins(0,0,0,0);
+//    tempHeader->setDefaultSectionSize(200);
+//    setColumnWidth(0, 400);
 
+    tempHeader->moveSection(1, 2);
+//    tempHeader->moveSection(2, 0);
+
+    setAllColumnsShowFocus(true);
+    setViewportMargins(0,0,0,0);
+    tempHeader->update();
     setupMenus();
 }
 
@@ -33,6 +44,13 @@ void DeviceFileView::setupMenus (void)
     setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
+
+void DeviceFileView::reset()
+{
+    QTreeView::reset();
+    resizeColumnToContents(0);
+    qDebug() << "Reset called, size is: " << columnWidth(0);
+}
 void DeviceFileView::setFileView (FileView* in_fileView)
 {
    _FSfileView = in_fileView;

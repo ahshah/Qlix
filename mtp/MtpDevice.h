@@ -17,6 +17,7 @@
 #include <tag.h>
 #include <QDebug>
 #include <QBuffer>
+#include <QByteArray>
 using namespace std;
 
 class MtpDevice 
@@ -28,12 +29,16 @@ public:
     void GetFolders ( void );
     MtpFS* GetFileSystem ( void );
     LIBMTP_mtpdevice_t* rawDevice();
-    uint32_t CreateFolder (string in_FolderName, uint32_t in_parentID, int* newmodelindex);
+    uint32_t CreateFolder (const string& in_FolderName, uint32_t in_parentID, int* newmodelindex);
+    bool CreateAlbum(LIBMTP_track_t*, uint32_t*);
+    
+    bool UpdateAlbumArt (const QString& in_path, uint32_t in_album_id);
 
     bool SendFileToDevice(const QFileInfo& file,uint32_t in_parentID);
     bool SendTrackToDevice(const QFileInfo& file,uint32_t in_parentID);
     bool DeleteObject(uint32_t in_parentID, int in_depth);
     bool GetFileFromDevice(uint32_t fileID, const string& target); 
+    DirNode* GetDirectory(uint32_t);
     count_t GetID();
 
 
@@ -55,7 +60,7 @@ private:
     void getFriendlyName();
     void getSyncPartner();
     void getBatteryLevel();
-
+    bool setupTrackForTransfer(const QString& in_location, uint32_t in_parentID, LIBMTP_track_t* newtrack);
     void GetErrors (LIBMTP_mtpdevice_t* in_device);
     bool isTerminal (LIBMTP_error_number_t in_err);
 };

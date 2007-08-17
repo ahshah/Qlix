@@ -4,7 +4,7 @@
 #include "DeviceConsole.h"
 DeviceConsole::DeviceConsole (QWidget* parent ) : QFrame(parent)
 {
-    QPixmap temp ("./pixmaps/device.png");
+    QPixmap temp (":/pixmaps/device.png");
     _deviceImage = temp.scaled(48,48,Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     _connectButton = new QToolButton(this);
     _connectButton->setIconSize(QSize(32,32));

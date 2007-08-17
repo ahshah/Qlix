@@ -7,6 +7,7 @@ TARGET =
 DEPENDPATH += . mtp widgets
 INCLUDEPATH += . widgets mtp
 INCLUDEPATH += /usr/local/include
+RESOURCES = Qlix.qrc
 
 IDLIB = $$system(taglib-config --cflags --libs)
 LIBS += -L/usr/local/lib -L/usr/lib -L/lib -lmtp $$IDLIB 

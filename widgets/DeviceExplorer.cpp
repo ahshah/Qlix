@@ -101,6 +101,8 @@
         _dirModel->Set(in_fs);
         _fileModel->Set(in_fs);
         _fileModel->SetFolder(0);
+
+        _fileView->resizeColumnToContents(0);
         _dirView->reset();
         _fileView->reset();
     }
@@ -157,10 +159,21 @@
         _fileModel, SLOT(FileRemoved(bool, index_t, index_t)),
         Qt::QueuedConnection);
 
+
+        connect(
+        &_mtpThread, SIGNAL(FileRemoved(bool, index_t, index_t)),
+        _fileView, SLOT(reset()),
+        Qt::QueuedConnection);
+
         
         connect(
         &_mtpThread, SIGNAL(FileTransferDone(bool)),
         _fileModel, SLOT(FileTransferDone(bool)),
+        Qt::QueuedConnection);
+        
+        connect(
+        &_mtpThread, SIGNAL(FileTransferDone(bool)),
+        _fileView, SLOT(reset()),
         Qt::QueuedConnection);
 
         connect(
@@ -180,9 +193,16 @@
         this, SLOT   (ConnectComplete(MtpFS*)),
         Qt::QueuedConnection);
 
+        connect(
+        &_mtpThread, SIGNAL (ConnectDone(MtpFS*)),
+        _fileView, SLOT   (reset()),
+        Qt::QueuedConnection);
+
+
         connect(&_mtpThread, SIGNAL (NewDeviceImage()),
         this, SLOT (ResetModelRootImage()), 
         Qt::QueuedConnection);
+
     }
 
     void DeviceExplorer::init()
