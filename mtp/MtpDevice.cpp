@@ -13,7 +13,7 @@ MtpDevice::MtpDevice( LIBMTP_mtpdevice_t* in_device, count_t in_id)
     getBatteryLevel();
     GetFolders();
     int ret = LIBMTP_Get_Storage(in_device, 0);
-    cout << "Getting storage properties returned: " << ret << endl;
+    qDebug() << "Getting storage properties returned: " << ret ;
     GetErrors(_device);
 }
 
@@ -22,7 +22,7 @@ MtpDevice::~MtpDevice()
     //remember to clear folders
     if (_device)
     {
-        cout << "Releasing device" << endl;
+        qDebug() << "Releasing device" ;
         LIBMTP_Release_Device(_device);
         _device = NULL;
     }
@@ -35,7 +35,13 @@ count_t MtpDevice::GetID()
 
 void MtpDevice::DumpInformation ( void )
 { //i don't know why i formated this junk ;P
-   cout << "Device serial:"         << _serial    << endl << "Model name:" << _modelName << endl << cout << "Device version:" << _deviceVersion << endl << "Device friendly name:"  << _friendlyName << endl << "Sync partner:" << _syncPartner << endl << "Current battery level:" << (count_t) _curBatteryLevel << endl << "Max battery level:"     << (count_t) _maxBatteryLevel << endl;
+   qDebug() << "Device serial:" << _serial;
+   qDebug() << "Model name:" << _modelName; 
+   qDebug() << "Device version:" << _deviceVersion; 
+   qDebug() << "Device friendly name:"  << _friendlyName; 
+   qDebug() << "Sync partner:" << _syncPartner; 
+   qDebug() << "Current battery level:" << (count_t) _curBatteryLevel;
+   qDebug() << "Max battery level:"     << (count_t) _maxBatteryLevel;
 }
 
 void MtpDevice::GetFolders ( void )
@@ -60,27 +66,27 @@ LIBMTP_mtpdevice_t* MtpDevice::rawDevice()
     return _device;
 }
 
-uint32_t MtpDevice::CreateFolder (const string& in_FolderName, uint32_t in_parentID, int* newModelIndex)
+uint32_t MtpDevice::CreateFolder (const QString& in_FolderName, uint32_t in_parentID, int* newModelIndex)
 {
     if (!_device)
     {
-        cout << "no device" << endl;
+        qDebug() << "no device" ;
         return 0;
     }
     DirNode* parent = _mtpFS->GetDirectory(in_parentID);
-    cout << "Creating folder- Parent is: " << parent->GetName() << endl;
-    cout << "Creating folder- Parent ID: " << parent->GetID() << endl;
+    qDebug() << "Creating folder- Parent is: " << parent->GetName() ;
+    qDebug() << "Creating folder- Parent ID: " << parent->GetID() ;
 
-    char* foldername = const_cast<char*>(in_FolderName.c_str());
+    char* foldername = strdup(in_FolderName.toUtf8().data());
     LIBMTP_folder_t* folders = LIBMTP_Get_Folder_List(_device);
     int ret = LIBMTP_Create_Folder(_device, foldername, in_parentID);
-    cout << "Created folder: " << ret << endl;
+    qDebug() << "Created folder: " << ret ;
     for (count_t i=  0; i < 5 && (_mtpFS->GetDirectory(ret) != NULL); i ++)
     {
-        cout << "Error device returned an ID thats already in use, retrying up to five times" << endl;
+        qDebug() << "Error device returned an ID thats already in use, retrying up to five times" ;
         LIBMTP_folder_t* folders = LIBMTP_Get_Folder_List(_device);
         ret = LIBMTP_Create_Folder(_device, foldername, in_parentID);
-        cout << "Created folder: " << ret << endl;
+        qDebug() << "Created folder: " << ret ;
         usleep(400);
     }
 
@@ -106,14 +112,14 @@ bool MtpDevice::DeleteObject (uint32_t in_parentID, int in_FileID)
 {
     if (!_device)
     {
-        cout << "no device" << endl;
+        qDebug() << "no device" ;
         return false;
     }
 
     DirNode* parentDir = _mtpFS->GetDirectory(in_parentID);
     if (in_FileID == -1)
     {
-        cout << "About to delete folder: " << parentDir->GetName() <<" with ID: " << parentDir->GetID() << endl;
+        qDebug() << "About to delete folder: " << parentDir->GetName() <<" with ID: " << parentDir->GetID() ;
         int ret = LIBMTP_Delete_Object(_device, in_parentID);
         if (ret != 0)
         {
@@ -127,11 +133,11 @@ bool MtpDevice::DeleteObject (uint32_t in_parentID, int in_FileID)
     DirNode* current_dir =  _mtpFS->GetDirectory(in_parentID);
     if (current_dir == NULL)
     {
-        cout << "Tried to delete child of a NULL folder! out of sync! " << endl;
+        qDebug() << "Tried to delete child of a NULL folder! out of sync! " ;
         return false;
     }
 
-    cout << "About to delete file with id: " << in_FileID<< endl;
+    qDebug() << "About to delete file with id: " << in_FileID;
 
     int ret = LIBMTP_Delete_Object(_device, in_FileID);
    // int ret = 0;
@@ -151,14 +157,14 @@ bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
 {
     if (!_device)
     {
-        cout << "No device for file transfer" << endl;
+        qDebug() << "No device for file transfer" ;
         return false;
     }
 
     LIBMTP_track_t* newtrack = LIBMTP_new_track_t();
     if (!setupTrackForTransfer(fileinfo.canonicalFilePath(), in_parentID, newtrack))
     {
-        cout << "Setup for track failed, attempting to send as a file" << endl;
+        qDebug() << "Setup for track failed, attempting to send as a file" ;
         return SendFileToDevice(fileinfo, in_parentID);
     }
     LIBMTP_progressfunc_t staticProgressFunc = MtpFS::ProgressWrapper; 
@@ -169,7 +175,7 @@ bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
                                          staticProgressFunc, (void*)_mtpFS, newtrack->parent_id);
     if (ret != 0)
     {
-        cout << "Failure while transfering:" << ret << endl;
+        qDebug() << "Failure while transfering:" << ret ;
         LIBMTP_Dump_Errorstack(_device);
         LIBMTP_Clear_Errorstack(_device);
         LIBMTP_destroy_track_t(newtrack);
@@ -199,7 +205,7 @@ bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id)
         QFileInfo temp = children[i];
         if (temp.fileName() == "cover.jpg")
         {
-            qDebug() << "Found a cover" << endl;
+            qDebug() << "Found a cover" ;
             QImage img(temp.canonicalFilePath());
             QImage imgResized(img.scaled(QSize(64,64), Qt::KeepAspectRatio, Qt::SmoothTransformation));
             QByteArray barray;
@@ -285,7 +291,7 @@ bool MtpDevice::CreateAlbum(LIBMTP_track_t* in_track, uint32_t* albumID_out)
             int ret = LIBMTP_Update_Album(_device, newAlbum);
             if (ret != 0)
             {
-                cout << "Album REPLACMENT FAIL: " << ret << endl;
+                qDebug() << "Album REPLACMENT FAIL: " << ret ;
                 LIBMTP_Dump_Errorstack(_device);
                 LIBMTP_Clear_Errorstack(_device);
                 LIBMTP_destroy_album_t(newAlbum);
@@ -301,7 +307,7 @@ bool MtpDevice::CreateAlbum(LIBMTP_track_t* in_track, uint32_t* albumID_out)
         albums = albums->next;
     }
 
-    qDebug()<< "Album not on device, creating.."<< newAlbum->name << endl;
+    qDebug()<< "Album not on device, creating.."<< newAlbum->name ;
     //setup track count
     newAlbum->no_tracks = 1;
     uint32_t* track_array = new uint32_t(in_track->item_id);
@@ -311,7 +317,7 @@ bool MtpDevice::CreateAlbum(LIBMTP_track_t* in_track, uint32_t* albumID_out)
     int ret = LIBMTP_Create_New_Album(_device, newAlbum, 0);
     if (ret != 0)
     {
-        qDebug()<< "Album creation FAILED" << ret << endl;
+        qDebug()<< "Album creation FAILED" << ret ;
         LIBMTP_Dump_Errorstack(_device);
         LIBMTP_Clear_Errorstack(_device);
         LIBMTP_destroy_album_t(newAlbum);
@@ -329,43 +335,33 @@ bool MtpDevice::SendFileToDevice(const QFileInfo& fileinfo,
 {
     if (!_device)
     {
-        cout << "No device for file transfer" << endl;
+        qDebug() << "No device for file transfer" ;
         return false;
     }
 
-    //const char* filepath = (file.filePath().toStdString()).c_str();
     LIBMTP_file_t* mtpfile  = LIBMTP_new_file_t();
+    QString fn = fileinfo.fileName();
+    char* fnamebuf = strdup(fn.toUtf8().data());
 
-    string fn = fileinfo.fileName().toStdString();
-    char* fnamebuf = new char[fn.length()+1];
-
-
-    for (count_t i =0; i < fn.length(); i++)
-    {
-        fnamebuf[i] = fn[i];
-    }
-    fnamebuf[fn.length()] = '\0';
-
-    cout << "filename is: " << fnamebuf << endl;
-
+    qDebug() << "filename is: " << fnamebuf ;
     mtpfile->filename = fnamebuf;
     mtpfile->parent_id = in_parentID;
 
     mtpfile->filesize = fileinfo.size();
     mtpfile->filetype = FileNode::GetMtpType((fileinfo.suffix()));
-//    cout << "While sending file, type was set to: " << FileNode::GetMtpType(mtpfile->filetype) << endl;
-    string wholefilepath = fileinfo.filePath().toStdString();
-//    cout << "filepathis: " << wholefilepath<< endl;
+//    qDebug() << "While sending file, type was set to: " << FileNode::GetMtpType(mtpfile->filetype) ;
+    QString wholefilepath = fileinfo.filePath();
+//    qDebug() << "filepathis: " << wholefilepath;
 
     mtpfile->next = NULL;
     LIBMTP_progressfunc_t staticProgressFunc = MtpFS::ProgressWrapper; 
 
-    int ret =LIBMTP_Send_File_From_File( _device, wholefilepath.c_str(), mtpfile,
+    int ret =LIBMTP_Send_File_From_File( _device, wholefilepath.toUtf8().data(), mtpfile,
                                          staticProgressFunc, (void*)_mtpFS, mtpfile->parent_id);
-    cout <<"File transfer returned: " << ret << endl;
+    qDebug() <<"File transfer returned: " << ret ;
     if (ret != 0)
     {
-        cout << "FAIL" << ret << endl;
+        qDebug() << "FAIL" << ret ;
         LIBMTP_Dump_Errorstack(_device);
         LIBMTP_Clear_Errorstack(_device);
         LIBMTP_destroy_file_t(mtpfile);
@@ -378,17 +374,17 @@ bool MtpDevice::SendFileToDevice(const QFileInfo& fileinfo,
     return true;
 }
 
-bool MtpDevice::GetFileFromDevice (uint32_t in_ParentID, const string& target)
+bool MtpDevice::GetFileFromDevice (uint32_t in_ParentID, const QString& target)
 {
     if (!_device)
     {
-        cout << "No device for file transfer" << endl;
+        qDebug() << "No device for file transfer" ;
         return -1;
     }
 
   //  funcPtr update = _mtpFS->getFunc();
     int ret = LIBMTP_Get_File_To_File( _device, in_ParentID,
-                                       target.c_str(), NULL,NULL);
+                                       target.toUtf8().data(), NULL,NULL);
 
     if (ret != 0)
     {
@@ -410,10 +406,10 @@ bool MtpDevice::setupTrackForTransfer(const QString& in_location, uint32_t in_pa
     QByteArray tempUtfLocation = fileinfo.canonicalFilePath().toUtf8();
     const char* UtfLocation = tempUtfLocation.data();
     TagLib::FileRef tagFile(UtfLocation, true, TagLib::AudioProperties::Accurate);
-    //cout <<"File path is: " + loc << endl; 
+    //qDebug() <<"File path is: " + loc ; 
     if (tagFile.isNull())
     {
-        cout << "Not a recognizable track format" << endl;
+        qDebug() << "Not a recognizable track format" ;
         return false;
     }
     
@@ -562,8 +558,8 @@ void MtpDevice::GetErrors (LIBMTP_mtpdevice_t* in_device)
     LIBMTP_error_t* errors = LIBMTP_Get_Errorstack(in_device);
     while (errors)
     {
-        string errstring = errors->error_text;
-        cout <<"Qlix bridge error: " << errstring << endl;
+        QString errQString = errors->error_text;
+        qDebug() <<"Qlix bridge error: " << errQString ;
         if (isTerminal(errors->errornumber) )
             exit(1);
         errors = errors->next;

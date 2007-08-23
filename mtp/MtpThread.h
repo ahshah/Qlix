@@ -7,6 +7,7 @@
 #include "types.h"
 #include "CommandCodes.h"
 #include <QMutexLocker>
+#include <QString>
 #include <QThread>
 #include <QMutex>
 #include <QWaitCondition>

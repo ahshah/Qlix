@@ -8,7 +8,7 @@ MtpThread::MtpThread (QObject* parent) : QThread (parent)
 void MtpThread::IssueCommand (MtpCommand* in_command)
 {
     QMutexLocker locker(&_lock) ;
-    cout << "issued command" << endl;
+    qDebug() << "issued command" ;
     _jobs.push(in_command); 
 
     if (!isRunning())
@@ -44,7 +44,7 @@ void MtpThread::run (void)
                 _mtpFileSystem = _device->GetFileSystem();
                 delete _cmd;
 //                    MtpUpdateConnect* ret = new MtpUpdateConnect(true, ());
-                cout << "Done, emitting result" << endl;
+                qDebug() << "Done, emitting result" ;
                 emit ConnectDone(_device->GetFileSystem());
                 continue;
             }
@@ -54,7 +54,7 @@ void MtpThread::run (void)
                 _portal.Disconnect();
                 _device = NULL;
                 delete _cmd;
-                cout << "Done disconnecting" << endl;
+                qDebug() << "Done disconnecting" ;
                 continue;
             }
             case SendFile:
@@ -63,7 +63,7 @@ void MtpThread::run (void)
                     continue;
 
                 MtpCommandSendFile* _cmd = static_cast<MtpCommandSendFile*>  (currentJob);
-                string in_filepath = _cmd->Path;
+                QString in_filepath = _cmd->Path;
                 uint32_t parentID = _cmd->ParentID;
                 bool IsTrack = _cmd->IsTrack;
                 delete _cmd;
@@ -71,17 +71,17 @@ void MtpThread::run (void)
                 //Get prarent, make sure it exists 
                 DirNode* parentDir = _mtpFileSystem->GetDirectory(parentID);
                 assert(parentDir);
-                QFileInfo fromFile(in_filepath.c_str());
+                QFileInfo fromFile(in_filepath);
 
 
                 // Does this file/track already exist on the device?
-                if (parentDir->FileExists(fromFile.fileName().toStdString()))
+                if (parentDir->FileExists(fromFile.fileName()) )
                 {
-                    cout << "Duplicate file found.. ignroed" << endl;
+                    qDebug() << "Duplicate file found.. ignroed" ;
                     continue;
                 }
 
-                QFileInfo newfile(in_filepath.c_str());
+                QFileInfo newfile(in_filepath);
                 // If you are trying to send a track, send it through the device sendTrack interface
                 bool ret = false;
                 if (IsTrack)
@@ -89,7 +89,7 @@ void MtpThread::run (void)
                 else
                     ret = _device->SendFileToDevice(newfile, parentID);
 
-                cout << "transfer done, emitting result" << endl;
+                qDebug() << "transfer done, emitting result" ;
                 emit FileTransferDone(ret);
                 continue;
             }
@@ -99,7 +99,7 @@ void MtpThread::run (void)
                 if (!_device)
                     continue;
                 MtpCommandGetFile* _cmd = static_cast<MtpCommandGetFile*> (currentJob);
-                string path = _cmd->FileName;
+                QString path = _cmd->FileName;
                 uint32_t id = _cmd->ID;
                 bool IsRootImage = _cmd->IsRootImage;
                 delete _cmd;
@@ -145,31 +145,31 @@ void MtpThread::run (void)
 
             case GetDeviceInfo:
             {
-                cout << "GetDeviceInfo stuf" << endl;
+                qDebug() << "GetDeviceInfo stuf" ;
                 break;
             }
 
             case GetDirMetaData:
             {
-                cout << "GetDeviceInfo stuf" << endl;
+                qDebug() << "GetDeviceInfo stuf" ;
                 break;
             }
 
             case GetFileMetaData:
             {
-                cout << "Get file metadata stub" << endl;
+                qDebug() << "Get file metadata stub" ;
                 break;
             }
 
             case GetSampleData:
             {
-                cout << "Get sample data stub" << endl;
+                qDebug() << "Get sample data stub" ;
                 break;
             }
 
             case SendSampleData:
             {
-                cout << "Send sample data stub" << endl;
+                qDebug() << "Send sample data stub" ;
                 break;
             }
 
@@ -182,9 +182,9 @@ void MtpThread::run (void)
                 uint32_t parentID = in_cmd->ParentID;
                 delete in_cmd;
                 int model_index;
-                int newParentID = _device->CreateFolder(name.toStdString(), parentID, &model_index);
+                int newParentID = _device->CreateFolder(name, parentID, &model_index);
                 if (model_index == -1)
-                    cout << "invalid model index!" << endl;
+                    qDebug() << "invalid model index!" ;
                 if (newParentID== 0)
                     continue;
                 DirNode* tempParent = _device->GetDirectory(parentID);
@@ -194,7 +194,7 @@ void MtpThread::run (void)
 
             case TransferDeviceFolder:
             {
-                cout << "Transfer device folder stub" << endl;
+                qDebug() << "Transfer device folder stub" ;
                 break;
             }
 
@@ -202,9 +202,9 @@ void MtpThread::run (void)
             {
                 MtpCommandTransferSystemFolder* in_cmd = 
                 static_cast<MtpCommandTransferSystemFolder*> (currentJob);
-                cout << "Parent id: " << in_cmd->Parent->GetID();
-//                cout << "Parent name from node: " << in_cmd->Parent->GetName() << endl; 
-//                cout << "Parent name from fs: " << _mtpFileSystem->GetDirectoryByName(in_cmd->Parent->GetID()) << endl; //debug
+                qDebug() << "Parent id: " << in_cmd->Parent->GetID();
+//                qDebug() << "Parent name from node: " << in_cmd->Parent->GetName() ; 
+//                qDebug() << "Parent name from fs: " << _mtpFileSystem->GetDirectoryByName(in_cmd->Parent->GetID()) ; //debug
                 queue<MtpCommandTransferSystemFolder*> transferQueue;
                 transferQueue.push(in_cmd);
                 while (transferQueue.size() > 0)
@@ -215,30 +215,32 @@ void MtpThread::run (void)
                     DirNode* parent = _cmd->Parent;
                     if (parent == NULL)
                     {
-                        cout << "Error create folder command's parent is NULL!" << endl;
+                        qDebug() << "Error create folder command's parent is NULL!" ;
+                        delete _cmd;
                         continue;
                     }
 
-                    if (parent->DirectoryExists(_cmd->DirName.toStdString()))
+                    if (parent->DirectoryExists(_cmd->DirName) )
                     {
-                        cout << "Duplicate name, ignored" << endl;
+                        qDebug() << "Duplicate name, ignored" ;
+                        delete _cmd;
                         continue;
                     }
 
                     /*time to create the folder; */
                     int model_index;
-                    int newParentID= _device->CreateFolder(_cmd->DirName.toStdString(), parent->GetID(), &model_index);
+                    int newParentID= _device->CreateFolder(_cmd->DirName, parent->GetID(), &model_index);
                     if (newParentID == 0)
                         continue;
                     if (model_index == -1)
-                        cout << "invalid model index!" << endl;
+                        qDebug() << "invalid model index!" ;
                     else
                         emit DirectoryAdded(parent, model_index);
 
                     for (int j =0; j < curfiles.size(); j++)
                     {
                         QFileInfo thisFile = curfiles[j];
-//                        cout << "Processing: " << thisFile.fileName().toStdString() <<endl;
+//                        qDebug() << "Processing: " << thisFile.fileName().toStdString();
                         if (!thisFile.exists())
                             continue;
                         if(thisFile.fileName() == "..")
@@ -247,7 +249,7 @@ void MtpThread::run (void)
                             continue;
                         if (thisFile.isDir()) //place it on the queue
                         {
-                            cout <<"Found subdirectory: " << thisFile.fileName().toStdString() << endl;
+                            qDebug() <<"Found subdirectory: " << thisFile.fileName() ;
                             DirNode* new_Parent_Dir= _device->GetDirectory(newParentID);
                             assert (new_Parent_Dir);
                             QDir tempFSDir(thisFile.filePath());
@@ -256,7 +258,7 @@ void MtpThread::run (void)
                             transferQueue.push(temp);
                             continue;
                         }
- //                       cout << "Sending file: " <<thisFile.fileName().toStdString() << endl;
+ //                       qDebug() << "Sending file: " <<thisFile.fileName().toStdString();
                         bool ret = _device->SendTrackToDevice(thisFile, newParentID);
                         emit FileTransferDone(ret);
 
@@ -265,7 +267,7 @@ void MtpThread::run (void)
                 }
                 continue;
             }
-            cout << "not of correct format" << endl;
+            qDebug() << "not of correct format" ;
         }
     
         //do job make sure to delete internal pointers here

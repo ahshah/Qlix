@@ -12,10 +12,10 @@ MtpFS::MtpFS( LIBMTP_folder_t* in_root, LIBMTP_mtpdevice_t* in_dev) : QObject(NU
     _root->SortDirectories();
     _root->CreateMapping(_dirMap);
     _root->SortDirectories();
-    cout << "FS internal storage is: " << _storage << endl;
-    cout <<"Device storage is: " << _device->storage<<endl;
-    cout << "Initial total size reported:" << _storage->MaxCapacity<< endl;
-    cout << "Initial Free size reported:" << _storage->FreeSpaceInBytes<< endl;
+    qDebug() << "FS internal storage is: " << _storage;
+    qDebug() <<"Device storage is: " << _device->storage<<endl;
+    qDebug() << "Initial total size reported:" << _storage->MaxCapacity<< endl;
+    qDebug() << "Initial Free size reported:" << _storage->FreeSpaceInBytes<< endl;
     _console = NULL;
 }
 
@@ -24,7 +24,7 @@ DirNode* MtpFS::GetRoot()
     return (_root);
 } 
  
-void MtpFS::SetRootName (const string& in_rootname)
+void MtpFS::SetRootName (const QString& in_rootname)
 {
         _root->SetName(in_rootname);
 }
@@ -46,7 +46,7 @@ DirNode* MtpFS::GetDirectory (uint32_t in_id)
    return temp;
 }
 
-string MtpFS::GetDirectoryByName(uint32_t in_id)
+QString MtpFS::GetDirectoryByName(uint32_t in_id)
 {
     DirNode* temp = GetDirectory(in_id);
     if (temp == NULL)
@@ -71,11 +71,11 @@ void MtpFS::InsertFileList (LIBMTP_file_t* in_rootFile)
     for (int i = 0; in_rootFile; i++)
     {
         FileNode temp(in_rootFile, i);
-//            cout << "File node's parent is:" << temp.GetParent() << endl;
+//            qDebug() << "File node's parent is:" << temp.GetParent();
         DirNode* parent =  _dirMap[temp.GetParentID()];
         if (!parent)
         {
-            cout << "Fatal error, map out of sync"<< endl;
+            qDebug() << "Fatal error, map out of sync"<< endl;
             in_rootFile = in_rootFile->next;
             continue;
         }
@@ -108,7 +108,7 @@ bool MtpFS::FindRootImage( uint32_t* idOut)
     return false;
 }
 
-bool MtpFS::DirectoryExists(uint32_t parent, const string& name)
+bool MtpFS::DirectoryExists(uint32_t parent, const QString& name)
 {
     DirNode* parentDir = GetDirectory(parent);
     if (parentDir == NULL)
@@ -151,15 +151,15 @@ int MtpFS::AddFolder(uint32_t folderID, uint32_t parentID)
     DirNode* parent = GetDirectory(parentID);
     if (parent == NULL)
     {
-        cout << "no valid parent" << endl; 
+        qDebug() << "no valid parent"; 
         exit(-1);
     }
     int height = parent->GetSortedOrder();
-//    cout <<"Adding folder ID: " << folderID << endl;
+//    qDebug() <<"Adding folder ID: " << folderID;
     LIBMTP_folder_t* begin = LIBMTP_Get_Folder_List(_device);
     LIBMTP_folder_t* mtpChild = LIBMTP_Find_Folder(begin, folderID);
 
-//    cout << "Found child to be: " << mtpChild->name << endl; 
+//    qDebug() << "Found child to be: " << mtpChild->name; 
     DirNode* child = new DirNode(mtpChild, this, height);
     child->SetParent(parent);
 
@@ -190,12 +190,12 @@ int MtpFS::ProgressWrapper(uint64_t const sent, uint64_t const total, void const
 
 void MtpFS::updateConsole()
 {
-    cout << "Total size reported:" << (long long)_device->storage->MaxCapacity<< endl;
-    cout << "Free size reported:" << (long long)_device->storage->FreeSpaceInBytes<< endl;
+    qDebug() << "Total size reported:" << (long long)_device->storage->MaxCapacity<< endl;
+    qDebug() << "Free size reported:" << (long long)_device->storage->FreeSpaceInBytes<< endl;
     if (_device->storage)
         emit updateDeviceStats(quint64((_device->storage->MaxCapacity)), (quint64((_device->storage->FreeSpaceInBytes))));
     else
-        cout << "No storage" << endl;
+        qDebug() << "No storage";
 }
 
 //private:

@@ -4,4 +4,7 @@ Transfer files from system folders to device
 Transfer files from device to system folders
 Create new directories
 Space usage on device
-Automatic device icon retrival at connect
+Automatic device icon retrieval at connect
+
+0.1 
+UI Improvements (Filenames are given more room by default)

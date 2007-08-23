@@ -56,7 +56,7 @@ private:
     QSplitter* _splitter;
     MtpFS*   _filesystem;
 
-    void pullDeviceImage(uint32_t id, const string& loc);
+    void pullDeviceImage(uint32_t id, const QString& loc);
     void setupDirView ( void );
     void setupFileView ( void );
     void setupConnections();

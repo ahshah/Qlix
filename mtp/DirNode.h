@@ -5,6 +5,8 @@
 #include <iostream>
 #include <libmtp.h>
 #include <algorithm>
+#include <QString>
+#include <QtDebug>
 #include "types.h"
 #include "MtpDir.h"
 #include "FileNode.h"
@@ -22,12 +24,12 @@ public:
     count_t GetFileCount();
 
     count_t GetSortedOrder(); 
-    string GetName() const;
+    QString GetName() const;
 
     count_t GetID () const; 
     DirNode* GetParentDir(); 
 
-    void SetName(const string& in_str); 
+    void SetName(const QString& in_str); 
     void SetSortedOrder(count_t in); 
 
     void AddSubDirectory (DirNode* in);
@@ -46,12 +48,12 @@ public:
 
     void SortDirectories();
 
-    bool FindFile(const string& in_name, uint32_t* id);
+    bool FindFile(const QString& in_name, uint32_t* id);
     void SortFiles(FileSortType );
 
     void GetSubTree (DirectoryIDList*);
-    bool DirectoryExists(const string& in_name);
-    bool FileExists(const string& in_name);
+    bool DirectoryExists(const QString& in_name);
+    bool FileExists(const QString& in_name);
 
 private:
 

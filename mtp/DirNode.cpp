@@ -9,7 +9,7 @@ DirNode::DirNode(LIBMTP_folder_t* begin, MtpFS* in_fs ) :_currentDir(begin)
    _parent = NULL;
     for(count_t i = 0; begin; i++)
     {
-        //cout << "creating:  "<< i << ": "<< begin->name << endl;
+        //qDebug() << "creating:  "<< i << ": "<< begin->name << endl;
         DirNode* tempNode = new DirNode(begin, _fileSystem, i);
         tempNode->SetParent(this);
         _subDirectories.push_back(tempNode);
@@ -52,7 +52,7 @@ count_t DirNode::GetSortedOrder()
     return _currentDir.SortedOrder; 
 }
 
-string DirNode::GetName() const 
+QString DirNode::GetName() const 
 {
     return _currentDir.Name;
 }
@@ -72,7 +72,7 @@ count_t DirNode::SubDirectoryCount()
     return _subDirectories.size(); 
 }
 
-void DirNode::SetName(const string& in_str) 
+void DirNode::SetName(const QString& in_str) 
 { 
     _currentDir.Name = in_str;
 }
@@ -105,7 +105,7 @@ DirNode* DirNode::GetSubDirectory (count_t in_index)
     return _subDirectories[in_index];
 }
 
-bool DirNode::DirectoryExists(const string& name)
+bool DirNode::DirectoryExists(const QString& name)
 {
     vector<DirNode*>::iterator iter;
     for (iter = _subDirectories.begin(); iter != _subDirectories.end(); iter++)
@@ -113,6 +113,7 @@ bool DirNode::DirectoryExists(const string& name)
         DirNode* current = (*iter);
         if (name == current->GetName())
         {
+            qDebug() << "Duplicate directory found, searching[" << name << "] , found[" << current->GetName() << "]";
             return true;
         }
     }
@@ -121,7 +122,7 @@ bool DirNode::DirectoryExists(const string& name)
 
 void DirNode::CreateMapping (map <uint32_t, DirNode*>& in_map )
 {
-//         cout << "Created mapping for: " << GetName() << endl;
+//         qDebug() << "Created mapping for: " << GetName() << endl;
     in_map[GetID()] = this;
     for (count_t i = 0; i < _subDirectories.size(); i++)
     {
@@ -153,28 +154,29 @@ void DirNode::SortDirectories()
     }
 }
 
-bool DirNode::FileExists(const string& in_name)
+bool DirNode::FileExists(const QString& in_name)
 {
     for (count_t i = 0; i < _files.size(); i++)
     {
-        if (_files[i].GetName() == in_name)
+        if (_files[i].GetFileName() == in_name)
         {
             FileNode duplicate = _files[i];
-            cout <<"Current directory: " << GetName() << endl;
-            cout <<"Entered name: " << in_name << endl;
-            cout << "Duplicate name: "<< duplicate.GetName() << endl;
-            cout << "Duplicate ID: "<< duplicate.GetID() << endl;
+            qDebug() <<"Current directory: " << GetName();
+            qDebug() <<"Entered name: " << in_name;
+            qDebug() << "Duplicate name: "<< duplicate.GetFileName();
+            qDebug() << "Duplicate ID: "<< duplicate.GetID();
             return true;
         }
     }
+    qDebug() << "Should return false" << endl;
     return false;
 }
 
-bool DirNode::FindFile(const string& in_name, uint32_t* id)
+bool DirNode::FindFile(const QString& in_name, uint32_t* id)
 {
     for (count_t i = 0; i < _files.size(); i++)
     {
-        if (_files[i].GetName() == in_name)
+        if (_files[i].GetFileName() == in_name)
         {
             (*id) = _files[i].GetID();
             return true;
@@ -205,7 +207,7 @@ void DirNode::DeleteSubDirectory(index_t id)
             return;
         }
     }
-    cout << "error trying to delete under:" << GetName() << " ID to be deleted: " << id << endl;
+    qDebug() << "error trying to delete under:" << GetName() << " ID to be deleted: " << id;
 }
 
 
@@ -222,7 +224,7 @@ void DirNode::DeleteFile (index_t id)
             return;
         }
     }
-    cout << "Big error no file founde under this folder:" << GetName() << endl;
+    qDebug() << "Big error no file founde under this folder:" << GetName() << endl;
 }
 
 void DirNode::SortFiles (FileSortType sortType)
@@ -334,7 +336,7 @@ void DirNode::sortSizeDown()
 
 bool DirNode::compareFileNames(FileNode one, FileNode two)
 {
-    return (one.GetName() < two.GetName());
+    return (one.GetFileName() < two.GetFileName());
 }
 
 bool DirNode::compareFileSizes(FileNode one, FileNode two)
@@ -351,6 +353,6 @@ bool DirNode::compareDirNames(DirNode* one, DirNode* two)
 
 
 //AddSortedChild
-    //cout << "Added child " << in->GetName() << " to: " << GetName() << " brings total to: " << _subDirectories.size()  <<" previous was: " << previous << endl; //    cout << "child id:  " << in->GetID() << " parent id: " << GetID() << endl;
-    /* cout << "--Sanity check---"  << endl; cout << "Added child's height:" << in->GetHeight() << endl; cout << "Added child's depth:" << in->GetDepth() << endl; if (_subDirectories.size() > 0) { cout << "Siblling height:" << _subDirectories[0]->GetHeight() << endl; cout << "Siblling depth:" << _subDirectories[0]->GetDepth() << endl; }*/
+    //qDebug() << "Added child " << in->GetName() << " to: " << GetName() << " brings total to: " << _subDirectories.size()  <<" previous was: " << previous << endl; //    qDebug() << "child id:  " << in->GetID() << " parent id: " << GetID() << endl;
+    /* qDebug() << "--Sanity check---"  << endl; qDebug() << "Added child's height:" << in->GetHeight() << endl; qDebug() << "Added child's depth:" << in->GetDepth() << endl; if (_subDirectories.size() > 0) { qDebug() << "Siblling height:" << _subDirectories[0]->GetHeight() << endl; qDebug() << "Siblling depth:" << _subDirectories[0]->GetDepth() << endl; }*/
 

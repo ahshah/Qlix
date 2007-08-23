@@ -4,22 +4,21 @@
 
 #ifndef __MTPDEVICE__
 #define __MTPDEVICE__
-#include <iostream>
-#include <libmtp.h>
-#include "types.h"
-#include <vector>
-#include <string>
-#include "DirNode.h"
-#include "FileNode.h"
-#include "MtpFS.h"
-#include <fileref.h>
-#include <tfile.h>
-#include <tag.h>
 #include <QDebug>
 #include <QBuffer>
 #include <QByteArray>
-#include <tstring.h>
+#include <vector>
+#include <libmtp.h>
+#include <fileref.h>
+#include <tfile.h>
+#include <tag.h>
+#include <QString>
 #include <tbytevector.h>
+
+#include "types.h"
+#include "DirNode.h"
+#include "FileNode.h"
+#include "MtpFS.h"
 using namespace std;
 
 class MtpDevice 
@@ -31,7 +30,7 @@ public:
     void GetFolders ( void );
     MtpFS* GetFileSystem ( void );
     LIBMTP_mtpdevice_t* rawDevice();
-    uint32_t CreateFolder (const string& in_FolderName, uint32_t in_parentID, int* newmodelindex);
+    uint32_t CreateFolder (const QString& in_FolderName, uint32_t in_parentID, int* newmodelindex);
     bool CreateAlbum(LIBMTP_track_t*, uint32_t*);
     
     bool UpdateAlbumArt (const QString& in_path, uint32_t in_album_id);
@@ -39,7 +38,7 @@ public:
     bool SendFileToDevice(const QFileInfo& file,uint32_t in_parentID);
     bool SendTrackToDevice(const QFileInfo& file,uint32_t in_parentID);
     bool DeleteObject(uint32_t in_parentID, int in_depth);
-    bool GetFileFromDevice(uint32_t fileID, const string& target); 
+    bool GetFileFromDevice(uint32_t fileID, const QString& target); 
     DirNode* GetDirectory(uint32_t);
     count_t GetID();
 
@@ -48,11 +47,11 @@ private:
     LIBMTP_mtpdevice_t* _device;
     MtpFS* _mtpFS;
     count_t _deviceID;
-    string _serial;
-    string _modelName;
-    string _deviceVersion;
-    string _friendlyName;
-    string _syncPartner;
+    QString _serial;
+    QString _modelName;
+    QString _deviceVersion;
+    QString _friendlyName;
+    QString _syncPartner;
     ubyte _curBatteryLevel;
     ubyte _maxBatteryLevel;
 

@@ -65,8 +65,8 @@ int DeviceDirModel::rowCount(const QModelIndex &parent) const
     }
 
     count_t tempCount = parentDirectory->SubDirectoryCount();
-//   cout << "Parent directory: "<< parentDirectory->GetName() << endl;
-//    cout << "RowCount: "<<tempCount<< endl;
+//   qDebug() << "Parent directory: "<< parentDirectory->GetName() ;
+//    qDebug() << "RowCount: "<<tempCount;
     return tempCount;
 }
 
@@ -112,7 +112,7 @@ QVariant DeviceDirModel::data(const QModelIndex &index, int role) const
         }
     }
     if (role == Qt::DisplayRole && (index.column() == 0) )
-            return QString((dir->GetName()).c_str());
+            return dir->GetName();
     return QVariant();
 }
 
@@ -170,7 +170,7 @@ void DeviceDirModel::DirectoryRemoved(bool in_success, index_t in_folderID)
 
         removeRow(childDir->GetSortedOrder(), parentIndex);
         _mtpFileSystem->DeleteFolder(in_folderID);
-        cout << "Notified about directory deletion: " << in_folderID << endl;
+        qDebug() << "Notified about directory deletion: " << in_folderID ;
         endRemoveRows();
     }
     return;

@@ -67,11 +67,11 @@ void FileView::transferFile ( void )
         qDebug() << "No directory selected";
         return;
     }
-    qDebug() <<"Got current directory.. it is: " << QString(CurrentDirectory->GetName().c_str());
+    qDebug() <<"Got current directory.. it is: " << CurrentDirectory->GetName();
     for (int i = 0; i < fileList.size(); i++)
     {
         emit TransferToDevice(fileList[i], CurrentDirectory);
-        //qDebug()<< "attempt to transfer" << fileList[i].toStdString();
+        //qDebug()<< "attempt to transfer" << fileList[i];
     }
 }
 
@@ -85,15 +85,15 @@ void FileView::transferTrack ( void )
 
     if (CurrentDirectory == NULL)
     {
-        cout << "No directory selected" << endl;
+        qDebug() << "No directory selected" ;
         return;
     }
 
-    cout <<"Got current directory.. it is: " << CurrentDirectory->GetName() << endl;
+    qDebug() <<"Got current directory.. it is: " << CurrentDirectory->GetName() ;
     for (int i = 0; i < fileList.size(); i++)
     {
         emit TransferToDevice(fileList[i], CurrentDirectory, true);
-        cout<< "attempt track transfer: " << fileList[i].toStdString() << endl;
+        qDebug()<< "attempt track transfer: " << fileList[i];
     }
 }
 /*

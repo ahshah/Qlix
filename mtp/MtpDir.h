@@ -4,7 +4,7 @@
 
 #ifndef __MTPDIR__
 #define __MTPDIR__
-#include <string>
+#include <QString>
 #include <libmtp.h>
 using namespace std;
 
@@ -23,7 +23,7 @@ public:
         SortedOrder = in_height;
         FolderId = in_folder->folder_id;
         ParentId = in_folder->parent_id;
-        Name = in_folder->name;
+        Name = QString::fromUtf8(in_folder->name);
     }
     MtpDir(LIBMTP_folder_t* in_folder) :
         _rawFolder(in_folder)
@@ -39,7 +39,7 @@ public:
     uint32_t FolderId;
     uint32_t ParentId;
     count_t SortedOrder;
-    string Name;
+    QString Name;
 };
 
 #endif

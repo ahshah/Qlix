@@ -92,7 +92,7 @@
         if (in_fs->FindRootImage(&rootImageId))
         {
             cout << "Found device icon!" << endl;
-            string tempLoc = QDir::tempPath().toStdString();
+            QString tempLoc = QDir::tempPath();
             tempLoc += "DevIcon.png";
             pullDeviceImage(rootImageId, tempLoc);
         }
@@ -116,7 +116,7 @@
     }
 
 //private:
-    void DeviceExplorer::pullDeviceImage(uint32_t id, const string& loc)
+    void DeviceExplorer::pullDeviceImage(uint32_t id, const QString& loc)
     {
         MtpCommandGetFile* _cmd = new MtpCommandGetFile(id, loc);
         _cmd->IsRootImage = true;

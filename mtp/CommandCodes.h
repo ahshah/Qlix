@@ -8,6 +8,7 @@
 #include "MtpPortal.h"
 #include <QDir>
 #include <QString>
+#include <QtDebug>
 #include <QList>
 using namespace std;
 
@@ -30,10 +31,10 @@ enum MtpCommandCode
 
 struct MtpDeviceInfo
 {
-    string _serial;
-    string _modelName;
-    string _friendlyName;
-    string _syncPartner;
+    QString _serial;
+    QString _modelName;
+    QString _friendlyName;
+    QString _syncPartner;
     ubyte _curBatteryLevel;
     ubyte _maxBatteryLevel;
 };
@@ -106,10 +107,10 @@ struct MtpCommandDisconnect : MtpCommand
 
 struct MtpCommandGetFile : MtpCommand
 {
-    string FileName;
+    QString FileName;
     uint32_t ID;
     bool IsRootImage;
-    MtpCommandGetFile (uint32_t file_id, const string& in_FileName)
+    MtpCommandGetFile (uint32_t file_id, const QString& in_FileName)
     {
         ID = file_id;
         FileName = in_FileName;
@@ -120,10 +121,10 @@ struct MtpCommandGetFile : MtpCommand
 
 struct MtpCommandSendFile : MtpCommand
 {
-    string Path;
+    QString Path;
     uint32_t ParentID;
     bool IsTrack;
-    MtpCommandSendFile (string in_path, uint32_t in_ParentID, bool in_asTrack = false) 
+    MtpCommandSendFile (QString in_path, uint32_t in_ParentID, bool in_asTrack = false) 
     {
         ParentID = in_ParentID;
         Path = in_path;

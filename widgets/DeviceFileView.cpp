@@ -11,19 +11,9 @@ DeviceFileView::DeviceFileView (QWidget* parent = NULL,
     setAlternatingRowColors(true);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     QHeaderView* tempHeader = header();
-    tempHeader->setCascadingSectionResizes(true);
-//    tempHeader->setMinimumSectionSize(300);
- //   tempHeader->resizeSection(0, 300);
- //
-    resizeColumnToContents(0);
-    tempHeader->setMinimumSectionSize(-1);
-    tempHeader->setResizeMode(QHeaderView::Stretch);
+    //tempHeader->setCascadingSectionResizes(true);
+    tempHeader->setResizeMode(QHeaderView::Interactive);
     tempHeader->setClickable(true);
-//    tempHeader->setDefaultSectionSize(200);
-//    setColumnWidth(0, 400);
-
-    tempHeader->moveSection(1, 2);
-//    tempHeader->moveSection(2, 0);
 
     setAllColumnsShowFocus(true);
     setViewportMargins(0,0,0,0);
@@ -48,7 +38,6 @@ void DeviceFileView::setupMenus (void)
 void DeviceFileView::reset()
 {
     QTreeView::reset();
-    resizeColumnToContents(0);
 //    qDebug() << "Reset called, size is: " << columnWidth(0);
 }
 void DeviceFileView::setFileView (FileView* in_fileView)
@@ -66,13 +55,13 @@ DirNode* DeviceFileView::CurrentDirectory ()
 
 void DeviceFileView::TransferToDevice(const QString& in_file, DirNode* directory, bool isTrack)
 {
-//    cout << "Device recevied transfer request to device. Here is the path: " << in_file.toStdString() << endl;
-//    cout << "To directory: " << directory->GetName() << endl;
+//    qDebug() << "Device recevied transfer request to device. Here is the path: " << in_file.toStdString() ;
+//    qDebug() << "To directory: " << directory->GetName() ;
     DirNode* currentDir = CurrentDirectory();
     if (currentDir == NULL)
         return;
-//    cout << "Selected dir for file transfer: " <<  currentDir->GetName() << " id: " << currentDir->GetID()  << endl;
-    MtpCommandSendFile* cmd = new MtpCommandSendFile(in_file.toStdString(), currentDir->GetID(), isTrack);
+//    qDebug() << "Selected dir for file transfer: " <<  currentDir->GetName() << " id: " << currentDir->GetID()  ;
+    MtpCommandSendFile* cmd = new MtpCommandSendFile(in_file, currentDir->GetID(), isTrack);
     _thread->IssueCommand(cmd);
 }
 
@@ -84,30 +73,30 @@ void DeviceFileView::CreateDirectory(const QString& in_name)
 
 void DeviceFileView::TransferSystemDirectory(const QString& in_file)
 {
-    cout << "Transfer directory to device. here is the path: " << in_file.toStdString() << endl;
+    qDebug() << "Transfer directory to device. here is the path: " << in_file;
     DirNode* current = CurrentDirectory();
     if (current == NULL)
         return;
     MtpCommandTransferSystemFolder* _cmd = new MtpCommandTransferSystemFolder(QDir(in_file), current);
     _thread->IssueCommand(_cmd);
-//    cout << "CurrentDirectory returned: " << current << endl;
-//    cout << "Will attempt to to create directory here: " << current->GetName() << endl;
+//    qDebug() << "CurrentDirectory returned: " << current ;
+//    qDebug() << "Will attempt to to create directory here: " << current->GetName() ;
 }
 
 //private slots:
 void DeviceFileView::transferFile ( void )
 {
-    cout << "transfer file slot called " << endl;
+    qDebug() << "transfer file slot called " ;
     QItemSelectionModel* file_selection = selectionModel();
     if (!file_selection->hasSelection())
         return;
 
     QModelIndexList _selected = file_selection->selectedRows();
-    cout << "selected " << _selected.size() << " elements" << endl;
+    qDebug() << "selected " << _selected.size() << " elements" ;
     DeviceFileModel* file_model = dynamic_cast<DeviceFileModel*>(model());
     if (file_model == NULL)
     {
-        cout << "File model was null" << endl;
+        qDebug() << "File model was null" ;
         exit(1);
     }
 
@@ -115,26 +104,26 @@ void DeviceFileView::transferFile ( void )
     {
         QModelIndex temp = _selected[i];
         FileNode tempfile = file_model->FileFromIndex(&temp);
-        cout << "Attempt to transfer: " << tempfile.GetName() << endl;
+        qDebug() << "Attempt to transfer: " << tempfile.GetFileName() ;
 
         if (_FSfileView == NULL)
             return;
         QString FS_location= _FSfileView->CurrentDirectory();
-        QString fullPath = FS_location + "/" + tempfile.GetName().c_str();
-        cout << "here: " << fullPath.toStdString() << endl;
+        QString fullPath = FS_location + "/" + tempfile.GetFileName();
+        //qDebug() << "here: " << fullPath;
 
         QFileInfo tempFileInfo(fullPath);
         tempFileInfo.setCaching(false);
         if (tempFileInfo.exists())
         {
-            cout << "File exists! ignored: " << tempFileInfo.filePath().toStdString() << endl;
+            qDebug() << "File exists! ignored: " << tempFileInfo.filePath();
             continue;
         }
 
-        MtpCommandGetFile* tempCmd = new MtpCommandGetFile(tempfile.GetID(), fullPath.toStdString());
+        MtpCommandGetFile* tempCmd = new MtpCommandGetFile(tempfile.GetID(), fullPath);
         if (_thread)
         {
-            cout << "Issuing command" << endl;
+            qDebug() << "Issuing command" ;
             _thread->IssueCommand(tempCmd);
         }
         continue;
@@ -155,8 +144,8 @@ void DeviceFileView::deleteFile ( void )
     {
         QModelIndex temp = _selected[i];
         FileNode tempfile = file_model->FileFromIndex(&temp);
-        cout << "Attempt to delete file: " << tempfile.GetName() << endl;
-        cout << "With height: " << tempfile.GetHeight() << endl;
+        qDebug() << "Attempt to delete file: " << tempfile.GetFileName() ;
+        qDebug() << "With height: " << tempfile.GetHeight() ;
         MtpCommandDelete* _cmd = new MtpCommandDelete(tempfile.GetParentID(), tempfile.GetID());
         _thread->IssueCommand(_cmd);
     }
@@ -174,7 +163,7 @@ private slots:
         if (!_fileSelection->hasSelection())
             return;
         QModelIndexList _selected = _fileSelection->selectedRows();
-        cout << "selected " << _selected.size() << " elements" << endl;
+        qDebug() << "selected " << _selected.size() << " elements" ;
         for (int i = 0; i < _selected.size(); i++)
         {
             QModelIndex temp = _selected[i];
@@ -188,7 +177,7 @@ private slots:
         if (!_fileSelection->hasSelection())
             return;
         QModelIndexList _selected = _fileSelection->selectedRows();
-        cout << "selected " << _selected.size() << " elements" << endl;
+        qDebug() << "selected " << _selected.size() << " elements" ;
         for (int i = 0; i < _selected.size(); i++)
         {
             QModelIndex temp = _selected[i];
@@ -223,7 +212,7 @@ private slots:
     
     void TranferFileToDeviceComplete (MtpUpdateTransfer* in_update)
     {
-        cout << "Transfer File to device complete!" << endl;
+        qDebug() << "Transfer File to device complete!" ;
         if (in_update->Success)
         {
             _fileModel->AddFile(in_update->File);
