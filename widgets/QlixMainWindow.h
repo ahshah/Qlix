@@ -26,6 +26,7 @@ protected:
 
 private slots:
     void connectDevice();
+    void editSettings();
 
 private:
 
@@ -48,8 +49,12 @@ private:
     QToolBar* _mainToolBar;
     QSpacerItem* _progressSpacer;
     QMenu* _menuMenu;
+    
+
+
     QAction* _exitAct;
     QAction* _aboutAct;
+    QAction* _editSettingsAct;
     QAction* _connectAct;
 
     void setupFileList (void);

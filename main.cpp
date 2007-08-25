@@ -1,8 +1,10 @@
+#include <libmtp.h>
 #include "widgets/QlixMainWindow.h"
 #include <QMainWindow>
 #include <QApplication>
 #include <QPlastiqueStyle>
 
+int handler(int sig);
 
 int main(int argc, char* argv[])
 {
@@ -14,4 +16,13 @@ int main(int argc, char* argv[])
     app.exec();
     return 0;
 } 
+
+
+int handler(int sig)
+{
+
+
+
+
+}
 

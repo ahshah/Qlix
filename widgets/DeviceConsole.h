@@ -28,7 +28,8 @@ public:
     DeviceConsole (QWidget* parent = NULL);
     QPixmap* GetDeviceImage ( void );
     void SetStatusAndProgressBar(QStatusBar*, QProgressBar*);
-    void AddAction(QAction* in_action);
+    void SetConnectAction(QAction* in_action);
+    void SetSettingsAction(QAction* in_action);
 
 public slots:
     void resetRootImage();
@@ -46,6 +47,7 @@ private:
     void setupLabels();
     bool getRawImage(const QString& in_path, QPixmap& in_pixmap);
     QToolButton* _connectButton;
+    QToolButton* _settingsButton;
     QProgressBar* _progressBar;
     QStatusBar* _statusBar;
 };

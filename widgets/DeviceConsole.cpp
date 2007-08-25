@@ -9,10 +9,18 @@ DeviceConsole::DeviceConsole (QWidget* parent ) : QFrame(parent)
     _connectButton = new QToolButton(this);
     _connectButton->setIconSize(QSize(32,32));
     _connectButton->setText("Connect");
+
+    _settingsButton = new QToolButton(this);
+    _settingsButton->setIconSize(QSize(32,32));
+    _settingsButton->setText("Settings");
+
     _layout = new QGridLayout(this);
     _layout->setRowMinimumHeight(0, 20);
     _layout->setRowMinimumHeight(1, 20);
     _layout->addWidget(_connectButton,0, 0, 2, 2);
+    QSpacerItem* button_spacer= new QSpacerItem (10, 10, QSizePolicy::Fixed);
+    _layout->addItem(button_spacer,0, 2, 1, 1);
+    _layout->addWidget(_settingsButton,0,3,2,2);
     setupWidget();
     setupLabels();
 }
@@ -135,22 +143,28 @@ void DeviceConsole::setupLabels()
     QSpacerItem* _tagSpacer = new QSpacerItem (10, 1, QSizePolicy::Fixed);
     QSpacerItem* _endTagSpacer = new QSpacerItem (40, 1, QSizePolicy::Minimum);
 
-    _layout->addItem(_deviceSpacer, 0, 0, 1, 1);
+    _layout->addItem(_deviceSpacer, 0, 3, 1, 1);
 
-    _layout->addWidget(_devicePicture, 0, 1, 2, 1);
-    _layout->addItem(_tagSpacer, 0, 2, 1, 1);
-    _layout->addWidget(_deviceFreeSpace, 0, 3);
-    _layout->addWidget(_deviceTotalSpace, 1, 3);
+    _layout->addWidget(_devicePicture, 0, 4, 2, 1);
+    _layout->addItem(_tagSpacer, 0, 5, 1, 1);
+    _layout->addWidget(_deviceFreeSpace, 0, 6);
+    _layout->addWidget(_deviceTotalSpace, 1, 6);
 
-    _layout->addItem(_endTagSpacer, 0, 4, 1, 1);
+    _layout->addItem(_endTagSpacer, 0, 7, 1, 1);
 }
 
-void DeviceConsole::AddAction(QAction* in_action)
+void DeviceConsole::SetConnectAction(QAction* in_action)
 {
     _connectButton->setDefaultAction(in_action);
     _connectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    qDebug() << in_action->iconText()<< endl;
 }
+
+void DeviceConsole::SetSettingsAction(QAction* in_action)
+{
+    _settingsButton->setDefaultAction(in_action);
+    _settingsButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+}
+
 
 bool DeviceConsole::getRawImage(const QString& in_path, QPixmap& in_pixmap)
 {
