@@ -43,7 +43,8 @@ private:
     uint32_t _itemId;
     uint32_t _parentId;
     uint64_t _fileSize;
-
+    
+    QString _deviceID;
     QString _name;
     QString _type;
     //only used to transfer..

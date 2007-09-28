@@ -60,6 +60,8 @@ private:
     MtpFS* _fileSystem;
     MtpDir _currentDir;
     DirNode* _parent;
+    QString _deviceID;
+
     vector <DirNode*> _subDirectories;
     vector <FileNode> _files; 
     void discoverChildren(LIBMTP_folder_t* in_folder);

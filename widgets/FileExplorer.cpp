@@ -104,6 +104,7 @@ void FileExplorer::setupDirModel ()
 {
     _dirModel = new QDirModel();
     _dirModel->setFilter(QDir::AllDirs| QDir::NoDotAndDotDot);
+    _dirModel->setLazyChildCount(true);
     setupDirView();
 }
 

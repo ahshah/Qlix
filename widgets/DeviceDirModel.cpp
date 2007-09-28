@@ -168,7 +168,7 @@ void DeviceDirModel::DirectoryRemoved(bool in_success, index_t in_folderID)
 
         beginRemoveRows(parentIndex, childDir->GetSortedOrder()-1, childDir->GetSortedOrder()+1);
 
-        removeRow(childDir->GetSortedOrder(), parentIndex);
+        removeRow(childDir->GetSortedOrder(), parentIndex); //this does nothing and causes a crash, fix it
         _mtpFileSystem->DeleteFolder(in_folderID);
         qDebug() << "Notified about directory deletion: " << in_folderID ;
         endRemoveRows();
