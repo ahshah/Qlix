@@ -186,7 +186,7 @@ bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
     if (!CreateAlbum(newtrack, &albumID))
         return false;
 
-    UpdateAlbumArt(fileinfo.canonicalPath(), albumID);
+    UpdateAlbumArt(fileinfo.canonicalPath(), albumID, newtrack);
     
     DirNode* parent = _mtpFS->GetDirectory(in_parentID);
     FileNode newFile(newtrack, parent->GetFileCount());
@@ -195,15 +195,19 @@ bool MtpDevice::SendTrackToDevice(const QFileInfo& fileinfo,
     return true;
 }
 
-bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id)
+bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id, LIBMTP_track_t* in_newtrack)
 {
     QDir search_dir(in_path);
     QFileInfoList children = search_dir.entryInfoList(QDir::Files);
+    QString in_albumname (in_newtrack->album);
+    in_albumname +=".jpg";
+    qDebug() << "Looking for: " << in_albumname << "as a cover";
 
     for (int i =0; i < children.size(); i++)
     {
         QFileInfo temp = children[i];
-        if (temp.fileName() == "cover.jpg")
+        QString tempLowerName = temp.fileName().toLower();
+        if (tempLowerName == "cover.jpg" || tempLowerName == in_albumname.toLower())
         {
             qDebug() << "Found a cover" ;
             QImage img(temp.canonicalFilePath());

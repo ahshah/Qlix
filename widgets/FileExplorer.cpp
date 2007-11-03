@@ -13,8 +13,8 @@ FileExplorer::FileExplorer (QWidget* parent, MtpThread* in_thread) : QWidget (pa
 
     setupDirModel();
     setupFileModel();
-    setupConnections();
     setupFsWatch();
+    setupConnections();
 
     _fileView->setContentsMargins(0,-5,0,-5);
     _dirView->setContentsMargins(0,-5,0,-5);
@@ -26,10 +26,7 @@ FileExplorer::FileExplorer (QWidget* parent, MtpThread* in_thread) : QWidget (pa
     sizeList.push_back(500);
     _splitter->setSizes(sizeList);
 
-
     _layout->addWidget(_splitter);
-
-    
 }
 
 FileExplorer::~FileExplorer()
@@ -56,21 +53,21 @@ void FileExplorer::SetDeviceFileView (DeviceFileView* in_view)
 }
 
 //public slots:
-void FileExplorer::EX (const QModelIndex& temp)
+void FileExplorer::FileViewRefresh (const QModelIndex& temp)
 {
-    _fileModel->refresh();
+    _trueFileModel->refresh();
     QString tempLoc = _dirModel->filePath(temp);
-    _fsWatch.removePath(_currentDir);
+    if (_fsWatch.directories().size() > 0)
+      _fsWatch.removePath(_currentDir);
     _fsWatch.addPath(tempLoc);
     _currentDir = tempLoc;
-    _fileView->setRootIndex(_fileModel->index(tempLoc));
+    QModelIndex new_root = _trueFileModel->index(tempLoc);
+    _fileView->setRootIndex(new_root);
 }
 
 void FileExplorer::refreshDirView ()
 {
-    //QModelIndex _currentPathIndex = _dirModel->index(_currentDir);
     _dirModel->refresh();
-   // _dirSelection->setCurrentIndex(_currentPathIndex, QItemSelectionModel::ClearAndSelect |QItemSelectionModel::Rows );
 }
 
 void FileExplorer::refreshFileView ()
@@ -87,6 +84,7 @@ QSplitter* _splitter;
 //models
 QDirModel* _dirModel;
 QDirModel* _fileModel;
+QDirModel* _trueFileModel;
 //views
 DirView* _dirView;
 FileView* _fileView;
@@ -130,6 +128,7 @@ void FileExplorer::setupFileModel()
 {
     _fileModel = new QDirModel();
     _fileModel->setFilter(QDir::Files);
+    _trueFileModel = _fileModel;
     setupFileView();
 }
 
@@ -155,12 +154,12 @@ void FileExplorer::setupConnections ()
     connect (_dirSelection, 
              SIGNAL(currentChanged(const QModelIndex&,  const QModelIndex& )),
              this,
-             SLOT(EX(const QModelIndex&)));
-    
+             SLOT(FileViewRefresh(const QModelIndex&)));
+
     connect (_dirSelection, 
              SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex& )),
              this, 
-             SLOT(EX (const QModelIndex& temp)));
+             SLOT(FileViewRefresh (const QModelIndex& temp)));
 
     connect (&_fsWatch,
              SIGNAL(directoryChanged(const QString&)),
@@ -182,46 +181,3 @@ void FileExplorer::setupFsWatch()
     _fsWatch.addPath(_currentDir);
 }
 
-/*
-void transferSlot()
-{
-    if (!_fileSelection->hasSelection() )
-        return;
-    QModelIndexList _selected = _fileSelection->selectedRows();
-    cout << "has selection of size:" <<_selected.size() <<endl;
-    for (int i =0; i < _selected.size(); i++)
-    {
-        QFileInfo temp = _fileModel->fileInfo(_selected[i]);
-        cout << "transfering file: " << temp.absoluteFilePath().toStdString() << endl;
-        emit TransferFileToDevice(temp);
-    }
-}
-
-void TransferToPc(const FileNode& in_file)
-{
-    const char* tempName = (in_file.GetName()).c_str();
-    QString name(tempName);
-
-    QModelIndexList selectedDirectories = _dirSelection->selectedRows();
-    QModelIndex currentDir = selectedDirectories[0];
-    QString path = _dirModel->filePath(currentDir);
-    QFileInfo pathInfo(path + "/" + name);
-    if (pathInfo.exists())
-    {
-        cout << "Ignoring transfer request, file exists already.. " << endl;
-        return;
-    }
-    emit RequestFile(in_file, pathInfo.absoluteFilePath().toStdString());
-}
-
-
-    connect (_dirSelection, 
-             SIGNAL(currentColChanged(const QModelIndex&, const QModelIndex& )),
-             _fileSelection,
-             SIGNAL(currentColChanged(const QModelIndex&, const QModelIndex& )));
-    connect (_dirView, SIGNAL(expanded(const QModelIndex& )) ,
-             _fileView, SLOT(expand(const QModelIndex&)));
-
-    connect (_dirView, SIGNAL(collapsed(const QModelIndex& )) ,
-             _fileView, SLOT(collapse(const QModelIndex&)));
-*/

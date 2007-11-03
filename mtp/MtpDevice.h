@@ -33,7 +33,7 @@ public:
     uint32_t CreateFolder (const QString& in_FolderName, uint32_t in_parentID, int* newmodelindex);
     bool CreateAlbum(LIBMTP_track_t*, uint32_t*);
     
-    bool UpdateAlbumArt (const QString& in_path, uint32_t in_album_id);
+    bool UpdateAlbumArt (const QString& in_path, uint32_t in_album_id, LIBMTP_track_t* in_newtrack);
 
     bool SendFileToDevice(const QFileInfo& file,uint32_t in_parentID);
     bool SendTrackToDevice(const QFileInfo& file,uint32_t in_parentID);

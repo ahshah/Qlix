@@ -9,10 +9,11 @@ DeviceConsole::DeviceConsole (QWidget* parent ) : QFrame(parent)
     _connectButton = new QToolButton(this);
     _connectButton->setIconSize(QSize(32,32));
     _connectButton->setText("Connect");
-
+/* not implemented
     _settingsButton = new QToolButton(this);
     _settingsButton->setIconSize(QSize(32,32));
     _settingsButton->setText("Settings");
+*/
 
     _layout = new QGridLayout(this);
     _layout->setRowMinimumHeight(0, 20);
@@ -20,7 +21,7 @@ DeviceConsole::DeviceConsole (QWidget* parent ) : QFrame(parent)
     _layout->addWidget(_connectButton,0, 0, 2, 2);
     QSpacerItem* button_spacer= new QSpacerItem (10, 10, QSizePolicy::Fixed);
     _layout->addItem(button_spacer,0, 2, 1, 1);
-    _layout->addWidget(_settingsButton,0,3,2,2);
+//    _layout->addWidget(_settingsButton,0,3,2,2);
     setupWidget();
     setupLabels();
 }

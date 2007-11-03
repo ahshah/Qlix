@@ -59,7 +59,9 @@ void QlixMainWindow::setupConsole (void)
     _deviceExp->SetDeviceConsole(_console);
     _console->SetStatusAndProgressBar(_statusBar, _progressBar);
     _console->SetConnectAction(_connectAct);
+/* Not implemented yet
     _console->SetSettingsAction(_editSettingsAct);
+*/
     cout << "Added Action" << endl;
 }
 
@@ -94,7 +96,9 @@ void QlixMainWindow::createMenus()
     _menuMenu = menuBar()->addMenu("Menu");
     _menuMenu->addAction(_exitAct);
     _menuMenu->addAction(_connectAct);
+    /* not implemented yet
     _menuMenu->addAction(_editSettingsAct);
+    */
     //_menuMenu->setFixedHeight(10);
 }
 
@@ -114,14 +118,13 @@ void QlixMainWindow::createActions()
     _connectAct->setShortcut(tr("Ctrl+C"));
     _connectAct->setCheckable(true);
     _connectAct->setStatusTip("Connect to first MTP-enabled device");
-
+/* Not implemented yet
     _editSettingsAct = new QAction(QIcon(":/pixmaps/settings.png"),"Settings", this);
     _editSettingsAct->setShortcut(tr("Ctrl+S"));
     _editSettingsAct->setStatusTip("Edit Qlix settings");
-
-//    _connectAct->set
-    connect(_connectAct, SIGNAL(triggered() ), this, SLOT(connectDevice()));
     connect(_editSettingsAct, SIGNAL(triggered()), this, SLOT(editSettings()));
+*/
+    connect(_connectAct, SIGNAL(triggered() ), this, SLOT(connectDevice()));
 }
 
 void QlixMainWindow::setupConnections ( void )

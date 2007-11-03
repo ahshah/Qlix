@@ -1,3 +1,8 @@
+0.1.1A
+Fixed numerous bugs
+Added a more intelligent (but still stupid) method of looking for albumart
+Little code clean up
+
 0.1A
 Transfer Directories from system folders to device
 Transfer files from system folders to device

@@ -107,8 +107,8 @@ QVariant DeviceFileModel::data(const QModelIndex &index, int role) const
         QString size_string = fileSize(temp.GetSize());
 
         QFontMetrics temp_metric(_defaultFont);
-        qDebug() << "FileSize sring:" << size_string;
-        qDebug() << "FileSize Size hint:" << temp_metric.width(size_string);
+//        qDebug() << "FileSize sring:" << size_string;
+//        qDebug() << "FileSize Size hint:" << temp_metric.width(size_string);
         return QSize(temp_metric.width(size_string), 18);
     }
 
@@ -127,7 +127,7 @@ QVariant DeviceFileModel::data(const QModelIndex &index, int role) const
     if (index.column() == 0)
     {
         QString s = file.GetFileName();
-        qDebug() << "Saw filename as: " << s;
+//        qDebug() << "Saw filename as: " << s;
         return s;
     }
 

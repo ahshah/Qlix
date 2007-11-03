@@ -1,8 +1,8 @@
 //Copyright 2007 Ali Shah
 //Qlix is distributed under the terms of the GNU General Public License
 
-#ifndef __FILEEXPLORER__
-#define __FILEEXPLORER__
+#ifndef __FILEFileViewRefreshPLORER__
+#define __FILEFileViewRefreshPLORER__
 #include <QMenu>
 #include <QDirModel>
 #include <QWidget>
@@ -36,7 +36,7 @@ signals:
     void RequestFile(const FileNode& temp, const string& path);
 
 public slots:
-    void EX (const QModelIndex& temp);
+    void FileViewRefresh (const QModelIndex& temp);
     void refreshDirView ();
     void refreshFileView ();
 
@@ -48,6 +48,7 @@ private:
 //models
     QDirModel* _dirModel;
     QDirModel* _fileModel;
+    QDirModel* _trueFileModel;
 //views
     DirView* _dirView;
     FileView* _fileView;
