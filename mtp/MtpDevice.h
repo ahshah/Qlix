@@ -19,6 +19,7 @@
 #include "DirNode.h"
 #include "FileNode.h"
 #include "MtpFS.h"
+#include "libmtp.h"
 using namespace std;
 
 class MtpDevice 

@@ -1,4 +1,5 @@
 #include "MtpDevice.h"
+#include "libmtp.h"
 MtpDevice::MtpDevice( LIBMTP_mtpdevice_t* in_device, count_t in_id)
 {
     _deviceID = in_id;
@@ -207,7 +208,8 @@ bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id, LI
     {
         QFileInfo temp = children[i];
         QString tempLowerName = temp.fileName().toLower();
-        if (tempLowerName == "cover.jpg" || tempLowerName == in_albumname.toLower())
+        if (tempLowerName == "cover.jpg" || tempLowerName == in_albumname.toLower() || 
+            tempLowerName == "folder.jpg")
         {
             qDebug() << "Found a cover" ;
             QImage img(temp.canonicalFilePath());
