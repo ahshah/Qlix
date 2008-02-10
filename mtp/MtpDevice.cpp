@@ -209,19 +209,38 @@ bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id, LI
         QFileInfo temp = children[i];
         QString tempLowerName = temp.fileName().toLower();
         if (tempLowerName == "cover.jpg" || tempLowerName == in_albumname.toLower() || 
-            tempLowerName == "folder.jpg")
+            tempLowerName == "folder.jpg" || tempLowerName == "album art.jpg")
         {
             qDebug() << "Found a cover" ;
             QImage img(temp.canonicalFilePath());
-            QImage imgResized(img.scaled(QSize(64,64), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+            //find out the default image size
+
+            //TODO FIXME this is a memory leak..
+            LIBMTP_filesampledata_t* sample = NULL;
+            int ret = 0;
+            ret = LIBMTP_Get_Representative_Sample_Format(_device, LIBMTP_FILETYPE_JPEG, &sample);
+            if (ret != 0 || !sample)
+            {
+                LIBMTP_Dump_Errorstack(_device);
+                LIBMTP_Clear_Errorstack(_device);
+                LIBMTP_destroy_filesampledata_t(sample);
+                return false;
+            }
+            //reset the return value for other commands 
+            ret = 0;
+            //TODO FIXME what to if the cover art is smaller than device-default cover size
+            count_t width = sample->width;
+            count_t height = sample->height;
+
+            QImage imgResized(img.scaled(QSize(width, height), Qt::KeepAspectRatio, Qt::SmoothTransformation));
             QByteArray barray;
             QBuffer buffer(&barray);
             buffer.open(QIODevice::WriteOnly);
             imgResized.save(&buffer, "JPEG");
 
-            LIBMTP_filesampledata_t* sample = LIBMTP_new_filesampledata_t();
-            sample->width = 64;
-            sample->height = 64;
+            //LIBMTP_filesampledata_t* sample = LIBMTP_new_filesampledata_t();
+            sample->width = width;
+            sample->height = height;
             sample->filetype = LIBMTP_FILETYPE_JPEG;
             sample->size = barray.size();
 
@@ -230,15 +249,18 @@ bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id, LI
 
             sample->data = newbuffer;
 
-            int ret = LIBMTP_Send_Representative_Sample(_device, in_album_id, sample);
+            ret = LIBMTP_Send_Representative_Sample(_device, in_album_id, sample);
             if (ret != 0)
             {
                 LIBMTP_Dump_Errorstack(_device);
                 LIBMTP_Clear_Errorstack(_device);
+                LIBMTP_destroy_filesampledata_t(sample);
                 return false;
             }
+            ret =0;
             qDebug() << "Sending representative data returned: " << ret;
-            LIBMTP_destroy_filesampledata_t (sample);
+            LIBMTP_destroy_filesampledata_t(sample);
+
             return true;
         }
     }
