@@ -64,6 +64,12 @@ void DeviceDirView::deleteFolder ( void )
 {
     QModelIndexList selected = selectedDirectories();
     DeviceDirModel* cur_model = static_cast<DeviceDirModel*> (model());
+    for (int j = 0; j< selected.size(); j++)
+    {
+      QModelIndex thisSelection = selected[j];
+      DirNode* selected_node = reinterpret_cast <DirNode*> (thisSelection.internalPointer() );
+      qDebug() << "Requesting delete: " << selected_node->GetID();
+    }
     for (int i =0; i < selected.size(); i++)
     {
         QModelIndex thisSelection = selected[i];
