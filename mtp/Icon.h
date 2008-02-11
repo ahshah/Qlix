@@ -62,7 +62,7 @@ public:
         for (count_t i = 0; i < _iconList.size(); i++)
         {
             IconDirEntry* temp = _iconList[i]; 
-    //        cout <<"Icon: " << i << endl; cout <<"Dimensions: "<< (int)temp->Width << " x " << (int)temp->Height << endl; cout <<"Depth: " << (int)temp->ColorCount << endl; cout <<"Reserved: " << (int)temp->Reserved << endl; cout <<"Bit count: " << (int)temp->BitCount<< endl; cout <<"Byte count: " << (int)temp->DataSize<< endl; cout <<"Offset: " << (int) temp->DataOffset << endl; cout << endl;
+            cout <<"Icon: " << i << endl; cout <<"Dimensions: "<< (int)temp->Width << " x " << (int)temp->Height << endl; cout <<"Depth: " << (int)temp->ColorCount << endl; cout <<"Reserved: " << (int)temp->Reserved << endl; cout <<"Bit count: " << (int)temp->BitCount<< endl; cout <<"Byte count: " << (int)temp->DataSize<< endl; cout <<"Offset: " << (int) temp->DataOffset << endl; cout << endl;
         }
     }
     void Extract(void* temp)
@@ -100,6 +100,13 @@ private:
     IconHeader* _header;
     vector <IconDirEntry*> _iconList;
 
+    bool IsSquare(IconDirEntry* in_icon)
+    {
+      if (!in_icon || in_icon->Height != in_icon->Width)
+        return false;
+      return true;
+    }
+
     void FindBestImage() 
     {
         size_t HighestResolution = 0;
@@ -113,14 +120,14 @@ private:
         for (count_t i = 0; i < _iconList.size(); i++)
         {
             IconDirEntry* temp = _iconList[i];
-            if (temp->BitCount > HighestColorDepth)
+            if (temp->BitCount > HighestColorDepth && IsSquare(temp))
             {
 //                cout << "Replacing entry: " << CurrentWinner << " with " <<  i << endl;
                 CurrentWinner = i;
                 HighestResolution = temp->Width;
                 HighestColorDepth = temp->BitCount;
             }
-            if (temp->Width > HighestResolution)
+            if (temp->Width > HighestResolution && IsSquare(temp))
             {
                 if (temp->BitCount>= HighestColorDepth)
                 {
