@@ -237,6 +237,7 @@ void DeviceFileModel::FileRemoved( bool in, index_t in_DirID, index_t in_FileID)
     if (in)
     {
         DirNode* Parent = _mtpFileSystem->GetDirectory(in_DirID);
+        emit layoutAboutToBeChanged();
         Parent->DeleteFile(in_FileID);
         _listSize = _dir->GetFileCount();
         emit layoutChanged();
