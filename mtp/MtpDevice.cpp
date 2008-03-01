@@ -219,7 +219,7 @@ bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id, LI
             LIBMTP_filesampledata_t* sample = NULL;
             int ret = 0;
             ret = LIBMTP_Get_Representative_Sample_Format(_device, LIBMTP_FILETYPE_JPEG, &sample);
-            if (ret != 0 )
+            if (ret != 0 || !sample)
             {
                 cerr << "Representative sample format not supported for JPEG type" << endl;
                 LIBMTP_Dump_Errorstack(_device);
@@ -227,8 +227,6 @@ bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id, LI
                 LIBMTP_destroy_filesampledata_t(sample);
                 return false;
             }
-            if (!sample)
-              cerr << "Invalid sample format" << endl;
             else
             {
               qDebug() << "Valid Sample format";
