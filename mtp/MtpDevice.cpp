@@ -226,6 +226,16 @@ bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id, LI
                 LIBMTP_destroy_filesampledata_t(sample);
                 return false;
             }
+            if (!sample)
+              cerr << "Invalid sample format" << endl;
+            else
+            {
+              cerr << "Valid Sample format" << endl;
+              cerr << "      Width:" << sample->width << endl;
+              cerr << "      height:" << sample->height << endl;
+              cerr << "      filetype:" << sample->filetype << endl;
+              cerr << "      size:" << sample->size<< endl;
+            }
             //reset the return value for other commands 
             ret = 0;
             //TODO FIXME what to if the cover art is smaller than device-default cover size
