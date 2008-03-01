@@ -231,12 +231,13 @@ bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id, LI
               cerr << "Invalid sample format" << endl;
             else
             {
-              cerr << "Valid Sample format" << endl;
-              cerr << "      Width:" << sample->width << endl;
-              cerr << "      height:" << sample->height << endl;
-              cerr << "      filetype:" << sample->filetype << endl;
-              cerr << "      size:" << sample->size<< endl;
+              qDebug() << "Valid Sample format";
+              qDebug() << "      Width:" << sample->width;
+              qDebug() << "      height:" << sample->height ;
+              qDebug() << "      filetype:" << sample->filetype ;
+              qDebug() << "      size:" << sample->size;
             }
+            qDebug() << "Resuming cover art update";
             //reset the return value for other commands 
             ret = 0;
             //TODO FIXME what to if the cover art is smaller than device-default cover size
@@ -259,16 +260,16 @@ bool MtpDevice::UpdateAlbumArt (const QString& in_path, uint32_t in_album_id, LI
             memcpy (newbuffer, barray.data(), barray.size());
 
             sample->data = newbuffer;
-
+            qDebug() << "Sending representative sample..";
             ret = LIBMTP_Send_Representative_Sample(_device, in_album_id, sample);
             if (ret != 0)
             {
+                qDebug() << "Sending representative sample failed" << endl;
                 LIBMTP_Dump_Errorstack(_device);
                 LIBMTP_Clear_Errorstack(_device);
                 LIBMTP_destroy_filesampledata_t(sample);
                 return false;
             }
-            ret =0;
             qDebug() << "Sending representative data returned: " << ret;
             LIBMTP_destroy_filesampledata_t(sample);
 
