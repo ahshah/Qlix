@@ -4,6 +4,7 @@ QlixMainWindow::QlixMainWindow(MtpSubSystem* in_subsystem)
 {
   setMinimumSize(800,500);
   QWidget::setWindowIcon(QIcon(":/pixmaps/qlix.xpm"));
+  QWidget::setWindowTitle("Qlix");
 
   _watchDog = new MtpWatchDog(in_subsystem);
   _deviceChooser = new DeviceChooser(this);
@@ -28,9 +29,6 @@ void QlixMainWindow::setupWatchDogConnections()
 
 void QlixMainWindow::DeviceSelected(QMtpDevice* in_device)
 {
-#ifdef QLIX_DEBUG
-  qDebug() << "Device selected: " << in_device;
-#endif
   setupStatusBar();
   _deviceChooser->hide();
   //TODO this is not such a great idea..

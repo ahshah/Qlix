@@ -13,6 +13,11 @@
 
 using namespace std;
 typedef map<uint32_t, MTP::GenericObject* > GenericMap;
+typedef map<uint32_t, MTP::Folder* > FolderMap;
+typedef map<uint32_t, MTP::File* > FileMap;
+typedef map<uint32_t, MTP::Track* > TrackMap;
+typedef map<uint32_t, MTP::Album* > AlbumMap;
+typedef map<uint32_t, MTP::Playlist* > PlaylistMap;
 
 /** 
  * @class MtpDevice is a wrapper class around libmtp's device module
@@ -42,6 +47,11 @@ public:
   bool Fetch(uint32_t, char const * const );
   bool UpdateSpaceInformation();
   void FreeSpace(unsigned int, uint64_t*, uint64_t*);
+  MTP::File* const FindFile(count_t in_id) const;
+  MTP::Folder* const FindFolder(count_t in_id) const;
+  MTP::Album* const FindAlbum(count_t in_id) const;
+  MTP::Playlist* const FindPlaylist(count_t in_id) const;
+  MTP::Track* const FindTrack(count_t in_id) const;
 
 //Device structures information
   count_t AlbumCount() const;
@@ -52,6 +62,9 @@ public:
 
   count_t RootFolderCount() const;
   count_t RootFileCount() const;
+  void AddToRootFolder(MTP::Folder*);
+  void RemoveFolderFromRoot(MTP::Folder*);
+  void RemoveFileFromRoot(MTP::File*);
   MTP::Folder* RootFolder(count_t idx) const;
   MTP::File* RootFile(count_t idx) const;
 
@@ -75,16 +88,18 @@ public:
 
 //Extended File functions 
   bool RemoveFile(MTP::File*);
+  bool RemoveFolder(MTP::Folder*);
   bool TransferFile(const char*, MTP::File*);
 
-//Extended Folder functions
-  bool NewFolder(MTP::Folder*);
-  bool RemoveFolder(MTP::Folder*);
+//Extended Folder functions- TODO: implement these
+//  bool NewFolder(MTP::Folder*);
+//  bool RemoveFolder(MTP::Folder*);
 
   LIBMTP_filesampledata_t* DefaultJPEGSample();
-  //should this be deprecated?
 private:
   LIBMTP_mtpdevice_t* RawDevice() const;
+  MTP::GenericObject* const find(count_t in_id, MtpObjectType type) const;
+  void quickSanityCheck() const;
   LIBMTP_mtpdevice_t* _device;
   bool _initialized;
   char* _name;
@@ -103,15 +118,17 @@ private:
   map<uint32_t, MTP::Track*> _trackMap;
   map<uint32_t, MTP::Album*> _albumMap;
   map<uint32_t, MTP::Playlist*> _playlistMap;
+  map<uint32_t, MTP::File*> _fileMap;
+  map<uint32_t, MTP::Folder*> _folderMap;
   void processErrorStack();
 
   vector <MtpStorage*> _storageDeviceList;
   vector <string> _errorStack;
   vector <string> _supportedFileTypes;
-  vector <MTP::GenericObject*> _crossLinked;
   vector <MTP::Folder*> _rootFolders;
   vector <MTP::File*> _rootFiles;
 
+  //These are used to display specific views of the device
   vector <MTP::Track*> _tracks;
   vector <MTP::Album*> _albums;
   vector <MTP::Playlist*> _playlists;

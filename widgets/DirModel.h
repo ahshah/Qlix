@@ -20,6 +20,11 @@ public:
   int rowCount(const QModelIndex& parent= QModelIndex() ) const ;
   int columnCount(const QModelIndex& parent= QModelIndex() ) const;
   QVariant data(const QModelIndex& , int role = Qt::DisplayRole ) const;
+public slots:
+  void AddFile(MTP::File*);
+  void AddFolder(MTP::Folder*);
+  void RemoveFile(MTP::File*);
+  void RemoveFolder(MTP::Folder*);
 private:
   MtpDevice* _device;
 };

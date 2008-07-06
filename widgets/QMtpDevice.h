@@ -52,7 +52,7 @@ public:
   QSortFilterProxyModel* GetDirModel() const;
   void Progress(uint64_t const sent, uint64_t const total);
   void FreeSpace(uint64_t* , uint64_t*);
-  void SetSelectedStorage(int);
+  void SetSelectedStorage(count_t);
   unsigned int SelectedStorage();
   unsigned int StorageDeviceCount();
   MtpStorage* StorageDevice(unsigned int);
@@ -68,7 +68,7 @@ signals:
   void RemovedTrack(MTP::Track*);
   void RemovedFile(MTP::File*);
   void RemovedAlbum(MTP::Album*);
-  void RemoveFolder(MTP::Folder*);
+  void RemovedFolder(MTP::Folder*);
 
 protected:
   void run();
@@ -104,7 +104,7 @@ private:
   QIcon _icon;
   QString _name;
   QString _serial;
-  int _storageID;
+  count_t _storageID;
 
   QQueue <GenericCommand*> _jobs;
   QMutex _jobLock;

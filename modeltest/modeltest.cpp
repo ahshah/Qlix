@@ -340,7 +340,6 @@ void ModelTest::checkChildren(const QModelIndex &parent, int currentDepth)
             Q_ASSERT(model->data(index, Qt::DisplayRole).isValid() == true);
 
             // If the next test fails here is some somewhat useful debug you play with.
-            /*
             if (model->parent(index) != parent) {
                 qDebug() << r << c << currentDepth << model->data(index).toString()
                          << model->data(parent).toString();
@@ -349,7 +348,7 @@ void ModelTest::checkChildren(const QModelIndex &parent, int currentDepth)
                 //QTreeView view;
                 //view.setModel(model);
                 //view.show();
-            }*/
+            }
 
             // Check that we can get back our real parent.
             Q_ASSERT(model->parent(index) == parent);

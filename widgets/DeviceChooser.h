@@ -78,7 +78,7 @@ private:
   class NoDevice : public QWidget 
   {
     public:
-    NoDevice(bool nodevice, QWidget* parent = NULL)
+    NoDevice(bool nodevice, QWidget* parent = NULL) : QWidget(parent)
     {
       _layout = new QGridLayout();
       _top = new QSpacerItem(10, 10, QSizePolicy::Maximum,

@@ -8,6 +8,7 @@
 
 QMtpDevice::QMtpDevice(MtpDevice* in_device, MtpWatchDog* in_watchDog, 
                        QObject* parent):
+                       QThread(parent),
                        _device(in_device),
                        _watchDog(in_watchDog),
                        _icon(QPixmap(":/pixmaps/miscDev.png"))
@@ -103,8 +104,9 @@ void QMtpDevice::proccessJob(GenericCommand* currentJob)
     case Delete:
     {
       DeleteObjCmd* deleteThis = (DeleteObjCmd*)currentJob;
-      qDebug() << "Whether the filter supports changed: " <<_sortedAlbums->dynamicSortFilter();
+      qDebug() << "Whether the filter supports changes: " <<_sortedAlbums->dynamicSortFilter();
       deleteObject(deleteThis->Object);
+      delete deleteThis;
       //_albumModel->Delete(deleteThis->Object);
 //      _sortedAlbums->invalidate();
       break;
@@ -148,6 +150,7 @@ void QMtpDevice::initializeDeviceStructures()
   _albumModel = new AlbumModel(_device);
   new ModelTest(_albumModel);
   _dirModel = new DirModel(_device);
+  new ModelTest(_dirModel);
   _plModel = new PlaylistModel(_device);
 
   _sortedAlbums = new QSortFilterProxyModel();
@@ -163,8 +166,11 @@ void QMtpDevice::initializeDeviceStructures()
   _sortedPlaylists->setSourceModel(_plModel);
   _sortedFiles->setSourceModel(_dirModel);
 
+  this->moveToThread(_sortedAlbums->thread());
   _sortedAlbums->moveToThread(QApplication::instance()->thread());
   _albumModel->moveToThread(QApplication::instance()->thread());
+  _sortedFiles->moveToThread(QApplication::instance()->thread());
+  _dirModel->moveToThread(QApplication::instance()->thread());
 } 
 
 /*
@@ -291,23 +297,23 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* obj)
     case MtpFolder:
     {
       MTP::Folder* rootFolder = (MTP::Folder*)obj;
-      MTP::File* currentFile;
-      MTP::Folder* currentFolder;
+      MTP::File* subFile;
+      MTP::Folder* subFolder;
 
       for (count_t i =0; i < rootFolder->FileCount(); i++)
       {
-        currentFile = rootFolder->ChildFile(i);
-        cmd = new DeleteObjCmd(currentFile);
+        subFile = rootFolder->ChildFile(i);
+        cmd = new DeleteObjCmd(subFile);
         IssueCommand(cmd);
       }
       //recurse on all subfolders
       for (count_t i =0; i < rootFolder->FolderCount(); i++)
       {
-        currentFolder = rootFolder->ChildFolder(i);
-        DeleteObject(currentFolder);
+        subFolder = rootFolder->ChildFolder(i);
+        DeleteObject(subFolder);
       }
-      //delete the currentfolder
-      cmd = new DeleteObjCmd(currentFolder);
+      //delete the rootfolder
+      cmd = new DeleteObjCmd(rootFolder);
       IssueCommand(cmd);
       break;
     }
@@ -457,9 +463,10 @@ void QMtpDevice::FreeSpace(uint64_t* out_total , uint64_t* out_free)
  * made to the device
  * @param in_storageID the storage ID that will be the default
  */
-void QMtpDevice::SetSelectedStorage(int in_storageID)
+void QMtpDevice::SetSelectedStorage(count_t in_storageID)
 {
   _storageID = in_storageID;
+  qDebug() << "Selected storage: " << _storageID;
 }
 
 /**
@@ -519,7 +526,7 @@ void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)
 
   MTP::Album* trackAlbum = NULL;
   QString findThisAlbum = QString::fromUtf8(newTrack->AlbumName());
-  for (count_t i = 0; i < _albumModel->rowCount(); i++)
+  for (int i = 0; i < _albumModel->rowCount(); i++)
   {
     QModelIndex idx = _albumModel->index(i, 0, QModelIndex());
     MTP::Album* album = (MTP::Album*) idx.internalPointer();
@@ -591,7 +598,7 @@ void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)
     return;
   }
   newTrack->SetParentAlbum(trackAlbum);
-  qDebug() << "About to emit AddedTrackToAlbum" << endl;
+  qDebug() << "About to emit AddedTrackToAlbum thread id is: " << currentThread();
   emit AddedTrackToAlbum(newTrack);
   return ;
 }
@@ -762,6 +769,8 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
 
     case MtpFolder:
     {
+      qDebug() << "About to emit folder removal: thread id is: " << currentThread();
+      emit RemovedFolder((MTP::Folder*) in_obj);
       break;
     }
     case MtpAlbum:

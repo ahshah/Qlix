@@ -269,6 +269,7 @@ bool AlbumModel::Delete(MTP::GenericObject* in_obj)
 
 /**
  * Adds an album to this model
+ * @param in_album the album to add to the model
  */
 void AlbumModel::AddAlbum(MTP::Album* in_album)
 {
@@ -283,20 +284,26 @@ void AlbumModel::AddAlbum(MTP::Album* in_album)
 //  emit layoutChanged();
 }
 
+
+/**
+ * Adds an track to this model
+ * @param in_track the track to add, the parent album is determined through
+ * in_track's parent field
+ */
 void AlbumModel::AddTrack(MTP::Track* in_track)
 {
-  qDebug() << "Called Add Track";
+  qDebug() << "Called AddTrack";
   MTP::Album* parentAlbum = in_track->ParentAlbum();
   assert(parentAlbum);
   in_track->SetRowIndex(parentAlbum->TrackCount());
   QModelIndex parentIdx = createIndex(parentAlbum->GetRowIndex(), 0, parentAlbum);
   int sz = parentAlbum->TrackCount();
-//  emit layoutAboutToBeChanged();
+
   emit beginInsertRows(parentIdx, parentAlbum->TrackCount(), 
                        parentAlbum->TrackCount());
   parentAlbum->AddTrack(in_track);
   emit endInsertRows();
-//  emit layoutChanged();
+
   assert(sz+1 == parentAlbum->TrackCount());
   qDebug() << "old size: " << sz << " new size: " << parentAlbum->TrackCount();
 }

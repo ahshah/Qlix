@@ -38,13 +38,7 @@ public slots:
   void RemoveAlbum(MTP::Album*);
   void RemoveTrack(MTP::Track*);
 
-  void Beep()
-  {
-    qDebug() << "Wtf!" << endl;
-  }
-
 private:
-  void addAlbum(MTP::Album*);
   QVector<MTP::Album*> _albumList;
   bool discoverCoverArt(const QString&, const QString&, QFileInfo*);
   MtpDevice* _device;

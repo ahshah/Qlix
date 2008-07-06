@@ -58,10 +58,14 @@ public:
   void SetParentFolder(Folder*);
   Folder* ParentFolder() const;
 
+  count_t GetRowIndex() const;
+  void SetRowIndex(count_t);
+
   LIBMTP_file_t* const RawFile() const;
 private:
   LIBMTP_file_t* _rawFile;
   LIBMTP_filesampledata_t _sampleData;
+  count_t _rowIndex;
   Folder* _parent;
   Track* _track;
   Album* _album;
@@ -86,6 +90,8 @@ public:
   LIBMTP_folder_t* RawFolder() const;
   void AddChildFolder(Folder*);
   void AddChildFile(File*);
+  void RemoveChildFolder(Folder*);
+  void RemoveChildFile(File*);
 
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);

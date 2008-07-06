@@ -5,7 +5,6 @@
  * @param in_device the device whos database to represent
  * @param parent the parent widget of this widget, should QlixMainWindow
  */
-#define ALBUMDEBUG
 DeviceExplorer::DeviceExplorer(QMtpDevice* in_device, QWidget* parent) :
                               _device(in_device),
                               _progressBar(NULL)
@@ -284,6 +283,8 @@ void DeviceExplorer::setupConnections()
           _albumModel, SLOT(invalidate()), Qt::BlockingQueuedConnection);
 
 */
+
+  qDebug() << "_albumModel->thread() : " << _albumModel->sourceModel()->thread();
   connect(_device, SIGNAL(CreatedAlbum(MTP::Album*)),
           _albumModel->sourceModel(), SLOT(AddAlbum(MTP::Album*)),
           Qt::BlockingQueuedConnection);
@@ -307,12 +308,11 @@ void DeviceExplorer::setupConnections()
   connect(_device, SIGNAL(RemovedAlbum(MTP::Album*)),
           _albumModel->sourceModel(), SLOT(RemoveAlbum(MTP::Album*)),
           Qt::BlockingQueuedConnection);
-/*
-  connect(_device, SIGNAL(RemovedAlbum(MTP::Album*)),
-          _albumModel, SLOT(invalidate()),
-          Qt::BlockingQueuedConnection);
-  */
 
+  qDebug() << "_dirModel->sourceModel->thread() : " << _dirModel->sourceModel()->thread();
+  connect(_device, SIGNAL(RemovedFolder(MTP::Folder*)),
+          _dirModel->sourceModel(), SLOT(RemoveFolder(MTP::Folder*)),
+          Qt::BlockingQueuedConnection);
 }
 
 void DeviceExplorer::Beep(MTP::Track* in_track)
@@ -416,8 +416,13 @@ void DeviceExplorer::setupCommonTools()
   _delete = new QAction( 
     QIcon(":/pixmaps/ActionBar/DeleteFile.png"), 
     QString("Delete"), NULL); 
-
   _commonDeviceActions->addAction(_delete);
+
+  _newFolder = new QAction(
+    QIcon(":/pixmaps/ActionBar/NewFolder.png"), 
+    QString("New Folder"), NULL); 
+
+  _commonDeviceActions->addAction(_newFolder);
 
 //FS actions
   _transferToDevice = new QAction(
@@ -611,7 +616,7 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
                                 const QModelIndexList& in_list, 
                                 const QAbstractItemModel* in_model)
 {
-  qDebug() << "Called removeFileFolderDuplicates";
+  qDebug() << "Called removeIndexDuplicates";
   QModelIndexList ret;
   QModelIndexList tempList = in_list;
   count_t dupCount = 0;
@@ -636,7 +641,7 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
       }
       foreach(leftOfFirst, ret)
       {
-        if (leftOfFirst == parent);
+        if (leftOfFirst == parent)
         {
           found = true;
           dupCount++;
@@ -654,7 +659,8 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
         QModelIndex mapped = ((QSortFilterProxyModel*)in_model)->mapToSource(first);
         ret.push_back(mapped);
         MTP::GenericObject* tempObj = (MTP::GenericObject*) mapped.internalPointer();
-        assert(tempObj->Type() == MtpTrack ||  tempObj->Type() == MtpFile || tempObj->Type() == MtpAlbum);
+        assert(tempObj->Type() == MtpTrack ||  tempObj->Type() == MtpFile ||
+               tempObj->Type() == MtpAlbum || tempObj->Type() == MtpFolder);
       }
       else
         ret.push_back(first);

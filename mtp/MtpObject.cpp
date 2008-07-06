@@ -221,6 +221,22 @@ void File::SetParentFolder(Folder* in_parent)
   _parent = in_parent;
 }
 
+/*
+ * Returns the row index of this file
+ */
+count_t File::GetRowIndex() const
+{
+  return _rowIndex;
+}
+
+/*
+ * Returns the row index of this file
+ */
+void File::SetRowIndex(count_t in_idx)
+{
+  _rowIndex = in_idx;
+}
+
 /**
  * Returns the name of the file
  * @return The name of the file as a Utf8 string
@@ -341,6 +357,43 @@ void Folder::AddChildFolder(Folder* in_folder)
 void Folder::AddChildFile(File* in_file)
 {
   _childFiles.push_back(in_file);
+}
+void Folder::RemoveChildFolder(Folder* in_folder)
+{
+  vector<MTP::Folder*>::iterator iter = _childFolders.begin();
+  count_t i = 0;
+  for (; iter != _childFolders.end() && i < in_folder->GetRowIndex(); i++)
+  {
+    iter++;
+  }
+  if (i != in_folder->GetRowIndex())
+  {
+    cerr << "Deletion error: in_folder row index:" << in_folder->GetRowIndex() 
+         << " child folder count: " << _childFolders.size() << endl;
+    assert(false);
+  }
+
+  _childFolders.erase(iter);
+  return;
+}
+
+void Folder::RemoveChildFile(File* in_file)
+{
+  vector<MTP::File*>::iterator iter = _childFiles.begin();
+  count_t i = 0;
+  for (; iter != _childFiles.end() && i < in_file->GetRowIndex(); i++)
+  {
+    iter++;
+  }
+  if (i != in_file->GetRowIndex())
+  {
+    cerr << "Deletion error: in_file row index:" << in_file->GetRowIndex() 
+         << " child file count: " << _childFiles.size() << endl;
+    assert(false);
+  }
+
+  _childFiles.erase(iter);
+  return;
 }
 
 /** 
