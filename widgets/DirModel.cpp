@@ -210,21 +210,15 @@ void DirModel::AddFolder(MTP::Folder* in_folder)
   qDebug() << "Called AddFolder" << endl;
   MTP::Folder* parentFolder = in_folder->ParentFolder();
 
-  QModelIndex parentIdx;
-  count_t subFolderCount = _device->RootFolderCount();
+  if (!parentFolder)
+    parentFolder = _rootFolder;
 
-  if (parentFolder)
-  {
-    parentIdx = createIndex(parentFolder->GetRowIndex(), 0, parentFolder);
-    subFolderCount = parentFolder->FolderCount();
-  }
+  QModelIndex parentIdx = createIndex(parentFolder->GetRowIndex(), 0, parentFolder);
+  count_t subFolderCount = parentFolder->FolderCount();
 
   emit beginInsertRows(parentIdx, subFolderCount, subFolderCount);
   in_folder->SetRowIndex(subFolderCount);
-  if (parentFolder)
-    parentFolder->AddChildFolder(in_folder);
-  else
-    _device->AddToRootFolder(in_folder);
+  parentFolder->AddChildFolder(in_folder);
   emit endInsertRows();
 }
 
@@ -232,39 +226,27 @@ void DirModel::RemoveFolder(MTP::Folder* in_folder)
 {
   qDebug() << "Called RemoveFolder";
   assert(in_folder);
-  assert(in_folder->GetRowIndex() < _device->RootFolderCount());
 
   MTP::Folder* parentFolder = in_folder->ParentFolder();
-  QModelIndex parentIdx = QModelIndex();
-  count_t subFolderCount = _device->RootFolderCount();
+  if(!parentFolder)
+    parentFolder = _rootFolder;
 
-  if (parentFolder)
-  {
-    parentIdx = createIndex(parentFolder->GetRowIndex(), 0, parentFolder);
-    subFolderCount = parentFolder->FolderCount();
-  }
+  assert(in_folder->GetRowIndex() < parentFolder->FolderCount());
+
+  QModelIndex parentIdx = createIndex(parentFolder->GetRowIndex(), 0, parentFolder);
+  count_t subFolderCount = parentFolder->FolderCount();
 
   emit beginRemoveRows(parentIdx, in_folder->GetRowIndex(),
-                      in_folder->GetRowIndex());
+                       in_folder->GetRowIndex());
   for (count_t i =in_folder->GetRowIndex()+1; i < subFolderCount; i++)
   {
-    if (parentFolder)
       parentFolder->ChildFolder(i)->SetRowIndex(i -1);
-    else
-      _device->RootFolder(i)->SetRowIndex(i-1);
-  }
-  MTP::Folder* deleteThisFolder;
-  if (parentFolder)
-  {
-    deleteThisFolder= parentFolder->ChildFolder(in_folder->GetRowIndex());
-    parentFolder->RemoveChildFolder(deleteThisFolder);
-  }
-  else
-  {
-    deleteThisFolder = _device->RootFolder(in_folder->GetRowIndex());
-    _device->RemoveFolderFromRoot(deleteThisFolder);
   }
 
+  MTP::Folder* deleteThisFolder =
+                           parentFolder->ChildFolder(in_folder->GetRowIndex());
+  parentFolder->RemoveChildFolder(deleteThisFolder);
+  
   delete deleteThisFolder;
   emit endRemoveRows();
 }
