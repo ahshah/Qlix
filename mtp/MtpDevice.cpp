@@ -433,7 +433,17 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, bool firstRun)
   vector<MTP::Folder*> curLevelFolders;
   LIBMTP_folder_t* folderRoot;
   if (!in_root && firstRun)
-    folderRoot= LIBMTP_Get_Folder_List(_device);
+  {
+     folderRoot= LIBMTP_Get_Folder_List(_device);
+     LIBMTP_folder_t* fakeRoot = LIBMTP_new_folder_t();
+     fakeRoot->folder_id = 0;
+     fakeRoot->parent_id = 0;
+     fakeRoot->name = new char[strlen(_name)];
+     fakeRoot->name = strdup(_name);
+     fakeRoot->sibling= NULL;
+     fakeRoot->child = folderRoot;
+     folderRoot = fakeRoot;
+  }
   else
     folderRoot = in_root->RawFolder()->child;
 
@@ -589,8 +599,6 @@ void MtpDevice::createFileStructure()
     {
       currentFile->SetRowIndex(_rootFiles.size());
       _rootFiles.push_back(currentFile);
-      fileRoot = fileRoot->next;
-      continue;
     }
 
     MTP::Folder* const parentFolder = FindFolder(currentFile->ParentID());

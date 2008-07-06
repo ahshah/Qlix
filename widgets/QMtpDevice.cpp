@@ -148,7 +148,7 @@ void QMtpDevice::initializeDeviceStructures()
 //  qDebug() << "Discovered name to be: " << _name;
 #endif
   _albumModel = new AlbumModel(_device);
-  new ModelTest(_albumModel);
+  //new ModelTest(_albumModel);
   _dirModel = new DirModel(_device);
   new ModelTest(_dirModel);
   _plModel = new PlaylistModel(_device);

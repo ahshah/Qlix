@@ -10,6 +10,11 @@ QModelIndex DirModel::index(int row, int col,
 { 
   if(col < 0 || row < 0)
     return QModelIndex();
+    int cols= columnCount(parent);
+    int rows= rowCount(parent);
+  if(col >= columnCount(parent) ||
+     row >= rowCount(parent))
+    return QModelIndex();
 
   if(!parent.isValid() )
   {
@@ -107,7 +112,7 @@ QModelIndex DirModel::parent(const QModelIndex& idx) const
 int DirModel::rowCount(const QModelIndex& parent) const 
 { 
   if (!parent.isValid() )
-    return _device->RootFolderCount() + _device->RootFileCount();
+    return 1; 
 
   MTP::GenericObject* obj= (MTP::Album*)parent.internalPointer();
   if(obj->Type() == MtpFolder)
