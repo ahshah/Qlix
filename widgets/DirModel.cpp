@@ -3,75 +3,48 @@
 
 DirModel::DirModel(MtpDevice* in_dev, QObject* parent) :
                        _device(in_dev)
-{ }
+{
+  _rootFolder = _device->RootFolder();
+}
 
 QModelIndex DirModel::index(int row, int col, 
                         const QModelIndex& parent) const
 { 
   if(col < 0 || row < 0)
     return QModelIndex();
-    int cols= columnCount(parent);
-    int rows= rowCount(parent);
-  if(col >= columnCount(parent) ||
-     row >= rowCount(parent))
+  if(col >= columnCount(parent) || row >= rowCount(parent))
     return QModelIndex();
-
+  
   if(!parent.isValid() )
   {
-    int total = (int)_device->RootFolderCount() + _device->RootFileCount();
-    if (row >= total || row < 0)
-      return QModelIndex();
-
-    if (row < (int) _device->RootFolderCount() ) 
-    {
-      MTP::Folder* ret = _device->RootFolder(row);
-      assert(ret);
-      return createIndex(row, col, ret); 
-    }
-
-    int idx = row - _device->RootFolderCount();
-    MTP::File* ret = _device->RootFile(idx);
-    assert(ret);
-    return createIndex(row, col, ret);
+    assert(row == 0 && col == 0);
+    return createIndex(row, col, _rootFolder);
   }
-
+    
   MTP::GenericObject* temp = (MTP::GenericObject*)parent.internalPointer();
-  if (temp->Type() == MtpFolder)
-  {
-    MTP::Folder* folder = (MTP::Folder*)parent.internalPointer();
-//    qDebug() << "indexing row: "<< row << " col " << col << "under parent folder: " << QString::fromUtf8(folder->Name());
-    int total = (int) folder->FolderCount() + folder->FileCount();
-    if (row >= (int) total)
-    {
-      qDebug() << "folder with too many children, should not happen!"; 
-      return QModelIndex(); 
-    }
 
-    int idx = row - folder->FolderCount();
-    if (row < (int) folder->FolderCount() )
-    {
-      MTP::Folder* ret = folder->ChildFolder(row);
-      assert(ret);
-//      qDebug() << "Found folder: " << QString::fromUtf8(ret->Name());
-      return createIndex(row, col, ret); 
-    }
-
-    else if (idx < (int)folder->FileCount() && idx >= 0)
-    {
-      MTP::File* ret = folder->ChildFile(idx);
-      assert(ret);
-//      qDebug() << "Found file: " << QString::fromUtf8(ret->Name());
-      return createIndex(row, col, ret);
-    }
+  if (temp->Type() != MtpFolder)
     assert(false);
-  }
-  else if (temp->Type() == MtpFile)
+    
+  MTP::Folder* folder = (MTP::Folder*)temp;
+  int total = (int) folder->FolderCount() + folder->FileCount();
+  if (row >= (int) total)
   {
-    qDebug() << "file requesting sub index, should not happen!";
-    return QModelIndex();
+    qDebug() << "Requested row is out of bounds- not enough children!";
+    return QModelIndex(); 
   }
-  assert(false);
-  return QModelIndex();
+
+  if (row < (int) folder->FolderCount() )
+  {
+    MTP::Folder* ret = folder->ChildFolder(row);
+    assert(ret);
+    return createIndex(row, col, ret); 
+  }
+  int idx = row - folder->FolderCount();
+  assert(idx < (int)folder->FileCount() && idx >= 0);
+  MTP::File* ret = folder->ChildFile(idx);
+  assert(ret);
+  return createIndex(row, col, ret);
 }
 
 QModelIndex DirModel::parent(const QModelIndex& idx) const
@@ -87,7 +60,7 @@ QModelIndex DirModel::parent(const QModelIndex& idx) const
     MTP::Folder* parent = ((MTP::Folder*)obj)->ParentFolder();
     if (!parent) 
       return QModelIndex();
-   MTP::Folder* fobj = (MTP::Folder*) obj;
+//   MTP::Folder* fobj = (MTP::Folder*) obj;
 //   qDebug() << "folder " << QString::fromUtf8(fobj->Name()) << " 's parent is: " << QString::fromUtf8(parent->Name());
    return createIndex(parent->GetRowIndex(), 0, parent); 
   }
@@ -111,6 +84,7 @@ QModelIndex DirModel::parent(const QModelIndex& idx) const
 
 int DirModel::rowCount(const QModelIndex& parent) const 
 { 
+  //return the fake root's row count- which should be 1
   if (!parent.isValid() )
     return 1; 
 

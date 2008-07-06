@@ -16,7 +16,8 @@
  * @return Returns the requested device
  */
 MtpDevice::MtpDevice(LIBMTP_mtpdevice_t* in_device)  :
-                                                _initialized(false)
+                     _initialized(false),
+                     _rootFolder(NULL)
 {
   _device = in_device;
   _serialNumber = LIBMTP_Get_Serialnumber(_device);
@@ -332,6 +333,13 @@ unsigned int MtpDevice::StorageDeviceCount() const
 {
   return _storageDeviceList.size();
 }
+/**
+ * @return the faked root folder for this device
+ */
+MTP::Folder* MtpDevice::RootFolder() const
+{
+  return _rootFolder;
+}
 
 /**
  * @param in_idx the index of storage device
@@ -388,11 +396,6 @@ void MtpDevice::createObjectStructure()
     return;
   //create container structures first..
   createFolderStructure(NULL, true);
-  for (int i =0; i < _rootFolders.size();i++ )
-  {
-    assert(_rootFolders[i]->GetRowIndex() == i);
-  }
-
   createFileStructure();
   createTrackBasedStructures();
 
@@ -438,7 +441,6 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, bool firstRun)
      LIBMTP_folder_t* fakeRoot = LIBMTP_new_folder_t();
      fakeRoot->folder_id = 0;
      fakeRoot->parent_id = 0;
-     fakeRoot->name = new char[strlen(_name)];
      fakeRoot->name = strdup(_name);
      fakeRoot->sibling= NULL;
      fakeRoot->child = folderRoot;
@@ -460,11 +462,12 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, bool firstRun)
     }
     else //else set the child's parent to NULL indicating its at the root
     {
+      assert(_rootFolder ==NULL);
       currentFolder =  new MTP::Folder(folderRoot, NULL);
       //set the row index first as it is zero based
       currentFolder->SetRowIndex(_rootFolders.size());
-      //add to the root level folder
-      _rootFolders.push_back(currentFolder);
+      //set the root folder
+      _rootFolder = currentFolder;
     }
 
     //add this folder to the list of folders at this level
@@ -594,12 +597,6 @@ void MtpDevice::createFileStructure()
       assert(false);
     }
     _fileMap[currentFile->ID()] = currentFile; 
-
-    if (currentFile->ParentID() == 0)
-    {
-      currentFile->SetRowIndex(_rootFiles.size());
-      _rootFiles.push_back(currentFile);
-    }
 
     MTP::Folder* const parentFolder = FindFolder(currentFile->ParentID());
     if(! parentFolder)

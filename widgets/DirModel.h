@@ -27,5 +27,6 @@ public slots:
   void RemoveFolder(MTP::Folder*);
 private:
   MtpDevice* _device;
+  MTP::Folder* _rootFolder;
 };
 #endif

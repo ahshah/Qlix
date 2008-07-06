@@ -42,6 +42,7 @@ public:
   float BatteryLevel() const;
   unsigned int StorageDeviceCount() const;
   MtpStorage* StorageDevice(unsigned int) const;
+  MTP::Folder* RootFolder() const;
 
 //basic actions
   bool Fetch(uint32_t, char const * const );
@@ -110,6 +111,8 @@ private:
   count_t _maxBatteryLevel;
   count_t _currentBatteryLevel;
   bool _batteryLevelSupport;
+
+  MTP::Folder* _rootFolder;
 
   LIBMTP_progressfunc_t _progressFunc;
   const void* _progressData;

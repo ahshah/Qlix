@@ -3,25 +3,39 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.6	//
+!_TAG_PROGRAM_VERSION	5.7	//
+AddAlbum	AlbumModel.cpp	/^void AlbumModel::AddAlbum(MTP::Album* in_album)$/;"	f	class:AlbumModel
+AddAlbum	AlbumModel.h	/^  void AddAlbum(MTP::Album*);$/;"	p	class:AlbumModel	access:public
 AddDevice	DeviceChooser.cpp	/^void DeviceChooser::AddDevice(QMtpDevice* in_device)$/;"	f	class:DeviceChooser
 AddDevice	DeviceChooser.h	/^  void AddDevice(QMtpDevice*);$/;"	p	class:DeviceChooser	access:public
-AddTrack	AlbumModel.cpp	/^void AlbumModel::AddTrack(const QString& in_path, MTP::Track* in_track)$/;"	f	class:AlbumModel
-AddTrack	AlbumModel.h	/^  void AddTrack(const QString&, MTP::Track*);$/;"	p	class:AlbumModel	access:public
+AddFile	DirModel.cpp	/^void DirModel::AddFile(MTP::File* in_file)$/;"	f	class:DirModel
+AddFile	DirModel.h	/^  void AddFile(MTP::File*);$/;"	p	class:DirModel	access:public
+AddFolder	DirModel.cpp	/^void DirModel::AddFolder(MTP::Folder* in_folder)$/;"	f	class:DirModel
+AddFolder	DirModel.h	/^  void AddFolder(MTP::Folder*);$/;"	p	class:DirModel	access:public
+AddTrack	AlbumModel.cpp	/^void AlbumModel::AddTrack(MTP::Track* in_track)$/;"	f	class:AlbumModel
+AddTrack	AlbumModel.h	/^  void AddTrack(MTP::Track* in_track);$/;"	p	class:AlbumModel	access:public
+AddedTrackToAlbum	QMtpDevice.h	/^  void AddedTrackToAlbum(MTP::Track*);$/;"	p	class:QMtpDevice	access:public
 AlbumModel	AlbumModel.cpp	/^AlbumModel::AlbumModel(MtpDevice* in_dev, QObject* parent) :$/;"	f	class:AlbumModel
 AlbumModel	AlbumModel.h	/^  AlbumModel(MtpDevice*, QObject* parent = NULL);$/;"	p	class:AlbumModel	access:public
 AlbumModel	AlbumModel.h	/^class AlbumModel : public QAbstractItemModel$/;"	c	inherits:QAbstractItemModel
-AlbumModel::AddTrack	AlbumModel.cpp	/^void AlbumModel::AddTrack(const QString& in_path, MTP::Track* in_track)$/;"	f	class:AlbumModel
-AlbumModel::AddTrack	AlbumModel.h	/^  void AddTrack(const QString&, MTP::Track*);$/;"	p	class:AlbumModel	access:public
+AlbumModel::AddAlbum	AlbumModel.cpp	/^void AlbumModel::AddAlbum(MTP::Album* in_album)$/;"	f	class:AlbumModel
+AlbumModel::AddAlbum	AlbumModel.h	/^  void AddAlbum(MTP::Album*);$/;"	p	class:AlbumModel	access:public
+AlbumModel::AddTrack	AlbumModel.cpp	/^void AlbumModel::AddTrack(MTP::Track* in_track)$/;"	f	class:AlbumModel
+AlbumModel::AddTrack	AlbumModel.h	/^  void AddTrack(MTP::Track* in_track);$/;"	p	class:AlbumModel	access:public
 AlbumModel::AlbumModel	AlbumModel.cpp	/^AlbumModel::AlbumModel(MtpDevice* in_dev, QObject* parent) :$/;"	f	class:AlbumModel
 AlbumModel::AlbumModel	AlbumModel.h	/^  AlbumModel(MtpDevice*, QObject* parent = NULL);$/;"	p	class:AlbumModel	access:public
+AlbumModel::RemoveAlbum	AlbumModel.cpp	/^void AlbumModel::RemoveAlbum(MTP::Album* in_album)$/;"	f	class:AlbumModel
+AlbumModel::RemoveAlbum	AlbumModel.h	/^  void RemoveAlbum(MTP::Album*);$/;"	p	class:AlbumModel	access:public
+AlbumModel::RemoveTrack	AlbumModel.cpp	/^void AlbumModel::RemoveTrack(MTP::Track* in_track)$/;"	f	class:AlbumModel
+AlbumModel::RemoveTrack	AlbumModel.h	/^  void RemoveTrack(MTP::Track*);$/;"	p	class:AlbumModel	access:public
+AlbumModel::_albumList	AlbumModel.h	/^  QVector<MTP::Album*> _albumList;$/;"	m	class:AlbumModel	access:private
 AlbumModel::_device	AlbumModel.h	/^  MtpDevice* _device;$/;"	m	class:AlbumModel	access:private
-AlbumModel::addAlbum	AlbumModel.cpp	/^void AlbumModel::addAlbum(MTP::Album*)$/;"	f	class:AlbumModel
-AlbumModel::addAlbum	AlbumModel.h	/^  void addAlbum(MTP::Album*);$/;"	p	class:AlbumModel	access:private
+AlbumModel::_modelLock	AlbumModel.h	/^  QMutex* _modelLock;$/;"	m	class:AlbumModel	access:private
 AlbumModel::columnCount	AlbumModel.cpp	/^int AlbumModel::columnCount(const QModelIndex& parent ) const $/;"	f	class:AlbumModel
 AlbumModel::columnCount	AlbumModel.h	/^  int columnCount(const QModelIndex& parent= QModelIndex() ) const;$/;"	p	class:AlbumModel	access:public
 AlbumModel::data	AlbumModel.cpp	/^QVariant AlbumModel::data(const QModelIndex& index, int role ) const$/;"	f	class:AlbumModel
 AlbumModel::data	AlbumModel.h	/^  QVariant data(const QModelIndex& , int role = Qt::DisplayRole ) const;$/;"	p	class:AlbumModel	access:public
+AlbumModel::discoverCoverArt	AlbumModel.h	/^  bool discoverCoverArt(const QString&, const QString&, QFileInfo*);$/;"	p	class:AlbumModel	access:private
 AlbumModel::index	AlbumModel.cpp	/^QModelIndex AlbumModel::index(int row, int col, $/;"	f	class:AlbumModel
 AlbumModel::index	AlbumModel.h	/^  QModelIndex index(int, int, const QModelIndex& parent= QModelIndex()) const;$/;"	p	class:AlbumModel	access:public
 AlbumModel::parent	AlbumModel.cpp	/^QModelIndex AlbumModel::parent(const QModelIndex& idx) const$/;"	f	class:AlbumModel
@@ -30,26 +44,39 @@ AlbumModel::rowCount	AlbumModel.cpp	/^int AlbumModel::rowCount(const QModelIndex
 AlbumModel::rowCount	AlbumModel.h	/^  int rowCount(const QModelIndex& parent= QModelIndex() ) const ;$/;"	p	class:AlbumModel	access:public
 Albums	QlixMainWindow.h	/^    Albums,$/;"	e	enum:QlixMainWindow::ToolbarView
 AlbumsView	DeviceExplorer.h	/^    AlbumsView,$/;"	e	enum:DeviceExplorer::ViewPort
+Beep	DeviceExplorer.cpp	/^void DeviceExplorer::Beep(MTP::Track* in_track)$/;"	f	class:DeviceExplorer
+Beep	DeviceExplorer.h	/^  void Beep(MTP::Track* in_track);$/;"	p	class:DeviceExplorer	access:public
 Checked	DeviceButton.h	/^  void Checked(DeviceButton*, QMtpDevice* _device);$/;"	p	class:DeviceButton	access:public
 ComCode	CommandCodes.h	/^  CommandCode ComCode;$/;"	m	struct:MTPCMD::GenericCommand	access:public
 CommandCode	CommandCodes.h	/^enum CommandCode$/;"	g	namespace:MTPCMD
 CreateFSFolder	CommandCodes.h	/^    CreateFSFolder$/;"	e	enum:MTPCMD::CommandCode
-CreateFSFolderCmd	CommandCodes.h	/^    CreateFSFolderCmd(const QString& in_path, const QString& in_name)$/;"	f	struct:MTPCMD::CreateFSFolderCmd	access:public
+CreateFSFolderCmd	CommandCodes.h	/^    CreateFSFolderCmd(const QString& in_path, const QString& in_name):$/;"	f	struct:MTPCMD::CreateFSFolderCmd	access:public
 CreateFSFolderCmd	CommandCodes.h	/^struct CreateFSFolderCmd: GenericCommand$/;"	s	namespace:MTPCMD	inherits:GenericCommand
+CreatedAlbum	QMtpDevice.h	/^  void CreatedAlbum(MTP::Album*);$/;"	p	class:QMtpDevice	access:public
 DefaultDevice	MtpWatchDog.h	/^  void DefaultDevice(QMtpDevice* Device);$/;"	p	class:MtpWatchDog	access:public
-DeviceButton	DeviceButton.cpp	/^DeviceButton::DeviceButton (QMtpDevice* in_device, QWidget* parent)$/;"	f	class:DeviceButton
+Delete	CommandCodes.h	/^    Delete,$/;"	e	enum:MTPCMD::CommandCode
+DeleteFromDevice	DeviceExplorer.cpp	/^void DeviceExplorer::DeleteFromDevice()$/;"	f	class:DeviceExplorer
+DeleteFromDevice	DeviceExplorer.h	/^  void DeleteFromDevice();$/;"	p	class:DeviceExplorer	access:private
+DeleteObjCmd	CommandCodes.h	/^  DeleteObjCmd (MTP::GenericObject* in_obj) : GenericCommand(Delete),$/;"	f	struct:MTPCMD::DeleteObjCmd	access:public
+DeleteObjCmd	CommandCodes.h	/^struct DeleteObjCmd : GenericCommand$/;"	s	namespace:MTPCMD	inherits:GenericCommand
+DeleteObject	QMtpDevice.cpp	/^void QMtpDevice::DeleteObject(MTP::GenericObject* obj)$/;"	f	class:QMtpDevice
+DeleteObject	QMtpDevice.h	/^  void DeleteObject(MTP::GenericObject*);$/;"	p	class:QMtpDevice	access:public
+DeviceAdded	MtpWatchDog.cpp	/^void MtpWatchDog::DeviceAdded(QString in_objRef)$/;"	f	class:MtpWatchDog
+DeviceAdded	MtpWatchDog.h	/^  void DeviceAdded(QString);$/;"	p	class:MtpWatchDog	access:private
+DeviceButton	DeviceButton.cpp	/^DeviceButton::DeviceButton (QMtpDevice* in_device, QWidget* parent) :$/;"	f	class:DeviceButton
 DeviceButton	DeviceButton.h	/^  DeviceButton(QMtpDevice*, QWidget* temp = NULL);$/;"	p	class:DeviceButton	access:public
 DeviceButton	DeviceButton.h	/^class DeviceButton : public QVBoxLayout$/;"	c	inherits:QVBoxLayout
 DeviceButton::Checked	DeviceButton.h	/^  void Checked(DeviceButton*, QMtpDevice* _device);$/;"	p	class:DeviceButton	access:public
-DeviceButton::DeviceButton	DeviceButton.cpp	/^DeviceButton::DeviceButton (QMtpDevice* in_device, QWidget* parent)$/;"	f	class:DeviceButton
+DeviceButton::DeviceButton	DeviceButton.cpp	/^DeviceButton::DeviceButton (QMtpDevice* in_device, QWidget* parent) :$/;"	f	class:DeviceButton
 DeviceButton::DeviceButton	DeviceButton.h	/^  DeviceButton(QMtpDevice*, QWidget* temp = NULL);$/;"	p	class:DeviceButton	access:public
 DeviceButton::RemoveCheck	DeviceButton.cpp	/^void DeviceButton::RemoveCheck()$/;"	f	class:DeviceButton
 DeviceButton::RemoveCheck	DeviceButton.h	/^  void RemoveCheck();$/;"	p	class:DeviceButton	access:public
 DeviceButton::Selected	DeviceButton.h	/^  void Selected(QMtpDevice*);$/;"	p	class:DeviceButton	access:public
 DeviceButton::_button	DeviceButton.h	/^  QToolButton* _button;$/;"	m	class:DeviceButton	access:private
 DeviceButton::_checkBox	DeviceButton.h	/^  QCheckBox* _checkBox;$/;"	m	class:DeviceButton	access:private
+DeviceButton::_comboBox	DeviceButton.h	/^  QComboBox* _comboBox;$/;"	m	class:DeviceButton	access:private
 DeviceButton::_device	DeviceButton.h	/^  QMtpDevice* _device;$/;"	m	class:DeviceButton	access:private
-DeviceButton::buttonClicked	DeviceButton.cpp	/^void DeviceButton::buttonClicked() { emit Selected(_device); }$/;"	f	class:DeviceButton
+DeviceButton::buttonClicked	DeviceButton.cpp	/^void DeviceButton::buttonClicked() $/;"	f	class:DeviceButton
 DeviceButton::buttonClicked	DeviceButton.h	/^  void buttonClicked();$/;"	p	class:DeviceButton	access:private
 DeviceButton::setupConnections	DeviceButton.cpp	/^void DeviceButton::setupConnections()$/;"	f	class:DeviceButton
 DeviceButton::setupConnections	DeviceButton.h	/^  void setupConnections();$/;"	p	class:DeviceButton	access:private
@@ -66,14 +93,15 @@ DeviceChooser::DeviceSelected	DeviceChooser.h	/^  void DeviceSelected(QMtpDevice
 DeviceChooser::ExclusivelySelected	DeviceChooser.cpp	/^void DeviceChooser::ExclusivelySelected(DeviceButton* selected,$/;"	f	class:DeviceChooser
 DeviceChooser::ExclusivelySelected	DeviceChooser.h	/^  void ExclusivelySelected(DeviceButton*, QMtpDevice*); $/;"	p	class:DeviceChooser	access:public
 DeviceChooser::NoDevice	DeviceChooser.h	/^  class NoDevice : public QWidget $/;"	c	class:DeviceChooser	inherits:QWidget	access:private
-DeviceChooser::NoDevice::NoDevice	DeviceChooser.h	/^    NoDevice(bool nodevice, QWidget* parent = NULL)$/;"	f	class:DeviceChooser::NoDevice	access:public
+DeviceChooser::NoDevice::NoDevice	DeviceChooser.h	/^    NoDevice(bool nodevice, QWidget* parent = NULL) : QWidget(parent)$/;"	f	class:DeviceChooser::NoDevice	access:public
+DeviceChooser::NoDevice::SetDBusSearch	DeviceChooser.h	/^    void SetDBusSearch()$/;"	f	class:DeviceChooser::NoDevice	access:public
 DeviceChooser::NoDevice::_bottom	DeviceChooser.h	/^    QSpacerItem* _bottom;$/;"	m	class:DeviceChooser::NoDevice	access:private
 DeviceChooser::NoDevice::_image	DeviceChooser.h	/^    QLabel* _image;$/;"	m	class:DeviceChooser::NoDevice	access:private
 DeviceChooser::NoDevice::_layout	DeviceChooser.h	/^    QGridLayout* _layout;$/;"	m	class:DeviceChooser::NoDevice	access:private
 DeviceChooser::NoDevice::_text	DeviceChooser.h	/^    QLabel* _text;$/;"	m	class:DeviceChooser::NoDevice	access:private
 DeviceChooser::NoDevice::_top	DeviceChooser.h	/^    QSpacerItem* _top;$/;"	m	class:DeviceChooser::NoDevice	access:private
-DeviceChooser::NoDevices	DeviceChooser.cpp	/^void DeviceChooser::NoDevices()$/;"	f	class:DeviceChooser
-DeviceChooser::NoDevices	DeviceChooser.h	/^  void NoDevices();$/;"	p	class:DeviceChooser	access:public
+DeviceChooser::NoDevices	DeviceChooser.cpp	/^void DeviceChooser::NoDevices(bool in_dbusWorking)$/;"	f	class:DeviceChooser
+DeviceChooser::NoDevices	DeviceChooser.h	/^  void NoDevices(bool);$/;"	p	class:DeviceChooser	access:public
 DeviceChooser::Reinitialize	DeviceChooser.cpp	/^void DeviceChooser::Reinitialize()$/;"	f	class:DeviceChooser
 DeviceChooser::Reinitialize	DeviceChooser.h	/^  void Reinitialize();$/;"	p	class:DeviceChooser	access:public
 DeviceChooser::_chooserGroupBox	DeviceChooser.h	/^  QGroupBox*  _chooserGroupBox;$/;"	m	class:DeviceChooser	access:private
@@ -102,6 +130,10 @@ DeviceExplorer	DeviceExplorer.cpp	/^DeviceExplorer::DeviceExplorer(QMtpDevice* i
 DeviceExplorer	DeviceExplorer.h	/^  DeviceExplorer(QMtpDevice*, QWidget* parent);$/;"	p	class:DeviceExplorer	access:public
 DeviceExplorer	DeviceExplorer.h	/^class DeviceExplorer : public QWidget$/;"	c	inherits:QWidget
 DeviceExplorer::AlbumsView	DeviceExplorer.h	/^    AlbumsView,$/;"	e	enum:DeviceExplorer::ViewPort
+DeviceExplorer::Beep	DeviceExplorer.cpp	/^void DeviceExplorer::Beep(MTP::Track* in_track)$/;"	f	class:DeviceExplorer
+DeviceExplorer::Beep	DeviceExplorer.h	/^  void Beep(MTP::Track* in_track);$/;"	p	class:DeviceExplorer	access:public
+DeviceExplorer::DeleteFromDevice	DeviceExplorer.cpp	/^void DeviceExplorer::DeleteFromDevice()$/;"	f	class:DeviceExplorer
+DeviceExplorer::DeleteFromDevice	DeviceExplorer.h	/^  void DeleteFromDevice();$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::DeviceExplorer	DeviceExplorer.cpp	/^DeviceExplorer::DeviceExplorer(QMtpDevice* in_device, QWidget* parent) :$/;"	f	class:DeviceExplorer
 DeviceExplorer::DeviceExplorer	DeviceExplorer.h	/^  DeviceExplorer(QMtpDevice*, QWidget* parent);$/;"	p	class:DeviceExplorer	access:public
 DeviceExplorer::FileView	DeviceExplorer.h	/^    FileView$/;"	e	enum:DeviceExplorer::ViewPort
@@ -122,20 +154,24 @@ DeviceExplorer::ShowPreferences	DeviceExplorer.cpp	/^void DeviceExplorer::ShowPr
 DeviceExplorer::ShowPreferences	DeviceExplorer.h	/^  void ShowPreferences();$/;"	p	class:DeviceExplorer	access:public
 DeviceExplorer::ShowQueue	DeviceExplorer.cpp	/^void DeviceExplorer::ShowQueue( bool showQueue )$/;"	f	class:DeviceExplorer
 DeviceExplorer::ShowQueue	DeviceExplorer.h	/^  void ShowQueue(bool);$/;"	p	class:DeviceExplorer	access:public
+DeviceExplorer::SwitchFilesystemDir	DeviceExplorer.cpp	/^void DeviceExplorer::SwitchFilesystemDir(const QModelIndex& tmpIdx)$/;"	f	class:DeviceExplorer
+DeviceExplorer::SwitchFilesystemDir	DeviceExplorer.h	/^  void SwitchFilesystemDir(const QModelIndex&);$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::TransferFromDevice	DeviceExplorer.cpp	/^void DeviceExplorer::TransferFromDevice()$/;"	f	class:DeviceExplorer
 DeviceExplorer::TransferFromDevice	DeviceExplorer.h	/^  void TransferFromDevice();$/;"	p	class:DeviceExplorer	access:private
-DeviceExplorer::TransferTrackToDevice	DeviceExplorer.cpp	/^void DeviceExplorer::TransferTrackToDevice()$/;"	f	class:DeviceExplorer
-DeviceExplorer::TransferTrackToDevice	DeviceExplorer.h	/^  void TransferTrackToDevice();$/;"	p	class:DeviceExplorer	access:private
+DeviceExplorer::TransferToDevice	DeviceExplorer.cpp	/^void DeviceExplorer::TransferToDevice()$/;"	f	class:DeviceExplorer
+DeviceExplorer::TransferToDevice	DeviceExplorer.h	/^  void TransferToDevice();$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::UpdateProgressBar	DeviceExplorer.cpp	/^void DeviceExplorer::UpdateProgressBar(const QString& label,$/;"	f	class:DeviceExplorer
 DeviceExplorer::UpdateProgressBar	DeviceExplorer.h	/^  void UpdateProgressBar(const QString&, count_t percent);$/;"	p	class:DeviceExplorer	access:public
 DeviceExplorer::ViewPort	DeviceExplorer.h	/^  enum ViewPort$/;"	g	class:DeviceExplorer	access:private
 DeviceExplorer::_addToPlaylist	DeviceExplorer.h	/^  QAction* _addToPlaylist;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_addToQueue	DeviceExplorer.h	/^  QAction* _addToQueue;$/;"	m	class:DeviceExplorer	access:private
-DeviceExplorer::_albumActionList	DeviceExplorer.h	/^  QVector <QAction*> _albumActionList;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_albumModel	DeviceExplorer.h	/^  QSortFilterProxyModel* _albumModel;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_commonDeviceActions	DeviceExplorer.h	/^  QActionGroup* _commonDeviceActions;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_commonFSActions	DeviceExplorer.h	/^  QActionGroup* _commonFSActions;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_delete	DeviceExplorer.h	/^  QAction* _delete;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_deleteFromPlaylist	DeviceExplorer.h	/^  QAction* _deleteFromPlaylist;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_deletePlaylist	DeviceExplorer.h	/^  QAction* _deletePlaylist;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_deleteSeperator	DeviceExplorer.h	/^  QAction* _deleteSeperator;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_device	DeviceExplorer.h	/^  QMtpDevice* _device;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_deviceManagerWidget	DeviceExplorer.h	/^  QLabel* _deviceManagerWidget;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_deviceView	DeviceExplorer.h	/^  QTreeView* _deviceView;$/;"	m	class:DeviceExplorer	access:private
@@ -144,6 +180,7 @@ DeviceExplorer::_fileActionList	DeviceExplorer.h	/^  QVector <QAction*> _fileAct
 DeviceExplorer::_fsDeviceSplit	DeviceExplorer.h	/^  QSplitter* _fsDeviceSplit;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_fsModel	DeviceExplorer.h	/^  QDirModel* _fsModel;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_fsView	DeviceExplorer.h	/^  QListView* _fsView;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_hideQueue	DeviceExplorer.h	/^  QAction* _hideQueue;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_horizontalHeader	DeviceExplorer.h	/^  QHeaderView* _horizontalHeader;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_layout	DeviceExplorer.h	/^  QGridLayout* _layout; $/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_newFolder	DeviceExplorer.h	/^  QAction* _newFolder;$/;"	m	class:DeviceExplorer	access:private
@@ -162,18 +199,17 @@ DeviceExplorer::_showFSTracks	DeviceExplorer.h	/^  QAction* _showFSTracks;$/;"	m
 DeviceExplorer::_sync	DeviceExplorer.h	/^  QAction* _sync;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_tools	DeviceExplorer.h	/^  QToolBar* _tools;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_transferFromDevice	DeviceExplorer.h	/^  QAction* _transferFromDevice;$/;"	m	class:DeviceExplorer	access:private
-DeviceExplorer::_transferTrackToDevice	DeviceExplorer.h	/^  QAction* _transferTrackToDevice;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_transferToDevice	DeviceExplorer.h	/^  QAction* _transferToDevice;$/;"	m	class:DeviceExplorer	access:private
+DeviceExplorer::_unsortedAlbumModel	DeviceExplorer.h	/^  AlbumModel* _unsortedAlbumModel;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_view	DeviceExplorer.h	/^  ViewPort _view;$/;"	m	class:DeviceExplorer	access:private
 DeviceExplorer::_viewQueue	DeviceExplorer.h	/^  QAction* _viewQueue;$/;"	m	class:DeviceExplorer	access:private
-DeviceExplorer::clearActions	DeviceExplorer.cpp	/^void DeviceExplorer::clearActions()$/;"	f	class:DeviceExplorer
 DeviceExplorer::clearActions	DeviceExplorer.h	/^  void clearActions();$/;"	p	class:DeviceExplorer	access:private
-DeviceExplorer::hideAlbumTools	DeviceExplorer.cpp	/^void DeviceExplorer::hideAlbumTools()$/;"	f	class:DeviceExplorer
 DeviceExplorer::hideAlbumTools	DeviceExplorer.h	/^  void hideAlbumTools();$/;"	p	class:DeviceExplorer	access:private
-DeviceExplorer::hideFileTools	DeviceExplorer.cpp	/^void DeviceExplorer::hideFileTools()$/;"	f	class:DeviceExplorer
 DeviceExplorer::hideFileTools	DeviceExplorer.h	/^  void hideFileTools();$/;"	p	class:DeviceExplorer	access:private
-DeviceExplorer::hidePlaylistTools	DeviceExplorer.cpp	/^void DeviceExplorer::hidePlaylistTools()$/;"	f	class:DeviceExplorer
+DeviceExplorer::hideGeneralTools	DeviceExplorer.h	/^  void hideGeneralTools();$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::hidePlaylistTools	DeviceExplorer.h	/^  void hidePlaylistTools();$/;"	p	class:DeviceExplorer	access:private
-DeviceExplorer::setupAlbumTools	DeviceExplorer.cpp	/^void DeviceExplorer::setupAlbumTools()$/;"	f	class:DeviceExplorer
+DeviceExplorer::removeIndexDuplicates	DeviceExplorer.cpp	/^QModelIndexList DeviceExplorer::removeIndexDuplicates($/;"	f	class:DeviceExplorer
+DeviceExplorer::removeIndexDuplicates	DeviceExplorer.h	/^  QModelIndexList removeIndexDuplicates(const QModelIndexList&,$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::setupAlbumTools	DeviceExplorer.h	/^  void setupAlbumTools();$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::setupCommonTools	DeviceExplorer.cpp	/^void DeviceExplorer::setupCommonTools()$/;"	f	class:DeviceExplorer
 DeviceExplorer::setupCommonTools	DeviceExplorer.h	/^  void setupCommonTools();$/;"	p	class:DeviceExplorer	access:private
@@ -183,20 +219,16 @@ DeviceExplorer::setupDeviceView	DeviceExplorer.cpp	/^void DeviceExplorer::setupD
 DeviceExplorer::setupDeviceView	DeviceExplorer.h	/^  void setupDeviceView();$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::setupFileSystemView	DeviceExplorer.cpp	/^void DeviceExplorer::setupFileSystemView()$/;"	f	class:DeviceExplorer
 DeviceExplorer::setupFileSystemView	DeviceExplorer.h	/^  void setupFileSystemView();$/;"	p	class:DeviceExplorer	access:private
-DeviceExplorer::setupFileTools	DeviceExplorer.cpp	/^void DeviceExplorer::setupFileTools()$/;"	f	class:DeviceExplorer
 DeviceExplorer::setupFileTools	DeviceExplorer.h	/^  void setupFileTools();$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::setupMenus	DeviceExplorer.cpp	/^void DeviceExplorer::setupMenus()$/;"	f	class:DeviceExplorer
 DeviceExplorer::setupMenus	DeviceExplorer.h	/^  void setupMenus();$/;"	p	class:DeviceExplorer	access:private
-DeviceExplorer::setupPlaylistTools	DeviceExplorer.cpp	/^void DeviceExplorer::setupPlaylistTools()$/;"	f	class:DeviceExplorer
 DeviceExplorer::setupPlaylistTools	DeviceExplorer.h	/^  void setupPlaylistTools();$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::setupProgressBar	DeviceExplorer.h	/^  void setupProgressBar();$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::setupToolBars	DeviceExplorer.cpp	/^void DeviceExplorer::setupToolBars()$/;"	f	class:DeviceExplorer
 DeviceExplorer::setupToolBars	DeviceExplorer.h	/^  void setupToolBars();$/;"	p	class:DeviceExplorer	access:private
-DeviceExplorer::showAlbumTools	DeviceExplorer.cpp	/^void DeviceExplorer::showAlbumTools()$/;"	f	class:DeviceExplorer
 DeviceExplorer::showAlbumTools	DeviceExplorer.h	/^  void showAlbumTools();$/;"	p	class:DeviceExplorer	access:private
-DeviceExplorer::showFileTools	DeviceExplorer.cpp	/^void DeviceExplorer::showFileTools()$/;"	f	class:DeviceExplorer
 DeviceExplorer::showFileTools	DeviceExplorer.h	/^  void showFileTools();$/;"	p	class:DeviceExplorer	access:private
-DeviceExplorer::showPlaylistTools	DeviceExplorer.cpp	/^void DeviceExplorer::showPlaylistTools()$/;"	f	class:DeviceExplorer
+DeviceExplorer::showGeneralTools	DeviceExplorer.h	/^  void showGeneralTools();$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::showPlaylistTools	DeviceExplorer.h	/^  void showPlaylistTools();$/;"	p	class:DeviceExplorer	access:private
 DeviceExplorer::updateDeviceSpace	DeviceExplorer.cpp	/^void DeviceExplorer::updateDeviceSpace()$/;"	f	class:DeviceExplorer
 DeviceExplorer::updateDeviceSpace	DeviceExplorer.h	/^  void updateDeviceSpace();$/;"	p	class:DeviceExplorer	access:private
@@ -207,9 +239,18 @@ DeviceSelected	QlixMainWindow.h	/^  void DeviceSelected(QMtpDevice*);$/;"	p	clas
 DirModel	DirModel.cpp	/^DirModel::DirModel(MtpDevice* in_dev, QObject* parent) :$/;"	f	class:DirModel
 DirModel	DirModel.h	/^  DirModel(MtpDevice*, QObject* parent = NULL);$/;"	p	class:DirModel	access:public
 DirModel	DirModel.h	/^class DirModel : public QAbstractItemModel$/;"	c	inherits:QAbstractItemModel
+DirModel::AddFile	DirModel.cpp	/^void DirModel::AddFile(MTP::File* in_file)$/;"	f	class:DirModel
+DirModel::AddFile	DirModel.h	/^  void AddFile(MTP::File*);$/;"	p	class:DirModel	access:public
+DirModel::AddFolder	DirModel.cpp	/^void DirModel::AddFolder(MTP::Folder* in_folder)$/;"	f	class:DirModel
+DirModel::AddFolder	DirModel.h	/^  void AddFolder(MTP::Folder*);$/;"	p	class:DirModel	access:public
 DirModel::DirModel	DirModel.cpp	/^DirModel::DirModel(MtpDevice* in_dev, QObject* parent) :$/;"	f	class:DirModel
 DirModel::DirModel	DirModel.h	/^  DirModel(MtpDevice*, QObject* parent = NULL);$/;"	p	class:DirModel	access:public
+DirModel::RemoveFile	DirModel.cpp	/^void DirModel::RemoveFile(MTP::File* in_file)$/;"	f	class:DirModel
+DirModel::RemoveFile	DirModel.h	/^  void RemoveFile(MTP::File*);$/;"	p	class:DirModel	access:public
+DirModel::RemoveFolder	DirModel.cpp	/^void DirModel::RemoveFolder(MTP::Folder* in_folder)$/;"	f	class:DirModel
+DirModel::RemoveFolder	DirModel.h	/^  void RemoveFolder(MTP::Folder*);$/;"	p	class:DirModel	access:public
 DirModel::_device	DirModel.h	/^  MtpDevice* _device;$/;"	m	class:DirModel	access:private
+DirModel::_rootFolder	DirModel.h	/^  MTP::Folder* _rootFolder;$/;"	m	class:DirModel	access:private
 DirModel::columnCount	DirModel.cpp	/^int DirModel::columnCount(const QModelIndex& parent ) const $/;"	f	class:DirModel
 DirModel::columnCount	DirModel.h	/^  int columnCount(const QModelIndex& parent= QModelIndex() ) const;$/;"	p	class:DirModel	access:public
 DirModel::data	DirModel.cpp	/^QVariant DirModel::data(const QModelIndex& index, int role ) const$/;"	f	class:DirModel
@@ -224,8 +265,9 @@ ExclusivelySelected	DeviceChooser.cpp	/^void DeviceChooser::ExclusivelySelected(
 ExclusivelySelected	DeviceChooser.h	/^  void ExclusivelySelected(DeviceButton*, QMtpDevice*); $/;"	p	class:DeviceChooser	access:public
 FileView	DeviceExplorer.h	/^    FileView$/;"	e	enum:DeviceExplorer::ViewPort
 Files	QlixMainWindow.h	/^    Files,$/;"	e	enum:QlixMainWindow::ToolbarView
-FreeSpace	QMtpDevice.cpp	/^void QMtpDevice::FreeSpace(uint64_t* total , uint64_t* free) $/;"	f	class:QMtpDevice
+FreeSpace	QMtpDevice.cpp	/^void QMtpDevice::FreeSpace(uint64_t* out_total , uint64_t* out_free) $/;"	f	class:QMtpDevice
 FreeSpace	QMtpDevice.h	/^  void FreeSpace(uint64_t* , uint64_t*);$/;"	p	class:QMtpDevice	access:public
+GenericCommand	CommandCodes.h	/^  GenericCommand (CommandCode in_code) : ComCode(in_code)$/;"	f	struct:MTPCMD::GenericCommand	access:public
 GenericCommand	CommandCodes.h	/^struct GenericCommand $/;"	s	namespace:MTPCMD
 GetAlbumModel	QMtpDevice.cpp	/^QSortFilterProxyModel* QMtpDevice::GetAlbumModel() const$/;"	f	class:QMtpDevice
 GetAlbumModel	QMtpDevice.h	/^  QSortFilterProxyModel* GetAlbumModel() const;$/;"	p	class:QMtpDevice	access:public
@@ -233,11 +275,11 @@ GetCommand	CommandCodes.h	/^  CommandCode GetCommand()  { return ComCode; }$/;"	
 GetDirModel	QMtpDevice.cpp	/^QSortFilterProxyModel* QMtpDevice::GetDirModel() const$/;"	f	class:QMtpDevice
 GetDirModel	QMtpDevice.h	/^  QSortFilterProxyModel* GetDirModel() const;$/;"	p	class:QMtpDevice	access:public
 GetObj	CommandCodes.h	/^    GetObj,$/;"	e	enum:MTPCMD::CommandCode
-GetObjCmd	CommandCodes.h	/^    GetObjCmd (uint32_t file_id, const QString& in_path)$/;"	f	struct:MTPCMD::GetObjCmd	access:public
+GetObjCmd	CommandCodes.h	/^  GetObjCmd (uint32_t file_id, const QString& in_path): GenericCommand(GetObj)$/;"	f	struct:MTPCMD::GetObjCmd	access:public
 GetObjCmd	CommandCodes.h	/^struct GetObjCmd : GenericCommand$/;"	s	namespace:MTPCMD	inherits:GenericCommand
 GetPlaylistModel	QMtpDevice.cpp	/^QSortFilterProxyModel* QMtpDevice::GetPlaylistModel() const$/;"	f	class:QMtpDevice
 GetPlaylistModel	QMtpDevice.h	/^  QSortFilterProxyModel* GetPlaylistModel() const;$/;"	p	class:QMtpDevice	access:public
-ID	CommandCodes.h	/^    uint32_t ID;$/;"	m	struct:MTPCMD::GetObjCmd	access:public
+ID	CommandCodes.h	/^  uint32_t ID;$/;"	m	struct:MTPCMD::GetObjCmd	access:public
 Icon	QMtpDevice.cpp	/^QIcon QMtpDevice::Icon() { return _icon; }$/;"	f	class:QMtpDevice
 Icon	QMtpDevice.h	/^  QIcon Icon();$/;"	p	class:QMtpDevice	access:public
 Initialize	CommandCodes.h	/^    Initialize,$/;"	e	enum:MTPCMD::CommandCode
@@ -252,17 +294,22 @@ MTPCMD	CommandCodes.h	/^namespace MTPCMD$/;"	n
 MTPCMD::CommandCode	CommandCodes.h	/^enum CommandCode$/;"	g	namespace:MTPCMD
 MTPCMD::CreateFSFolder	CommandCodes.h	/^    CreateFSFolder$/;"	e	enum:MTPCMD::CommandCode
 MTPCMD::CreateFSFolderCmd	CommandCodes.h	/^struct CreateFSFolderCmd: GenericCommand$/;"	s	namespace:MTPCMD	inherits:GenericCommand
-MTPCMD::CreateFSFolderCmd::CreateFSFolderCmd	CommandCodes.h	/^    CreateFSFolderCmd(const QString& in_path, const QString& in_name)$/;"	f	struct:MTPCMD::CreateFSFolderCmd	access:public
+MTPCMD::CreateFSFolderCmd::CreateFSFolderCmd	CommandCodes.h	/^    CreateFSFolderCmd(const QString& in_path, const QString& in_name):$/;"	f	struct:MTPCMD::CreateFSFolderCmd	access:public
 MTPCMD::CreateFSFolderCmd::Name	CommandCodes.h	/^    QString Name;$/;"	m	struct:MTPCMD::CreateFSFolderCmd	access:public
 MTPCMD::CreateFSFolderCmd::Path	CommandCodes.h	/^    QString Path;$/;"	m	struct:MTPCMD::CreateFSFolderCmd	access:public
+MTPCMD::Delete	CommandCodes.h	/^    Delete,$/;"	e	enum:MTPCMD::CommandCode
+MTPCMD::DeleteObjCmd	CommandCodes.h	/^struct DeleteObjCmd : GenericCommand$/;"	s	namespace:MTPCMD	inherits:GenericCommand
+MTPCMD::DeleteObjCmd::DeleteObjCmd	CommandCodes.h	/^  DeleteObjCmd (MTP::GenericObject* in_obj) : GenericCommand(Delete),$/;"	f	struct:MTPCMD::DeleteObjCmd	access:public
+MTPCMD::DeleteObjCmd::Object	CommandCodes.h	/^  MTP::GenericObject* Object;$/;"	m	struct:MTPCMD::DeleteObjCmd	access:public
 MTPCMD::GenericCommand	CommandCodes.h	/^struct GenericCommand $/;"	s	namespace:MTPCMD
 MTPCMD::GenericCommand::ComCode	CommandCodes.h	/^  CommandCode ComCode;$/;"	m	struct:MTPCMD::GenericCommand	access:public
+MTPCMD::GenericCommand::GenericCommand	CommandCodes.h	/^  GenericCommand (CommandCode in_code) : ComCode(in_code)$/;"	f	struct:MTPCMD::GenericCommand	access:public
 MTPCMD::GenericCommand::GetCommand	CommandCodes.h	/^  CommandCode GetCommand()  { return ComCode; }$/;"	f	struct:MTPCMD::GenericCommand	access:public
 MTPCMD::GetObj	CommandCodes.h	/^    GetObj,$/;"	e	enum:MTPCMD::CommandCode
 MTPCMD::GetObjCmd	CommandCodes.h	/^struct GetObjCmd : GenericCommand$/;"	s	namespace:MTPCMD	inherits:GenericCommand
-MTPCMD::GetObjCmd::GetObjCmd	CommandCodes.h	/^    GetObjCmd (uint32_t file_id, const QString& in_path)$/;"	f	struct:MTPCMD::GetObjCmd	access:public
-MTPCMD::GetObjCmd::ID	CommandCodes.h	/^    uint32_t ID;$/;"	m	struct:MTPCMD::GetObjCmd	access:public
-MTPCMD::GetObjCmd::Path	CommandCodes.h	/^    QString Path;$/;"	m	struct:MTPCMD::GetObjCmd	access:public
+MTPCMD::GetObjCmd::GetObjCmd	CommandCodes.h	/^  GetObjCmd (uint32_t file_id, const QString& in_path): GenericCommand(GetObj)$/;"	f	struct:MTPCMD::GetObjCmd	access:public
+MTPCMD::GetObjCmd::ID	CommandCodes.h	/^  uint32_t ID;$/;"	m	struct:MTPCMD::GetObjCmd	access:public
+MTPCMD::GetObjCmd::Path	CommandCodes.h	/^  QString Path;$/;"	m	struct:MTPCMD::GetObjCmd	access:public
 MTPCMD::Initialize	CommandCodes.h	/^    Initialize,$/;"	e	enum:MTPCMD::CommandCode
 MTPCMD::SendFile	CommandCodes.h	/^    SendFile,$/;"	e	enum:MTPCMD::CommandCode
 MTPCMD::SendFileCmd	CommandCodes.h	/^struct SendFileCmd : GenericCommand$/;"	s	namespace:MTPCMD	inherits:GenericCommand
@@ -276,34 +323,43 @@ MtpWatchDog	MtpWatchDog.cpp	/^MtpWatchDog::MtpWatchDog(MtpSubSystem* in_subSyste
 MtpWatchDog	MtpWatchDog.h	/^  MtpWatchDog (MtpSubSystem*, QObject* parent = NULL);$/;"	p	class:MtpWatchDog	access:public
 MtpWatchDog	MtpWatchDog.h	/^class MtpWatchDog : public QThread$/;"	c	inherits:QThread
 MtpWatchDog::DefaultDevice	MtpWatchDog.h	/^  void DefaultDevice(QMtpDevice* Device);$/;"	p	class:MtpWatchDog	access:public
+MtpWatchDog::DeviceAdded	MtpWatchDog.cpp	/^void MtpWatchDog::DeviceAdded(QString in_objRef)$/;"	f	class:MtpWatchDog
+MtpWatchDog::DeviceAdded	MtpWatchDog.h	/^  void DeviceAdded(QString);$/;"	p	class:MtpWatchDog	access:private
 MtpWatchDog::DeviceCountChanged	MtpWatchDog.h	/^  void DeviceCountChanged(count_t );$/;"	p	class:MtpWatchDog	access:public
 MtpWatchDog::Lock	MtpWatchDog.cpp	/^void MtpWatchDog::Lock()$/;"	f	class:MtpWatchDog
 MtpWatchDog::Lock	MtpWatchDog.h	/^  void Lock();$/;"	p	class:MtpWatchDog	access:public
 MtpWatchDog::MtpWatchDog	MtpWatchDog.cpp	/^MtpWatchDog::MtpWatchDog(MtpSubSystem* in_subSystem, QObject* parent) :$/;"	f	class:MtpWatchDog
 MtpWatchDog::MtpWatchDog	MtpWatchDog.h	/^  MtpWatchDog (MtpSubSystem*, QObject* parent = NULL);$/;"	p	class:MtpWatchDog	access:public
 MtpWatchDog::NewDevice	MtpWatchDog.h	/^  void NewDevice(QMtpDevice* Device);$/;"	p	class:MtpWatchDog	access:public
-MtpWatchDog::NoDevices	MtpWatchDog.h	/^  void NoDevices();$/;"	p	class:MtpWatchDog	access:public
+MtpWatchDog::NoDevices	MtpWatchDog.h	/^  void NoDevices(bool);$/;"	p	class:MtpWatchDog	access:public
 MtpWatchDog::Unlock	MtpWatchDog.cpp	/^void MtpWatchDog::Unlock()$/;"	f	class:MtpWatchDog
 MtpWatchDog::Unlock	MtpWatchDog.h	/^  void Unlock();$/;"	p	class:MtpWatchDog	access:public
 MtpWatchDog::_deviceCount	MtpWatchDog.h	/^  count_t _deviceCount;$/;"	m	class:MtpWatchDog	access:private
 MtpWatchDog::_subSystem	MtpWatchDog.h	/^  MtpSubSystem* _subSystem;$/;"	m	class:MtpWatchDog	access:private
 MtpWatchDog::_subSystemLock	MtpWatchDog.h	/^  QMutex _subSystemLock;$/;"	m	class:MtpWatchDog	access:private
+MtpWatchDog::createDevices	MtpWatchDog.cpp	/^void MtpWatchDog::createDevices()$/;"	f	class:MtpWatchDog
+MtpWatchDog::createDevices	MtpWatchDog.h	/^  void createDevices();$/;"	p	class:MtpWatchDog	access:private
+MtpWatchDog::findDefaultDevice	MtpWatchDog.cpp	/^bool MtpWatchDog::findDefaultDevice()$/;"	f	class:MtpWatchDog
+MtpWatchDog::findDefaultDevice	MtpWatchDog.h	/^  bool findDefaultDevice();$/;"	p	class:MtpWatchDog	access:private
 MtpWatchDog::run	MtpWatchDog.cpp	/^void MtpWatchDog::run()$/;"	f	class:MtpWatchDog
 MtpWatchDog::run	MtpWatchDog.h	/^  void run();$/;"	p	class:MtpWatchDog	access:protected
+MtpWatchDog::setupDBUS	MtpWatchDog.cpp	/^void MtpWatchDog::setupDBUS()$/;"	f	class:MtpWatchDog
+MtpWatchDog::setupDBUS	MtpWatchDog.h	/^  void setupDBUS();$/;"	p	class:MtpWatchDog	access:private
 Name	CommandCodes.h	/^    QString Name;$/;"	m	struct:MTPCMD::CreateFSFolderCmd	access:public
 Name	QMtpDevice.cpp	/^QString QMtpDevice::Name() { return  _name; }$/;"	f	class:QMtpDevice
 Name	QMtpDevice.h	/^  QString Name();$/;"	p	class:QMtpDevice	access:public
 NewDevice	MtpWatchDog.h	/^  void NewDevice(QMtpDevice* Device);$/;"	p	class:MtpWatchDog	access:public
-NoDevice	DeviceChooser.h	/^    NoDevice(bool nodevice, QWidget* parent = NULL)$/;"	f	class:DeviceChooser::NoDevice	access:public
+NoDevice	DeviceChooser.h	/^    NoDevice(bool nodevice, QWidget* parent = NULL) : QWidget(parent)$/;"	f	class:DeviceChooser::NoDevice	access:public
 NoDevice	DeviceChooser.h	/^  class NoDevice : public QWidget $/;"	c	class:DeviceChooser	inherits:QWidget	access:private
-NoDevices	DeviceChooser.cpp	/^void DeviceChooser::NoDevices()$/;"	f	class:DeviceChooser
-NoDevices	DeviceChooser.h	/^  void NoDevices();$/;"	p	class:DeviceChooser	access:public
-NoDevices	MtpWatchDog.h	/^  void NoDevices();$/;"	p	class:MtpWatchDog	access:public
+NoDevices	DeviceChooser.cpp	/^void DeviceChooser::NoDevices(bool in_dbusWorking)$/;"	f	class:DeviceChooser
+NoDevices	DeviceChooser.h	/^  void NoDevices(bool);$/;"	p	class:DeviceChooser	access:public
+NoDevices	MtpWatchDog.h	/^  void NoDevices(bool);$/;"	p	class:MtpWatchDog	access:public
 NotATrack	QMtpDevice.h	/^  void NotATrack(SendFileCmd*);$/;"	p	class:QMtpDevice	access:public
+Object	CommandCodes.h	/^  MTP::GenericObject* Object;$/;"	m	struct:MTPCMD::DeleteObjCmd	access:public
 ParentID	CommandCodes.h	/^    uint32_t ParentID;$/;"	m	struct:MTPCMD::SendFileCmd	access:public
 Path	CommandCodes.h	/^    QString Path;$/;"	m	struct:MTPCMD::CreateFSFolderCmd	access:public
-Path	CommandCodes.h	/^    QString Path;$/;"	m	struct:MTPCMD::GetObjCmd	access:public
 Path	CommandCodes.h	/^    QString Path;$/;"	m	struct:MTPCMD::SendFileCmd	access:public
+Path	CommandCodes.h	/^  QString Path;$/;"	m	struct:MTPCMD::GetObjCmd	access:public
 PlaylistModel	PlaylistModel.cpp	/^PlaylistModel::PlaylistModel(MtpDevice* in_dev, QObject* parent) :$/;"	f	class:PlaylistModel
 PlaylistModel	PlaylistModel.h	/^  PlaylistModel(MtpDevice*, QObject* parent = NULL);$/;"	p	class:PlaylistModel	access:public
 PlaylistModel	PlaylistModel.h	/^class PlaylistModel : public QAbstractItemModel$/;"	c	inherits:QAbstractItemModel
@@ -330,7 +386,11 @@ QLIXPREFERENCES	QlixPreferences.h	2;"	d
 QMtpDevice	QMtpDevice.cpp	/^QMtpDevice::QMtpDevice(MtpDevice* in_device, MtpWatchDog* in_watchDog, $/;"	f	class:QMtpDevice
 QMtpDevice	QMtpDevice.h	/^  QMtpDevice(MtpDevice*, MtpWatchDog*, QObject* parent = NULL);$/;"	p	class:QMtpDevice	access:public
 QMtpDevice	QMtpDevice.h	/^class QMtpDevice : public QThread$/;"	c	inherits:QThread
-QMtpDevice::FreeSpace	QMtpDevice.cpp	/^void QMtpDevice::FreeSpace(uint64_t* total , uint64_t* free) $/;"	f	class:QMtpDevice
+QMtpDevice::AddedTrackToAlbum	QMtpDevice.h	/^  void AddedTrackToAlbum(MTP::Track*);$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::CreatedAlbum	QMtpDevice.h	/^  void CreatedAlbum(MTP::Album*);$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::DeleteObject	QMtpDevice.cpp	/^void QMtpDevice::DeleteObject(MTP::GenericObject* obj)$/;"	f	class:QMtpDevice
+QMtpDevice::DeleteObject	QMtpDevice.h	/^  void DeleteObject(MTP::GenericObject*);$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::FreeSpace	QMtpDevice.cpp	/^void QMtpDevice::FreeSpace(uint64_t* out_total , uint64_t* out_free) $/;"	f	class:QMtpDevice
 QMtpDevice::FreeSpace	QMtpDevice.h	/^  void FreeSpace(uint64_t* , uint64_t*);$/;"	p	class:QMtpDevice	access:public
 QMtpDevice::GetAlbumModel	QMtpDevice.cpp	/^QSortFilterProxyModel* QMtpDevice::GetAlbumModel() const$/;"	f	class:QMtpDevice
 QMtpDevice::GetAlbumModel	QMtpDevice.h	/^  QSortFilterProxyModel* GetAlbumModel() const;$/;"	p	class:QMtpDevice	access:public
@@ -353,13 +413,25 @@ QMtpDevice::Progress	QMtpDevice.cpp	/^void QMtpDevice::Progress(uint64_t const s
 QMtpDevice::Progress	QMtpDevice.h	/^  void Progress(uint64_t const sent, uint64_t const total);$/;"	p	class:QMtpDevice	access:public
 QMtpDevice::QMtpDevice	QMtpDevice.cpp	/^QMtpDevice::QMtpDevice(MtpDevice* in_device, MtpWatchDog* in_watchDog, $/;"	f	class:QMtpDevice
 QMtpDevice::QMtpDevice	QMtpDevice.h	/^  QMtpDevice(MtpDevice*, MtpWatchDog*, QObject* parent = NULL);$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::RemovedAlbum	QMtpDevice.h	/^  void RemovedAlbum(MTP::Album*);$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::RemovedFile	QMtpDevice.h	/^  void RemovedFile(MTP::File*);$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::RemovedFolder	QMtpDevice.h	/^  void RemovedFolder(MTP::Folder*);$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::RemovedTrack	QMtpDevice.h	/^  void RemovedTrack(MTP::Track*);$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::SelectedStorage	QMtpDevice.cpp	/^unsigned int QMtpDevice::SelectedStorage()$/;"	f	class:QMtpDevice
+QMtpDevice::SelectedStorage	QMtpDevice.h	/^  unsigned int SelectedStorage();$/;"	p	class:QMtpDevice	access:public
 QMtpDevice::Serial	QMtpDevice.cpp	/^QString QMtpDevice::Serial() { return  _serial; }$/;"	f	class:QMtpDevice
 QMtpDevice::Serial	QMtpDevice.h	/^  QString Serial();$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::SetSelectedStorage	QMtpDevice.cpp	/^void QMtpDevice::SetSelectedStorage(count_t in_storageID)$/;"	f	class:QMtpDevice
+QMtpDevice::SetSelectedStorage	QMtpDevice.h	/^  void SetSelectedStorage(count_t);$/;"	p	class:QMtpDevice	access:public
 QMtpDevice::SetupFileTransfer	QMtpDevice.cpp	/^MTP::File* QMtpDevice::SetupFileTransfer(const char* in_filename, $/;"	f	class:QMtpDevice
 QMtpDevice::SetupFileTransfer	QMtpDevice.h	/^  MTP::File* SetupFileTransfer(const char*,  uint64_t,  count_t, $/;"	p	class:QMtpDevice	access:private
 QMtpDevice::SetupTrackTransfer	QMtpDevice.cpp	/^MTP::Track* QMtpDevice::SetupTrackTransfer(TagLib::FileRef tagFile,$/;"	f	class:QMtpDevice
-QMtpDevice::SetupTrackTransfer	QMtpDevice.h	/^  MTP::Track* SetupTrackTransfer(TagLib::FileRef tagFile, const char*, $/;"	p	class:QMtpDevice	access:private
-QMtpDevice::TrackTransferComplete	QMtpDevice.h	/^  void TrackTransferComplete(bool success, GenericCommand*);$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::SetupTrackTransfer	QMtpDevice.h	/^  MTP::Track* SetupTrackTransfer(TagLib::FileRef tagFile, const QString&, $/;"	p	class:QMtpDevice	access:private
+QMtpDevice::StorageDevice	QMtpDevice.cpp	/^MtpStorage* QMtpDevice::StorageDevice(unsigned int in_idx)$/;"	f	class:QMtpDevice
+QMtpDevice::StorageDevice	QMtpDevice.h	/^  MtpStorage* StorageDevice(unsigned int);$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::StorageDeviceCount	QMtpDevice.cpp	/^unsigned int QMtpDevice::StorageDeviceCount()$/;"	f	class:QMtpDevice
+QMtpDevice::StorageDeviceCount	QMtpDevice.h	/^  unsigned int StorageDeviceCount();$/;"	p	class:QMtpDevice	access:public
+QMtpDevice::TrackTransferComplete	QMtpDevice.h	/^  void TrackTransferComplete(MTP::Track*);$/;"	p	class:QMtpDevice	access:public
 QMtpDevice::TransferFrom	QMtpDevice.cpp	/^void QMtpDevice::TransferFrom(MTP::GenericObject* obj, QString filePath)$/;"	f	class:QMtpDevice
 QMtpDevice::TransferFrom	QMtpDevice.h	/^  void TransferFrom(MTP::GenericObject*, QString );$/;"	p	class:QMtpDevice	access:public
 QMtpDevice::TransferTrack	QMtpDevice.cpp	/^void QMtpDevice::TransferTrack(QString inpath) $/;"	f	class:QMtpDevice
@@ -378,13 +450,20 @@ QMtpDevice::_serial	QMtpDevice.h	/^  QString _serial;$/;"	m	class:QMtpDevice	acc
 QMtpDevice::_sortedAlbums	QMtpDevice.h	/^    QSortFilterProxyModel* _sortedAlbums;$/;"	m	class:QMtpDevice	access:private
 QMtpDevice::_sortedFiles	QMtpDevice.h	/^    MtpDirSorter* _sortedFiles;$/;"	m	class:QMtpDevice	access:private
 QMtpDevice::_sortedPlaylists	QMtpDevice.h	/^    QSortFilterProxyModel* _sortedPlaylists;$/;"	m	class:QMtpDevice	access:private
+QMtpDevice::_storageID	QMtpDevice.h	/^  count_t _storageID;$/;"	m	class:QMtpDevice	access:private
 QMtpDevice::_watchDog	QMtpDevice.h	/^  MtpWatchDog* _watchDog;$/;"	m	class:QMtpDevice	access:private
+QMtpDevice::deleteObject	QMtpDevice.cpp	/^void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)$/;"	f	class:QMtpDevice
+QMtpDevice::deleteObject	QMtpDevice.h	/^  void deleteObject(MTP::GenericObject*);$/;"	p	class:QMtpDevice	access:private
+QMtpDevice::discoverCoverArt	QMtpDevice.cpp	/^bool QMtpDevice::discoverCoverArt(const QString& in_path,$/;"	f	class:QMtpDevice
+QMtpDevice::discoverCoverArt	QMtpDevice.h	/^  bool discoverCoverArt(const QString& in_path,$/;"	p	class:QMtpDevice	access:private
 QMtpDevice::findAndRetrieveDeviceIcon	QMtpDevice.cpp	/^void QMtpDevice::findAndRetrieveDeviceIcon()$/;"	f	class:QMtpDevice
 QMtpDevice::findAndRetrieveDeviceIcon	QMtpDevice.h	/^  void findAndRetrieveDeviceIcon();$/;"	p	class:QMtpDevice	access:private
 QMtpDevice::initializeDeviceStructures	QMtpDevice.cpp	/^void QMtpDevice::initializeDeviceStructures()$/;"	f	class:QMtpDevice
 QMtpDevice::initializeDeviceStructures	QMtpDevice.h	/^  void initializeDeviceStructures();$/;"	p	class:QMtpDevice	access:private
 QMtpDevice::lockusb	QMtpDevice.cpp	/^void QMtpDevice::lockusb()$/;"	f	class:QMtpDevice
 QMtpDevice::lockusb	QMtpDevice.h	/^  void lockusb();$/;"	p	class:QMtpDevice	access:private
+QMtpDevice::proccessJob	QMtpDevice.cpp	/^void QMtpDevice::proccessJob(GenericCommand* currentJob)$/;"	f	class:QMtpDevice
+QMtpDevice::proccessJob	QMtpDevice.h	/^  void proccessJob(GenericCommand*);$/;"	p	class:QMtpDevice	access:private
 QMtpDevice::progressWrapper	QMtpDevice.cpp	/^int QMtpDevice::progressWrapper(uint64_t const sent, uint64_t const total, const void* const data)$/;"	f	class:QMtpDevice
 QMtpDevice::progressWrapper	QMtpDevice.h	/^  static int progressWrapper(uint64_t const sent, uint64_t const total, $/;"	p	class:QMtpDevice	access:private
 QMtpDevice::run	QMtpDevice.cpp	/^void QMtpDevice::run()$/;"	f	class:QMtpDevice
@@ -392,8 +471,8 @@ QMtpDevice::run	QMtpDevice.h	/^  void run();$/;"	p	class:QMtpDevice	access:prote
 QMtpDevice::syncFile	QMtpDevice.cpp	/^bool QMtpDevice::syncFile(const QString& in_path, uint32_t parent)$/;"	f	class:QMtpDevice
 QMtpDevice::syncFile	QMtpDevice.h	/^  bool syncFile();$/;"	p	class:QMtpDevice	access:private
 QMtpDevice::syncFile	QMtpDevice.h	/^  bool syncFile(const QString& path, uint32_t parent);$/;"	p	class:QMtpDevice	access:private
-QMtpDevice::syncTrack	QMtpDevice.cpp	/^bool QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)$/;"	f	class:QMtpDevice
-QMtpDevice::syncTrack	QMtpDevice.h	/^  bool syncTrack(TagLib::FileRef, uint32_t parent); $/;"	p	class:QMtpDevice	access:private
+QMtpDevice::syncTrack	QMtpDevice.cpp	/^void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)$/;"	f	class:QMtpDevice
+QMtpDevice::syncTrack	QMtpDevice.h	/^  void syncTrack(TagLib::FileRef, uint32_t parent); $/;"	p	class:QMtpDevice	access:private
 QMtpDevice::unlockusb	QMtpDevice.cpp	/^void QMtpDevice::unlockusb()$/;"	f	class:QMtpDevice
 QMtpDevice::unlockusb	QMtpDevice.h	/^  void unlockusb();$/;"	p	class:QMtpDevice	access:private
 QlixMainWindow	QlixMainWindow.cpp	/^QlixMainWindow::QlixMainWindow(MtpSubSystem* in_subsystem)$/;"	f	class:QlixMainWindow
@@ -414,12 +493,18 @@ QlixMainWindow::_albumlistAction	QlixMainWindow.h	/^  QAction* _albumlistAction;
 QlixMainWindow::_currentDevice	QlixMainWindow.h	/^  QMtpDevice* _currentDevice;$/;"	m	class:QlixMainWindow	access:private
 QlixMainWindow::_deviceChooser	QlixMainWindow.h	/^  DeviceChooser* _deviceChooser;$/;"	m	class:QlixMainWindow	access:private
 QlixMainWindow::_deviceExplorer	QlixMainWindow.h	/^  DeviceExplorer* _deviceExplorer;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_deviceExplorerActions	QlixMainWindow.h	/^  QActionGroup* _deviceExplorerActions;$/;"	m	class:QlixMainWindow	access:private
 QlixMainWindow::_filelistAction	QlixMainWindow.h	/^  QAction* _filelistAction;$/;"	m	class:QlixMainWindow	access:private
 QlixMainWindow::_manageDeviceAction	QlixMainWindow.h	/^  QAction* _manageDeviceAction;$/;"	m	class:QlixMainWindow	access:private
 QlixMainWindow::_navBar	QlixMainWindow.h	/^  QToolBar* _navBar;$/;"	m	class:QlixMainWindow	access:private
 QlixMainWindow::_playlistAction	QlixMainWindow.h	/^  QAction* _playlistAction;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_playlistMenu	QlixMainWindow.h	/^  QMenu* _playlistMenu;$/;"	m	class:QlixMainWindow	access:private
 QlixMainWindow::_preferencesAction	QlixMainWindow.h	/^  QAction* _preferencesAction;$/;"	m	class:QlixMainWindow	access:private
 QlixMainWindow::_progressBar	QlixMainWindow.h	/^  QProgressBar* _progressBar;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_showDeviceTracks	QlixMainWindow.h	/^  QAction* _showDeviceTracks;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_showFileSystem	QlixMainWindow.h	/^  QAction* _showFileSystem;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_showQueue	QlixMainWindow.h	/^  QAction* _showQueue;$/;"	m	class:QlixMainWindow	access:private
+QlixMainWindow::_showQueueSeparator	QlixMainWindow.h	/^  QAction* _showQueueSeparator;$/;"	m	class:QlixMainWindow	access:private
 QlixMainWindow::_statusBar	QlixMainWindow.h	/^  QStatusBar* _statusBar;$/;"	m	class:QlixMainWindow	access:private
 QlixMainWindow::_watchDog	QlixMainWindow.h	/^  MtpWatchDog* _watchDog;$/;"	m	class:QlixMainWindow	access:private
 QlixMainWindow::setupActions	QlixMainWindow.cpp	/^void QlixMainWindow::setupActions()$/;"	f	class:QlixMainWindow
@@ -442,6 +527,8 @@ QlixPreferences::QlixPreferences	QlixPreferences.cpp	/^QlixPreferences::QlixPref
 QlixPreferences::QlixPreferences	QlixPreferences.h	/^  QlixPreferences(QObject* parent = NULL);$/;"	p	class:QlixPreferences	access:public
 QlixPreferences::_defaultDeviceLabel	QlixPreferences.h	/^  QLabel* _defaultDeviceLabel;$/;"	m	class:QlixPreferences	access:private
 QlixPreferences::_defaultDeviceLine	QlixPreferences.h	/^  QLineEdit* _defaultDeviceLine;$/;"	m	class:QlixPreferences	access:private
+QlixPreferences::_defaultDirPathLabel	QlixPreferences.h	/^  QLabel* _defaultDirPathLabel;$/;"	m	class:QlixPreferences	access:private
+QlixPreferences::_defaultDirPathLine	QlixPreferences.h	/^  QLineEdit* _defaultDirPathLine;$/;"	m	class:QlixPreferences	access:private
 QlixPreferences::_layout	QlixPreferences.h	/^  QGridLayout* _layout;$/;"	m	class:QlixPreferences	access:private
 QlixPreferences::_saveAction	QlixPreferences.h	/^  QAction* _saveAction;$/;"	m	class:QlixPreferences	access:private
 QlixPreferences::_saveButton	QlixPreferences.h	/^  QToolButton* _saveButton;$/;"	m	class:QlixPreferences	access:private
@@ -452,20 +539,37 @@ QueueState	DeviceExplorer.cpp	/^bool DeviceExplorer::QueueState() { return _queu
 QueueState	DeviceExplorer.h	/^  bool QueueState();$/;"	p	class:DeviceExplorer	access:public
 Reinitialize	DeviceChooser.cpp	/^void DeviceChooser::Reinitialize()$/;"	f	class:DeviceChooser
 Reinitialize	DeviceChooser.h	/^  void Reinitialize();$/;"	p	class:DeviceChooser	access:public
+RemoveAlbum	AlbumModel.cpp	/^void AlbumModel::RemoveAlbum(MTP::Album* in_album)$/;"	f	class:AlbumModel
+RemoveAlbum	AlbumModel.h	/^  void RemoveAlbum(MTP::Album*);$/;"	p	class:AlbumModel	access:public
 RemoveCheck	DeviceButton.cpp	/^void DeviceButton::RemoveCheck()$/;"	f	class:DeviceButton
 RemoveCheck	DeviceButton.h	/^  void RemoveCheck();$/;"	p	class:DeviceButton	access:public
+RemoveFile	DirModel.cpp	/^void DirModel::RemoveFile(MTP::File* in_file)$/;"	f	class:DirModel
+RemoveFile	DirModel.h	/^  void RemoveFile(MTP::File*);$/;"	p	class:DirModel	access:public
+RemoveFolder	DirModel.cpp	/^void DirModel::RemoveFolder(MTP::Folder* in_folder)$/;"	f	class:DirModel
+RemoveFolder	DirModel.h	/^  void RemoveFolder(MTP::Folder*);$/;"	p	class:DirModel	access:public
+RemoveTrack	AlbumModel.cpp	/^void AlbumModel::RemoveTrack(MTP::Track* in_track)$/;"	f	class:AlbumModel
+RemoveTrack	AlbumModel.h	/^  void RemoveTrack(MTP::Track*);$/;"	p	class:AlbumModel	access:public
+RemovedAlbum	QMtpDevice.h	/^  void RemovedAlbum(MTP::Album*);$/;"	p	class:QMtpDevice	access:public
+RemovedFile	QMtpDevice.h	/^  void RemovedFile(MTP::File*);$/;"	p	class:QMtpDevice	access:public
+RemovedFolder	QMtpDevice.h	/^  void RemovedFolder(MTP::Folder*);$/;"	p	class:QMtpDevice	access:public
+RemovedTrack	QMtpDevice.h	/^  void RemovedTrack(MTP::Track*);$/;"	p	class:QMtpDevice	access:public
 Selected	DeviceButton.h	/^  void Selected(QMtpDevice*);$/;"	p	class:DeviceButton	access:public
+SelectedStorage	QMtpDevice.cpp	/^unsigned int QMtpDevice::SelectedStorage()$/;"	f	class:QMtpDevice
+SelectedStorage	QMtpDevice.h	/^  unsigned int SelectedStorage();$/;"	p	class:QMtpDevice	access:public
 SendFile	CommandCodes.h	/^    SendFile,$/;"	e	enum:MTPCMD::CommandCode
 SendFileCmd	CommandCodes.h	/^    SendFileCmd (QString in_path, uint32_t in_parent, $/;"	f	struct:MTPCMD::SendFileCmd	access:public
 SendFileCmd	CommandCodes.h	/^struct SendFileCmd : GenericCommand$/;"	s	namespace:MTPCMD	inherits:GenericCommand
 Serial	QMtpDevice.cpp	/^QString QMtpDevice::Serial() { return  _serial; }$/;"	f	class:QMtpDevice
 Serial	QMtpDevice.h	/^  QString Serial();$/;"	p	class:QMtpDevice	access:public
+SetDBusSearch	DeviceChooser.h	/^    void SetDBusSearch()$/;"	f	class:DeviceChooser::NoDevice	access:public
 SetProgressBar	DeviceExplorer.cpp	/^void DeviceExplorer::SetProgressBar(QProgressBar* in_progressbar)$/;"	f	class:DeviceExplorer
 SetProgressBar	DeviceExplorer.h	/^  void SetProgressBar(QProgressBar*);$/;"	p	class:DeviceExplorer	access:public
+SetSelectedStorage	QMtpDevice.cpp	/^void QMtpDevice::SetSelectedStorage(count_t in_storageID)$/;"	f	class:QMtpDevice
+SetSelectedStorage	QMtpDevice.h	/^  void SetSelectedStorage(count_t);$/;"	p	class:QMtpDevice	access:public
 SetupFileTransfer	QMtpDevice.cpp	/^MTP::File* QMtpDevice::SetupFileTransfer(const char* in_filename, $/;"	f	class:QMtpDevice
 SetupFileTransfer	QMtpDevice.h	/^  MTP::File* SetupFileTransfer(const char*,  uint64_t,  count_t, $/;"	p	class:QMtpDevice	access:private
 SetupTrackTransfer	QMtpDevice.cpp	/^MTP::Track* QMtpDevice::SetupTrackTransfer(TagLib::FileRef tagFile,$/;"	f	class:QMtpDevice
-SetupTrackTransfer	QMtpDevice.h	/^  MTP::Track* SetupTrackTransfer(TagLib::FileRef tagFile, const char*, $/;"	p	class:QMtpDevice	access:private
+SetupTrackTransfer	QMtpDevice.h	/^  MTP::Track* SetupTrackTransfer(TagLib::FileRef tagFile, const QString&, $/;"	p	class:QMtpDevice	access:private
 ShowAlbums	DeviceExplorer.cpp	/^void DeviceExplorer::ShowAlbums()$/;"	f	class:DeviceExplorer
 ShowAlbums	DeviceExplorer.h	/^  void ShowAlbums();$/;"	p	class:DeviceExplorer	access:public
 ShowDeviceManager	DeviceExplorer.cpp	/^void DeviceExplorer::ShowDeviceManager()$/;"	f	class:DeviceExplorer
@@ -478,16 +582,22 @@ ShowPreferences	DeviceExplorer.cpp	/^void DeviceExplorer::ShowPreferences()$/;"	
 ShowPreferences	DeviceExplorer.h	/^  void ShowPreferences();$/;"	p	class:DeviceExplorer	access:public
 ShowQueue	DeviceExplorer.cpp	/^void DeviceExplorer::ShowQueue( bool showQueue )$/;"	f	class:DeviceExplorer
 ShowQueue	DeviceExplorer.h	/^  void ShowQueue(bool);$/;"	p	class:DeviceExplorer	access:public
+StorageDevice	QMtpDevice.cpp	/^MtpStorage* QMtpDevice::StorageDevice(unsigned int in_idx)$/;"	f	class:QMtpDevice
+StorageDevice	QMtpDevice.h	/^  MtpStorage* StorageDevice(unsigned int);$/;"	p	class:QMtpDevice	access:public
+StorageDeviceCount	QMtpDevice.cpp	/^unsigned int QMtpDevice::StorageDeviceCount()$/;"	f	class:QMtpDevice
+StorageDeviceCount	QMtpDevice.h	/^  unsigned int StorageDeviceCount();$/;"	p	class:QMtpDevice	access:public
+SwitchFilesystemDir	DeviceExplorer.cpp	/^void DeviceExplorer::SwitchFilesystemDir(const QModelIndex& tmpIdx)$/;"	f	class:DeviceExplorer
+SwitchFilesystemDir	DeviceExplorer.h	/^  void SwitchFilesystemDir(const QModelIndex&);$/;"	p	class:DeviceExplorer	access:private
 ToolbarView	QlixMainWindow.h	/^  enum ToolbarView$/;"	g	class:QlixMainWindow	access:private
-TrackTransferComplete	QMtpDevice.h	/^  void TrackTransferComplete(bool success, GenericCommand*);$/;"	p	class:QMtpDevice	access:public
+TrackTransferComplete	QMtpDevice.h	/^  void TrackTransferComplete(MTP::Track*);$/;"	p	class:QMtpDevice	access:public
 TransferFrom	QMtpDevice.cpp	/^void QMtpDevice::TransferFrom(MTP::GenericObject* obj, QString filePath)$/;"	f	class:QMtpDevice
 TransferFrom	QMtpDevice.h	/^  void TransferFrom(MTP::GenericObject*, QString );$/;"	p	class:QMtpDevice	access:public
 TransferFromDevice	DeviceExplorer.cpp	/^void DeviceExplorer::TransferFromDevice()$/;"	f	class:DeviceExplorer
 TransferFromDevice	DeviceExplorer.h	/^  void TransferFromDevice();$/;"	p	class:DeviceExplorer	access:private
+TransferToDevice	DeviceExplorer.cpp	/^void DeviceExplorer::TransferToDevice()$/;"	f	class:DeviceExplorer
+TransferToDevice	DeviceExplorer.h	/^  void TransferToDevice();$/;"	p	class:DeviceExplorer	access:private
 TransferTrack	QMtpDevice.cpp	/^void QMtpDevice::TransferTrack(QString inpath) $/;"	f	class:QMtpDevice
 TransferTrack	QMtpDevice.h	/^  void TransferTrack(QString filepath);$/;"	p	class:QMtpDevice	access:public
-TransferTrackToDevice	DeviceExplorer.cpp	/^void DeviceExplorer::TransferTrackToDevice()$/;"	f	class:DeviceExplorer
-TransferTrackToDevice	DeviceExplorer.h	/^  void TransferTrackToDevice();$/;"	p	class:DeviceExplorer	access:private
 Unlock	MtpWatchDog.cpp	/^void MtpWatchDog::Unlock()$/;"	f	class:MtpWatchDog
 Unlock	MtpWatchDog.h	/^  void Unlock();$/;"	p	class:MtpWatchDog	access:public
 UpdateProgress	QMtpDevice.h	/^  void UpdateProgress(QString, count_t);$/;"	p	class:QMtpDevice	access:public
@@ -505,7 +615,7 @@ __QLIXMAINWINDOW__	QlixMainWindow.h	2;"	d
 __QMTPDEVICE__	QMtpDevice.h	2;"	d
 _addToPlaylist	DeviceExplorer.h	/^  QAction* _addToPlaylist;$/;"	m	class:DeviceExplorer	access:private
 _addToQueue	DeviceExplorer.h	/^  QAction* _addToQueue;$/;"	m	class:DeviceExplorer	access:private
-_albumActionList	DeviceExplorer.h	/^  QVector <QAction*> _albumActionList;$/;"	m	class:DeviceExplorer	access:private
+_albumList	AlbumModel.h	/^  QVector<MTP::Album*> _albumList;$/;"	m	class:AlbumModel	access:private
 _albumModel	DeviceExplorer.h	/^  QSortFilterProxyModel* _albumModel;$/;"	m	class:DeviceExplorer	access:private
 _albumModel	QMtpDevice.h	/^  AlbumModel* _albumModel;$/;"	m	class:QMtpDevice	access:private
 _albumlistAction	QlixMainWindow.h	/^  QAction* _albumlistAction;$/;"	m	class:QlixMainWindow	access:private
@@ -514,12 +624,18 @@ _button	DeviceButton.h	/^  QToolButton* _button;$/;"	m	class:DeviceButton	access
 _checkBox	DeviceButton.h	/^  QCheckBox* _checkBox;$/;"	m	class:DeviceButton	access:private
 _chooserGroupBox	DeviceChooser.h	/^  QGroupBox*  _chooserGroupBox;$/;"	m	class:DeviceChooser	access:private
 _chooserLayout	DeviceChooser.h	/^  QGridLayout* _chooserLayout;$/;"	m	class:DeviceChooser	access:private
+_comboBox	DeviceButton.h	/^  QComboBox* _comboBox;$/;"	m	class:DeviceButton	access:private
+_commonDeviceActions	DeviceExplorer.h	/^  QActionGroup* _commonDeviceActions;$/;"	m	class:DeviceExplorer	access:private
+_commonFSActions	DeviceExplorer.h	/^  QActionGroup* _commonFSActions;$/;"	m	class:DeviceExplorer	access:private
 _currentDevice	QlixMainWindow.h	/^  QMtpDevice* _currentDevice;$/;"	m	class:QlixMainWindow	access:private
 _defaultDeviceLabel	QlixPreferences.h	/^  QLabel* _defaultDeviceLabel;$/;"	m	class:QlixPreferences	access:private
 _defaultDeviceLine	QlixPreferences.h	/^  QLineEdit* _defaultDeviceLine;$/;"	m	class:QlixPreferences	access:private
+_defaultDirPathLabel	QlixPreferences.h	/^  QLabel* _defaultDirPathLabel;$/;"	m	class:QlixPreferences	access:private
+_defaultDirPathLine	QlixPreferences.h	/^  QLineEdit* _defaultDirPathLine;$/;"	m	class:QlixPreferences	access:private
 _delete	DeviceExplorer.h	/^  QAction* _delete;$/;"	m	class:DeviceExplorer	access:private
 _deleteFromPlaylist	DeviceExplorer.h	/^  QAction* _deleteFromPlaylist;$/;"	m	class:DeviceExplorer	access:private
 _deletePlaylist	DeviceExplorer.h	/^  QAction* _deletePlaylist;$/;"	m	class:DeviceExplorer	access:private
+_deleteSeperator	DeviceExplorer.h	/^  QAction* _deleteSeperator;$/;"	m	class:DeviceExplorer	access:private
 _detectDevicesWidget	DeviceChooser.h	/^  NoDevice* _detectDevicesWidget;$/;"	m	class:DeviceChooser	access:private
 _device	AlbumModel.h	/^  MtpDevice* _device;$/;"	m	class:AlbumModel	access:private
 _device	DeviceButton.h	/^  QMtpDevice* _device;$/;"	m	class:DeviceButton	access:private
@@ -531,6 +647,7 @@ _deviceButtons	DeviceChooser.h	/^  QButtonVector _deviceButtons;$/;"	m	class:Dev
 _deviceChooser	QlixMainWindow.h	/^  DeviceChooser* _deviceChooser;$/;"	m	class:QlixMainWindow	access:private
 _deviceCount	MtpWatchDog.h	/^  count_t _deviceCount;$/;"	m	class:MtpWatchDog	access:private
 _deviceExplorer	QlixMainWindow.h	/^  DeviceExplorer* _deviceExplorer;$/;"	m	class:QlixMainWindow	access:private
+_deviceExplorerActions	QlixMainWindow.h	/^  QActionGroup* _deviceExplorerActions;$/;"	m	class:QlixMainWindow	access:private
 _deviceManagerWidget	DeviceExplorer.h	/^  QLabel* _deviceManagerWidget;$/;"	m	class:DeviceExplorer	access:private
 _deviceView	DeviceExplorer.h	/^  QTreeView* _deviceView;$/;"	m	class:DeviceExplorer	access:private
 _devices	DeviceChooser.h	/^  QVector <QMtpDevice*> _devices;$/;"	m	class:DeviceChooser	access:private
@@ -541,6 +658,7 @@ _filelistAction	QlixMainWindow.h	/^  QAction* _filelistAction;$/;"	m	class:QlixM
 _fsDeviceSplit	DeviceExplorer.h	/^  QSplitter* _fsDeviceSplit;$/;"	m	class:DeviceExplorer	access:private
 _fsModel	DeviceExplorer.h	/^  QDirModel* _fsModel;$/;"	m	class:DeviceExplorer	access:private
 _fsView	DeviceExplorer.h	/^  QListView* _fsView;$/;"	m	class:DeviceExplorer	access:private
+_hideQueue	DeviceExplorer.h	/^  QAction* _hideQueue;$/;"	m	class:DeviceExplorer	access:private
 _horizontalHeader	DeviceExplorer.h	/^  QHeaderView* _horizontalHeader;$/;"	m	class:DeviceExplorer	access:private
 _icon	QMtpDevice.h	/^  QIcon _icon;$/;"	m	class:QMtpDevice	access:private
 _image	DeviceChooser.h	/^    QLabel* _image;$/;"	m	class:DeviceChooser::NoDevice	access:private
@@ -550,6 +668,7 @@ _layout	DeviceChooser.h	/^    QGridLayout* _layout;$/;"	m	class:DeviceChooser::N
 _layout	DeviceExplorer.h	/^  QGridLayout* _layout; $/;"	m	class:DeviceExplorer	access:private
 _layout	QlixPreferences.h	/^  QGridLayout* _layout;$/;"	m	class:QlixPreferences	access:private
 _manageDeviceAction	QlixMainWindow.h	/^  QAction* _manageDeviceAction;$/;"	m	class:QlixMainWindow	access:private
+_modelLock	AlbumModel.h	/^  QMutex* _modelLock;$/;"	m	class:AlbumModel	access:private
 _name	QMtpDevice.h	/^  QString _name;$/;"	m	class:QMtpDevice	access:private
 _navBar	QlixMainWindow.h	/^  QToolBar* _navBar;$/;"	m	class:QlixMainWindow	access:private
 _newFolder	DeviceExplorer.h	/^  QAction* _newFolder;$/;"	m	class:DeviceExplorer	access:private
@@ -561,6 +680,7 @@ _plModel	DeviceExplorer.h	/^  QSortFilterProxyModel* _plModel;$/;"	m	class:Devic
 _plModel	QMtpDevice.h	/^  PlaylistModel* _plModel;$/;"	m	class:QMtpDevice	access:private
 _playlistAction	QlixMainWindow.h	/^  QAction* _playlistAction;$/;"	m	class:QlixMainWindow	access:private
 _playlistActionList	DeviceExplorer.h	/^  QVector <QAction*> _playlistActionList;$/;"	m	class:DeviceExplorer	access:private
+_playlistMenu	QlixMainWindow.h	/^  QMenu* _playlistMenu;$/;"	m	class:QlixMainWindow	access:private
 _preferencesAction	QlixMainWindow.h	/^  QAction* _preferencesAction;$/;"	m	class:QlixMainWindow	access:private
 _preferencesWidget	DeviceExplorer.h	/^  QlixPreferences* _preferencesWidget;$/;"	m	class:DeviceExplorer	access:private
 _progressBar	DeviceExplorer.h	/^  QProgressBar* _progressBar;$/;"	m	class:DeviceExplorer	access:private
@@ -569,16 +689,22 @@ _progressBarSpacer	DeviceExplorer.h	/^  QSpacerItem* _progressBarSpacer;$/;"	m	c
 _queueShown	DeviceExplorer.h	/^  bool _queueShown;$/;"	m	class:DeviceExplorer	access:private
 _queueSplit	DeviceExplorer.h	/^  QSplitter* _queueSplit;$/;"	m	class:DeviceExplorer	access:private
 _queueView	DeviceExplorer.h	/^  QListView* _queueView;$/;"	m	class:DeviceExplorer	access:private
+_rootFolder	DirModel.h	/^  MTP::Folder* _rootFolder;$/;"	m	class:DirModel	access:private
 _saveAction	QlixPreferences.h	/^  QAction* _saveAction;$/;"	m	class:QlixPreferences	access:private
 _saveButton	QlixPreferences.h	/^  QToolButton* _saveButton;$/;"	m	class:QlixPreferences	access:private
 _serial	QMtpDevice.h	/^  QString _serial;$/;"	m	class:QMtpDevice	access:private
 _settings	QlixPreferences.h	/^  QSettings _settings;$/;"	m	class:QlixPreferences	access:private
 _showDeviceTracks	DeviceExplorer.h	/^  QAction* _showDeviceTracks;$/;"	m	class:DeviceExplorer	access:private
+_showDeviceTracks	QlixMainWindow.h	/^  QAction* _showDeviceTracks;$/;"	m	class:QlixMainWindow	access:private
 _showFSTracks	DeviceExplorer.h	/^  QAction* _showFSTracks;$/;"	m	class:DeviceExplorer	access:private
+_showFileSystem	QlixMainWindow.h	/^  QAction* _showFileSystem;$/;"	m	class:QlixMainWindow	access:private
+_showQueue	QlixMainWindow.h	/^  QAction* _showQueue;$/;"	m	class:QlixMainWindow	access:private
+_showQueueSeparator	QlixMainWindow.h	/^  QAction* _showQueueSeparator;$/;"	m	class:QlixMainWindow	access:private
 _sortedAlbums	QMtpDevice.h	/^    QSortFilterProxyModel* _sortedAlbums;$/;"	m	class:QMtpDevice	access:private
 _sortedFiles	QMtpDevice.h	/^    MtpDirSorter* _sortedFiles;$/;"	m	class:QMtpDevice	access:private
 _sortedPlaylists	QMtpDevice.h	/^    QSortFilterProxyModel* _sortedPlaylists;$/;"	m	class:QMtpDevice	access:private
 _statusBar	QlixMainWindow.h	/^  QStatusBar* _statusBar;$/;"	m	class:QlixMainWindow	access:private
+_storageID	QMtpDevice.h	/^  count_t _storageID;$/;"	m	class:QMtpDevice	access:private
 _subSystem	MtpWatchDog.h	/^  MtpSubSystem* _subSystem;$/;"	m	class:MtpWatchDog	access:private
 _subSystemLock	MtpWatchDog.h	/^  QMutex _subSystemLock;$/;"	m	class:MtpWatchDog	access:private
 _sync	DeviceExplorer.h	/^  QAction* _sync;$/;"	m	class:DeviceExplorer	access:private
@@ -586,18 +712,16 @@ _text	DeviceChooser.h	/^    QLabel* _text;$/;"	m	class:DeviceChooser::NoDevice	a
 _tools	DeviceExplorer.h	/^  QToolBar* _tools;$/;"	m	class:DeviceExplorer	access:private
 _top	DeviceChooser.h	/^    QSpacerItem* _top;$/;"	m	class:DeviceChooser::NoDevice	access:private
 _transferFromDevice	DeviceExplorer.h	/^  QAction* _transferFromDevice;$/;"	m	class:DeviceExplorer	access:private
-_transferTrackToDevice	DeviceExplorer.h	/^  QAction* _transferTrackToDevice;$/;"	m	class:DeviceExplorer	access:private
+_transferToDevice	DeviceExplorer.h	/^  QAction* _transferToDevice;$/;"	m	class:DeviceExplorer	access:private
+_unsortedAlbumModel	DeviceExplorer.h	/^  AlbumModel* _unsortedAlbumModel;$/;"	m	class:DeviceExplorer	access:private
 _view	DeviceExplorer.h	/^  ViewPort _view;$/;"	m	class:DeviceExplorer	access:private
 _viewQueue	DeviceExplorer.h	/^  QAction* _viewQueue;$/;"	m	class:DeviceExplorer	access:private
 _watchDog	QMtpDevice.h	/^  MtpWatchDog* _watchDog;$/;"	m	class:QMtpDevice	access:private
 _watchDog	QlixMainWindow.h	/^  MtpWatchDog* _watchDog;$/;"	m	class:QlixMainWindow	access:private
-addAlbum	AlbumModel.cpp	/^void AlbumModel::addAlbum(MTP::Album*)$/;"	f	class:AlbumModel
-addAlbum	AlbumModel.h	/^  void addAlbum(MTP::Album*);$/;"	p	class:AlbumModel	access:private
 addButton	DeviceChooser.h	/^  void addButton(DeviceButton*);$/;"	p	class:DeviceChooser	access:private
 addButtonToLayout	DeviceChooser.h	/^  void addButtonToLayout(DeviceButton*);$/;"	p	class:DeviceChooser	access:private
-buttonClicked	DeviceButton.cpp	/^void DeviceButton::buttonClicked() { emit Selected(_device); }$/;"	f	class:DeviceButton
+buttonClicked	DeviceButton.cpp	/^void DeviceButton::buttonClicked() $/;"	f	class:DeviceButton
 buttonClicked	DeviceButton.h	/^  void buttonClicked();$/;"	p	class:DeviceButton	access:private
-clearActions	DeviceExplorer.cpp	/^void DeviceExplorer::clearActions()$/;"	f	class:DeviceExplorer
 clearActions	DeviceExplorer.h	/^  void clearActions();$/;"	p	class:DeviceExplorer	access:private
 columnCount	AlbumModel.cpp	/^int AlbumModel::columnCount(const QModelIndex& parent ) const $/;"	f	class:AlbumModel
 columnCount	AlbumModel.h	/^  int columnCount(const QModelIndex& parent= QModelIndex() ) const;$/;"	p	class:AlbumModel	access:public
@@ -607,6 +731,8 @@ columnCount	PlaylistModel.cpp	/^int PlaylistModel::columnCount(const QModelIndex
 columnCount	PlaylistModel.h	/^  int columnCount(const QModelIndex& parent= QModelIndex() ) const;$/;"	p	class:PlaylistModel	access:public
 createDetectDevicesWidget	DeviceChooser.cpp	/^void DeviceChooser::createDetectDevicesWidget()$/;"	f	class:DeviceChooser
 createDetectDevicesWidget	DeviceChooser.h	/^  void createDetectDevicesWidget();$/;"	p	class:DeviceChooser	access:private
+createDevices	MtpWatchDog.cpp	/^void MtpWatchDog::createDevices()$/;"	f	class:MtpWatchDog
+createDevices	MtpWatchDog.h	/^  void createDevices();$/;"	p	class:MtpWatchDog	access:private
 createNoDeviceWidget	DeviceChooser.cpp	/^void DeviceChooser::createNoDeviceWidget()$/;"	f	class:DeviceChooser
 createNoDeviceWidget	DeviceChooser.h	/^  void createNoDeviceWidget();$/;"	p	class:DeviceChooser	access:private
 data	AlbumModel.cpp	/^QVariant AlbumModel::data(const QModelIndex& index, int role ) const$/;"	f	class:AlbumModel
@@ -615,16 +741,21 @@ data	DirModel.cpp	/^QVariant DirModel::data(const QModelIndex& index, int role )
 data	DirModel.h	/^  QVariant data(const QModelIndex& , int role = Qt::DisplayRole ) const;$/;"	p	class:DirModel	access:public
 data	PlaylistModel.cpp	/^QVariant PlaylistModel::data(const QModelIndex& index, int role ) const$/;"	f	class:PlaylistModel
 data	PlaylistModel.h	/^  QVariant data(const QModelIndex& , int role = Qt::DisplayRole ) const;$/;"	p	class:PlaylistModel	access:public
+deleteObject	QMtpDevice.cpp	/^void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)$/;"	f	class:QMtpDevice
+deleteObject	QMtpDevice.h	/^  void deleteObject(MTP::GenericObject*);$/;"	p	class:QMtpDevice	access:private
 deviceCountChanged	DeviceChooser.cpp	/^void DeviceChooser::deviceCountChanged()$/;"	f	class:DeviceChooser
 deviceCountChanged	DeviceChooser.h	/^  void deviceCountChanged();$/;"	p	class:DeviceChooser	access:private
+discoverCoverArt	AlbumModel.h	/^  bool discoverCoverArt(const QString&, const QString&, QFileInfo*);$/;"	p	class:AlbumModel	access:private
+discoverCoverArt	QMtpDevice.cpp	/^bool QMtpDevice::discoverCoverArt(const QString& in_path,$/;"	f	class:QMtpDevice
+discoverCoverArt	QMtpDevice.h	/^  bool discoverCoverArt(const QString& in_path,$/;"	p	class:QMtpDevice	access:private
 findAndRetrieveDeviceIcon	QMtpDevice.cpp	/^void QMtpDevice::findAndRetrieveDeviceIcon()$/;"	f	class:QMtpDevice
 findAndRetrieveDeviceIcon	QMtpDevice.h	/^  void findAndRetrieveDeviceIcon();$/;"	p	class:QMtpDevice	access:private
-hideAlbumTools	DeviceExplorer.cpp	/^void DeviceExplorer::hideAlbumTools()$/;"	f	class:DeviceExplorer
+findDefaultDevice	MtpWatchDog.cpp	/^bool MtpWatchDog::findDefaultDevice()$/;"	f	class:MtpWatchDog
+findDefaultDevice	MtpWatchDog.h	/^  bool findDefaultDevice();$/;"	p	class:MtpWatchDog	access:private
 hideAlbumTools	DeviceExplorer.h	/^  void hideAlbumTools();$/;"	p	class:DeviceExplorer	access:private
-hideFileTools	DeviceExplorer.cpp	/^void DeviceExplorer::hideFileTools()$/;"	f	class:DeviceExplorer
 hideFileTools	DeviceExplorer.h	/^  void hideFileTools();$/;"	p	class:DeviceExplorer	access:private
+hideGeneralTools	DeviceExplorer.h	/^  void hideGeneralTools();$/;"	p	class:DeviceExplorer	access:private
 hideNoDeviceWidget	DeviceChooser.h	/^  void hideNoDeviceWidget();$/;"	p	class:DeviceChooser	access:private
-hidePlaylistTools	DeviceExplorer.cpp	/^void DeviceExplorer::hidePlaylistTools()$/;"	f	class:DeviceExplorer
 hidePlaylistTools	DeviceExplorer.h	/^  void hidePlaylistTools();$/;"	p	class:DeviceExplorer	access:private
 index	AlbumModel.cpp	/^QModelIndex AlbumModel::index(int row, int col, $/;"	f	class:AlbumModel
 index	AlbumModel.h	/^  QModelIndex index(int, int, const QModelIndex& parent= QModelIndex()) const;$/;"	p	class:AlbumModel	access:public
@@ -645,8 +776,12 @@ parent	DirModel.cpp	/^QModelIndex DirModel::parent(const QModelIndex& idx) const
 parent	DirModel.h	/^  QModelIndex parent (const QModelIndex& index) const;$/;"	p	class:DirModel	access:public
 parent	PlaylistModel.cpp	/^QModelIndex PlaylistModel::parent(const QModelIndex& idx) const$/;"	f	class:PlaylistModel
 parent	PlaylistModel.h	/^  QModelIndex parent (const QModelIndex& index) const;$/;"	p	class:PlaylistModel	access:public
+proccessJob	QMtpDevice.cpp	/^void QMtpDevice::proccessJob(GenericCommand* currentJob)$/;"	f	class:QMtpDevice
+proccessJob	QMtpDevice.h	/^  void proccessJob(GenericCommand*);$/;"	p	class:QMtpDevice	access:private
 progressWrapper	QMtpDevice.cpp	/^int QMtpDevice::progressWrapper(uint64_t const sent, uint64_t const total, const void* const data)$/;"	f	class:QMtpDevice
 progressWrapper	QMtpDevice.h	/^  static int progressWrapper(uint64_t const sent, uint64_t const total, $/;"	p	class:QMtpDevice	access:private
+removeIndexDuplicates	DeviceExplorer.cpp	/^QModelIndexList DeviceExplorer::removeIndexDuplicates($/;"	f	class:DeviceExplorer
+removeIndexDuplicates	DeviceExplorer.h	/^  QModelIndexList removeIndexDuplicates(const QModelIndexList&,$/;"	p	class:DeviceExplorer	access:private
 rowCount	AlbumModel.cpp	/^int AlbumModel::rowCount(const QModelIndex& parent) const $/;"	f	class:AlbumModel
 rowCount	AlbumModel.h	/^  int rowCount(const QModelIndex& parent= QModelIndex() ) const ;$/;"	p	class:AlbumModel	access:public
 rowCount	DirModel.cpp	/^int DirModel::rowCount(const QModelIndex& parent) const $/;"	f	class:DirModel
@@ -662,7 +797,6 @@ saveSettings	QlixPreferences.h	/^  void saveSettings();$/;"	p	class:QlixPreferen
 setupActions	QlixMainWindow.cpp	/^void QlixMainWindow::setupActions()$/;"	f	class:QlixMainWindow
 setupActions	QlixMainWindow.h	/^  void setupActions();$/;"	p	class:QlixMainWindow	access:private
 setupAlbumActions	QlixMainWindow.h	/^  void setupAlbumActions();$/;"	p	class:QlixMainWindow	access:private
-setupAlbumTools	DeviceExplorer.cpp	/^void DeviceExplorer::setupAlbumTools()$/;"	f	class:DeviceExplorer
 setupAlbumTools	DeviceExplorer.h	/^  void setupAlbumTools();$/;"	p	class:DeviceExplorer	access:private
 setupCommonTools	DeviceExplorer.cpp	/^void DeviceExplorer::setupCommonTools()$/;"	f	class:DeviceExplorer
 setupCommonTools	DeviceExplorer.h	/^  void setupCommonTools();$/;"	p	class:DeviceExplorer	access:private
@@ -674,17 +808,17 @@ setupConnections	DeviceExplorer.cpp	/^void DeviceExplorer::setupConnections()$/;
 setupConnections	DeviceExplorer.h	/^  void setupConnections();$/;"	p	class:DeviceExplorer	access:private
 setupConnections	QlixMainWindow.cpp	/^void QlixMainWindow::setupConnections()$/;"	f	class:QlixMainWindow
 setupConnections	QlixMainWindow.h	/^  void setupConnections();$/;"	p	class:QlixMainWindow	access:private
+setupDBUS	MtpWatchDog.cpp	/^void MtpWatchDog::setupDBUS()$/;"	f	class:MtpWatchDog
+setupDBUS	MtpWatchDog.h	/^  void setupDBUS();$/;"	p	class:MtpWatchDog	access:private
 setupDeviceView	DeviceExplorer.cpp	/^void DeviceExplorer::setupDeviceView() $/;"	f	class:DeviceExplorer
 setupDeviceView	DeviceExplorer.h	/^  void setupDeviceView();$/;"	p	class:DeviceExplorer	access:private
 setupFileActions	QlixMainWindow.h	/^  void setupFileActions();$/;"	p	class:QlixMainWindow	access:private
 setupFileSystemView	DeviceExplorer.cpp	/^void DeviceExplorer::setupFileSystemView()$/;"	f	class:DeviceExplorer
 setupFileSystemView	DeviceExplorer.h	/^  void setupFileSystemView();$/;"	p	class:DeviceExplorer	access:private
-setupFileTools	DeviceExplorer.cpp	/^void DeviceExplorer::setupFileTools()$/;"	f	class:DeviceExplorer
 setupFileTools	DeviceExplorer.h	/^  void setupFileTools();$/;"	p	class:DeviceExplorer	access:private
 setupMenus	DeviceExplorer.cpp	/^void DeviceExplorer::setupMenus()$/;"	f	class:DeviceExplorer
 setupMenus	DeviceExplorer.h	/^  void setupMenus();$/;"	p	class:DeviceExplorer	access:private
 setupPlaylistActions	QlixMainWindow.h	/^  void setupPlaylistActions();$/;"	p	class:QlixMainWindow	access:private
-setupPlaylistTools	DeviceExplorer.cpp	/^void DeviceExplorer::setupPlaylistTools()$/;"	f	class:DeviceExplorer
 setupPlaylistTools	DeviceExplorer.h	/^  void setupPlaylistTools();$/;"	p	class:DeviceExplorer	access:private
 setupProgressBar	DeviceExplorer.h	/^  void setupProgressBar();$/;"	p	class:DeviceExplorer	access:private
 setupStatusBar	QlixMainWindow.cpp	/^void QlixMainWindow::setupStatusBar()$/;"	f	class:QlixMainWindow
@@ -696,20 +830,18 @@ setupToolBars	DeviceExplorer.h	/^  void setupToolBars();$/;"	p	class:DeviceExplo
 setupWatchDogConnections	DeviceChooser.h	/^  void setupWatchDogConnections();$/;"	p	class:DeviceChooser	access:private
 setupWatchDogConnections	QlixMainWindow.cpp	/^void QlixMainWindow::setupWatchDogConnections()$/;"	f	class:QlixMainWindow
 setupWatchDogConnections	QlixMainWindow.h	/^  void setupWatchDogConnections();$/;"	p	class:QlixMainWindow	access:private
-showAlbumTools	DeviceExplorer.cpp	/^void DeviceExplorer::showAlbumTools()$/;"	f	class:DeviceExplorer
 showAlbumTools	DeviceExplorer.h	/^  void showAlbumTools();$/;"	p	class:DeviceExplorer	access:private
-showFileTools	DeviceExplorer.cpp	/^void DeviceExplorer::showFileTools()$/;"	f	class:DeviceExplorer
 showFileTools	DeviceExplorer.h	/^  void showFileTools();$/;"	p	class:DeviceExplorer	access:private
+showGeneralTools	DeviceExplorer.h	/^  void showGeneralTools();$/;"	p	class:DeviceExplorer	access:private
 showNoDeviceWidget	DeviceChooser.h	/^  void showNoDeviceWidget();$/;"	p	class:DeviceChooser	access:private
-showPlaylistTools	DeviceExplorer.cpp	/^void DeviceExplorer::showPlaylistTools()$/;"	f	class:DeviceExplorer
 showPlaylistTools	DeviceExplorer.h	/^  void showPlaylistTools();$/;"	p	class:DeviceExplorer	access:private
 stateChanged	DeviceButton.cpp	/^void DeviceButton::stateChanged(int in)$/;"	f	class:DeviceButton
 stateChanged	DeviceButton.h	/^  void stateChanged(int);$/;"	p	class:DeviceButton	access:private
 syncFile	QMtpDevice.cpp	/^bool QMtpDevice::syncFile(const QString& in_path, uint32_t parent)$/;"	f	class:QMtpDevice
 syncFile	QMtpDevice.h	/^  bool syncFile();$/;"	p	class:QMtpDevice	access:private
 syncFile	QMtpDevice.h	/^  bool syncFile(const QString& path, uint32_t parent);$/;"	p	class:QMtpDevice	access:private
-syncTrack	QMtpDevice.cpp	/^bool QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)$/;"	f	class:QMtpDevice
-syncTrack	QMtpDevice.h	/^  bool syncTrack(TagLib::FileRef, uint32_t parent); $/;"	p	class:QMtpDevice	access:private
+syncTrack	QMtpDevice.cpp	/^void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)$/;"	f	class:QMtpDevice
+syncTrack	QMtpDevice.h	/^  void syncTrack(TagLib::FileRef, uint32_t parent); $/;"	p	class:QMtpDevice	access:private
 unlockusb	QMtpDevice.cpp	/^void QMtpDevice::unlockusb()$/;"	f	class:QMtpDevice
 unlockusb	QMtpDevice.h	/^  void unlockusb();$/;"	p	class:QMtpDevice	access:private
 updateDeviceSpace	DeviceExplorer.cpp	/^void DeviceExplorer::updateDeviceSpace()$/;"	f	class:DeviceExplorer
