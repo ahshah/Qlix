@@ -526,6 +526,11 @@ void DeviceExplorer::TransferFromDevice()
   }
 }
 
+/** 
+ * This function retrieves the current selection from the UI and proceedes 
+ * to first confirm the deletion of each object selected and then issues an 
+ * asynchornous delete command to MtpDevice 
+*/
 void DeviceExplorer::DeleteFromDevice()
 {
   qDebug() << "Deleting form device..";
@@ -545,6 +550,16 @@ void DeviceExplorer::DeleteFromDevice()
   foreach(temp, idxList)
   {
     MTP::GenericObject* obj = (MTP::GenericObject*) temp.internalPointer();
+
+    if (!confirmDeletion() )
+      continue;
+
+    if (obj->Type() != MtpFile || obj->Type() != MtpAlbum)
+    {
+      if (!confirmContainerDeletion(obj) )
+        continue;
+    }
+
     assert(temp.isValid());
     _device->DeleteObject(obj);
   }
@@ -682,4 +697,21 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
   return ret;
 }
 
+/**
+ * This function creates a popup and requests the user to confirm the deletion 
+ * of an object
+ */
+bool DeviceExplorer::confirmDeletion()
+{
+  qDebug() << "Confirm deletion stub!";
+}
 
+/**
+ * This function creates a popup and requests the user to confirm the deletion 
+ * of a container object
+ * @param in_obj the container object that is about to be deleted
+ */
+bool DeviceExplorer::confirmContainerDeletion(MTP::GenericObject* in_obj)
+{
+  qDebug() << "Confirm container deletion stub!";
+}

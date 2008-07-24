@@ -181,7 +181,7 @@ void QMtpDevice::findAndRetrieveDeviceIcon()
   qDebug() << "Searching for Device Icon";
   count_t fileCount = _device->RootFileCount();
   count_t thread_id = (int)this;
-  QString iconPath = QString("/tmp/%1Icon").arg(thread_id); 
+  QString iconPath = QString("/tmp/QlixDeviceIcon-%1").arg(thread_id); 
   MTP::File* iconFile= NULL;
   for (count_t i = 0; i < fileCount; i++)
   {
@@ -190,8 +190,8 @@ void QMtpDevice::findAndRetrieveDeviceIcon()
     name = name.toLower();
     if (name == "devicon.fil")
     {
-      break;
       iconFile = curFile;
+      break;
     }
   }
   if (iconFile)
@@ -257,21 +257,35 @@ void QMtpDevice::TransferTrack(QString inpath)
   qDebug() << "Attempting to transfer file: " << inpath;
 }
 
-void QMtpDevice::DeleteObject(MTP::GenericObject* obj)
+/**
+ * This function issues the delete command to the device thread after the user
+ * has confirmed the deletion.
+ * @param in_obj the object to be deleted
+ */
+void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
 {
+  if (in_obj->Type() != MtpFile   || in_obj->Type() != MtpTrack  ||
+      in_obj->Type() != MtpFolder || in_obj->Type() != MtpAlbum  ||
+      in_obj->Type() != MtpPlaylist)
+  {
+    qDebug() << "Object of unknown type!" << endl;
+    assert(false);
+  }
+
   DeleteObjCmd* cmd; // = new DeleteObjCmd(obj->ID());
-  switch(obj->Type())
+
+  switch(in_obj->Type())
   {
     case MtpTrack:
     case MtpFile:
     {
-      cmd = new DeleteObjCmd(obj);
+      cmd = new DeleteObjCmd(in_obj);
       IssueCommand(cmd);
       break;
     }
     case MtpAlbum:
     { 
-      MTP::Album* album = (MTP::Album*) obj;
+      MTP::Album* album = (MTP::Album*) in_obj;
       MTP::Track* currentTrack;
       for (count_t i = 0; i < album->TrackCount(); i++)
       {
@@ -285,7 +299,7 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* obj)
     }
     case MtpPlaylist:
     {
-      MTP::Playlist* pl = (MTP::Playlist*) obj;
+      MTP::Playlist* pl = (MTP::Playlist*) in_obj;
       MTP::Track* currentTrack;
       for (count_t i = 0; i < pl->TrackCount(); i++)
       {
@@ -299,7 +313,7 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* obj)
 
     case MtpFolder:
     {
-      MTP::Folder* rootFolder = (MTP::Folder*)obj;
+      MTP::Folder* rootFolder = (MTP::Folder*)in_obj;
       MTP::File* subFile;
       MTP::Folder* subFolder;
 
@@ -755,6 +769,13 @@ bool QMtpDevice::discoverCoverArt(const QString& in_path,
 
 void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
 {
+  if (in_obj->Type() != MtpFile   || in_obj->Type() != MtpTrack  ||
+      in_obj->Type() != MtpFolder || in_obj->Type() != MtpAlbum  ||
+      in_obj->Type() != MtpPlaylist)
+  {
+    qDebug() << "Object of unknown type!" << endl;
+    assert(false);
+  }
   switch (in_obj->Type())
   {
     case MtpFile:
@@ -788,8 +809,5 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
     {
       break;
     }
-    default:
-      qDebug() << "Object of unknown type!" << endl;
-      assert(false);
-  }
+   }
 }

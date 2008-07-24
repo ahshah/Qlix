@@ -45,6 +45,7 @@ RESOURCES += Qlix.qrc
 unix {
   DEFINES += LINUX_SIGNALS
   DEFINES += LINUX_DBUS
+  DEFINES += SIMULATE_TRANSFERS
   DEFINES += QLIX_DEBUG
 
   TAGLIB_INC = $$system(taglib-config --cflags)

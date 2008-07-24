@@ -59,6 +59,7 @@ private slots:
   void TransferFromDevice();
   void DeleteFromDevice();
   void SwitchFilesystemDir(const QModelIndex&);
+
 private:
   enum ViewPort
   {
@@ -91,6 +92,9 @@ private:
 
   void updateDeviceSpace();
   void clearActions();
+
+  bool confirmDeletion();
+  bool confirmContainerDeletion(MTP::GenericObject*);
 
 //  QModelIndexList removeAlbumDuplicates(const QModelIndexList&);
   QModelIndexList removeIndexDuplicates(const QModelIndexList&,
