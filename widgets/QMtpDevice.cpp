@@ -185,7 +185,7 @@ void QMtpDevice::findAndRetrieveDeviceIcon()
   MTP::File* iconFile= NULL;
   for (count_t i = 0; i < fileCount; i++)
   {
-    curFile = _device->RootFile(i);
+    MTP::File* curFile = _device->RootFile(i);
     QString name = QString::fromUtf8(curFile->Name());
     name = name.toLower();
     if (name == "devicon.fil")
