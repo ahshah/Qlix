@@ -182,19 +182,22 @@ void QMtpDevice::findAndRetrieveDeviceIcon()
   count_t fileCount = _device->RootFileCount();
   count_t thread_id = (int)this;
   QString iconPath = QString("/tmp/%1Icon").arg(thread_id); 
-  MTP::File* curFile = NULL;
+  MTP::File* iconFile= NULL;
   for (count_t i = 0; i < fileCount; i++)
   {
     curFile = _device->RootFile(i);
     QString name = QString::fromUtf8(curFile->Name());
     name = name.toLower();
     if (name == "devicon.fil")
+    {
       break;
+      iconFile = curFile;
+    }
   }
-  if (curFile)
+  if (iconFile)
   {
     QPixmap image;
-    _device->Fetch(curFile->ID(), iconPath.toLatin1());
+    _device->Fetch(iconFile->ID(), iconPath.toLatin1());
     QFile img_file(iconPath);
     if (img_file.exists())
     {
