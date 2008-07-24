@@ -26,16 +26,48 @@ count_t GenericObject::ID() const { return _id; }
  */
 void GenericObject::SetID( count_t in_id) { _id = in_id; }
 
+/**
+ * Simple function to get the type of the current MTP object
+ * @return returns the type of the GenericObject
+ */
+MtpObjectType GenericObject::Type() { return _type; }
+
 
 /** 
  * @return the name of this object
  */
 const char* const  GenericObject::Name() const { return ""; }
 
-/** Simple function to get the type of the current MTP object
- * @return returns the type of the GenericObject
+
+
+/** 
+ * Creates a new GenericFileObject, a generic base class for File MTP objects
+ * That are crosslinked with each other
+ * @param in_type the MTP type of the new GenericObject to be created
+ * @return a new GenericObject
  */
-MtpObjectType GenericObject::Type() { return _type; }
+GenericFileObject::GenericFileObject(MtpObjectType in_type, uint32_t in_id) :
+                                     GenericObject(in_type, in_id)
+{}
+
+/**
+ * Sets the objects file association, a file cannot be associated with a file
+ */
+void GenericFileObject::Associate(GenericFileObject* in_obj) 
+{
+  if (this->Type() == MtpFile)
+   assert(in_obj->Type() != MtpFile);
+
+   _association = in_obj; 
+}
+
+/**
+ * Retreives the file associated with this album
+ */
+GenericFileObject* GenericFileObject::Association() const 
+{
+  return _association;
+}
 
 
 /** Creates a new Track object
@@ -44,7 +76,7 @@ MtpObjectType GenericObject::Type() { return _type; }
  */
 
 Track::Track(LIBMTP_track_t* in_track) :
-            GenericObject(MtpTrack, in_track->item_id),
+            GenericFileObject(MtpTrack, in_track->item_id),
             _parentAlbum (NULL),
             _parentPlaylist(NULL)
 {
@@ -145,60 +177,9 @@ Playlist* Track::ParentPlaylist() const { return _parentPlaylist; }
  * @return a new File object
  */
 File::File(LIBMTP_file_t* in_file) : 
-           GenericObject (MtpFile, in_file->item_id),
-           _album(NULL),
-           _parent(NULL),
-           _track(NULL),
-           _playlist(NULL)
+           GenericFileObject(MtpFile, in_file->item_id)
 {
   _rawFile = in_file;
-}
-
-/**
- * @return the file's associated Track. If not associated this returns NULL.
- */
-Track* File::GetTrack() const
-{
-  return _track;
-}
-/**
- * @return the file's associated Album. If not associated this returns NULL.
- */
-Album* File::GetAlbum() const
-{
-  return _album;
-}
-/**
- * @return the file's associated Playlist. If not associated this returns NULL.
- */
-Playlist* File::GetPlaylist() const
-{
-  return _playlist;
-}
-
-
-/**
- * Sets the File's associated Track
- */
-void File::SetTrack(Track* in_track) 
-{
-  _track = in_track;
-}
-
-/**
- * Sets the File's associated Album.
- */
-void File::SetAlbum(Album* in_album)
-{
-  _album= in_album;
-}
-
-/**
- * Sets the File's associated Playlist.
- */
-void File::SetPlaylist(Playlist* in_playlist)
-{
-  _playlist = in_playlist;
 }
 
 /**
@@ -413,7 +394,7 @@ void Folder::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
  */
 Album::Album(LIBMTP_album_t* in_album, 
              const LIBMTP_filesampledata_t & in_sample) : 
-             GenericObject (MtpAlbum, in_album->album_id),
+             GenericFileObject(MtpAlbum, in_album->album_id),
              _sample(in_sample)
 {
   assert(in_album);
@@ -451,7 +432,6 @@ void Album::AddTrack(Track* in_track)
   in_track->SetParentAlbum(this);
   //row index is not _childTracks.size() +1 as it is zero based..
   in_track->SetRowIndex( _childTracks.size());
-  cout << "Adding track, setting row index to: " << in_track->GetRowIndex();
   _childTracks.push_back(in_track);
 }
 
@@ -513,7 +493,6 @@ void Album::RemoveTrack(count_t in_index)
     int prevIdx =  (*backup_iter)->GetRowIndex( );
     assert(prevIdx != 0);
     (*backup_iter)->SetRowIndex( (*backup_iter)->GetRowIndex() -1);
-    assert(currentTrack->GetRowIndex() >= 0);
     backup_iter++;
   }
   assert(*iter == deletedTrack); 
@@ -550,7 +529,8 @@ char const * const Album::Name() const
   return _rawAlbum->name;
 }
 
-/** Retreives the artist name of the wrapped Album
+/**
+ * Retreives the artist name of the wrapped Album
  * @return the albums's artist name in UTF8
  */
 char const * const Album::ArtistName() const
@@ -558,6 +538,9 @@ char const * const Album::ArtistName() const
   cout << "Artist: " << _rawAlbum->artist << endl;
   return _rawAlbum->artist;
 }
+
+
+
 
 /**
  * Albums are container objects that hold a list of tracks that 
@@ -622,7 +605,7 @@ void Album::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
  * @return a new Playlist object
  */
 Playlist::Playlist(LIBMTP_playlist_t* in_pl) : 
-                  GenericObject(MtpPlaylist, in_pl->playlist_id)
+                  GenericFileObject(MtpPlaylist, in_pl->playlist_id)
 {
   _initialized = false;
   _rawPlaylist =  in_pl;

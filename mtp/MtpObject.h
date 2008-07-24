@@ -12,6 +12,7 @@ namespace MTP
 
 //forward declaration
   class GenericObject;
+  class GenericFileObject;
   class File;
   class Folder;
   class Album;
@@ -30,30 +31,32 @@ public:
   void SetID(count_t);
   MtpObjectType Type();
   virtual const char * const Name() const;
+
 private:
   MtpObjectType _type;
   count_t _id;
 };
 
+class GenericFileObject : public GenericObject
+{
+  public:
+  GenericFileObject(MtpObjectType, uint32_t);
+  void Associate(GenericFileObject*);
+  GenericFileObject* Association() const;
 
+  private:
+  GenericFileObject* _association;
+};
 
 /** 
  * @class File is a class that wraps around LIBMTP_file_t
 */
-class File : public GenericObject 
+class File : public GenericFileObject 
 {
 public:
   File(LIBMTP_file_t*);
   count_t ParentID() const;
   virtual const char * const Name() const;
-  void SetAlbum(Album*);
-  void SetTrack(Track*);
-  void SetPlaylist(Playlist*);
-
-
-  Album* GetAlbum() const;
-  Track* GetTrack() const;
-  Playlist* GetPlaylist() const;
 
   void SetParentFolder(Folder*);
   Folder* ParentFolder() const;
@@ -65,11 +68,8 @@ public:
 private:
   LIBMTP_file_t* _rawFile;
   LIBMTP_filesampledata_t _sampleData;
-  count_t _rowIndex;
   Folder* _parent;
-  Track* _track;
-  Album* _album;
-  Playlist* _playlist;
+  count_t _rowIndex;
 };
 
 /** 
@@ -107,7 +107,7 @@ private:
 /** 
  * @class Track is a class that wraps around LIBMTP_track_t
 */
-class Track : public GenericObject
+class Track : public GenericFileObject
 {
 public:
   Track(LIBMTP_track_t*);
@@ -127,19 +127,22 @@ public:
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);
 
+
   //to be deprecated
 private:
   LIBMTP_track_t* _rawTrack;
   LIBMTP_filesampledata_t _sampleData;
   Album* _parentAlbum;
   Playlist* _parentPlaylist;
+
+  File* _associatedFile;
   count_t _rowIndex;
 };
 
 /** 
  * @class Album is a class that wraps around LIBMTP_album_t
 */
-class Album : public GenericObject
+class Album : public GenericFileObject
 {
 public:
   Album(LIBMTP_album_t*, const LIBMTP_filesampledata_t&);
@@ -165,18 +168,23 @@ public:
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);
 
+  void SetAssociation(File*);
+  File* Association();
+
 private:
   bool _initialized;
   LIBMTP_album_t* _rawAlbum;
   LIBMTP_filesampledata_t _sample;
   std::vector <Track*> _childTracks;
+
+  File* _associatedFile;
   count_t _rowIndex;
 };
 
 /**
  * @class Playlist is a class that wraps around LIBMTP_playlist_t
 */
-class Playlist: public GenericObject
+class Playlist: public GenericFileObject
 {
 public:
   Playlist(LIBMTP_playlist_t*);
@@ -191,13 +199,17 @@ public:
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);
 
-  //tobe deprecated
+
+  void SetAssociation(File*);
+  File* Association();
 private:
   count_t _trackCount;
   count_t _rowIndex;
   bool _initialized;
   LIBMTP_playlist_t* _rawPlaylist;
   std::vector <Track*> _childTracks;
+
+  File* _associatedFile;
 };
 //TODO this isn't very usefull if you have foreign characters
 static LIBMTP_filetype_t StringToType(const std::string& in_type)

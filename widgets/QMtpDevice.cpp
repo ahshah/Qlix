@@ -147,9 +147,9 @@ void QMtpDevice::initializeDeviceStructures()
 #ifdef QLIX_DEBUG
 //  qDebug() << "Discovered name to be: " << _name;
 #endif
-  _albumModel = new AlbumModel(_device);
-  //new ModelTest(_albumModel);
-  _dirModel = new DirModel(_device);
+  _albumModel = new AlbumModel(_device->Albums());
+  new ModelTest(_albumModel);
+  _dirModel = new DirModel(_device->RootFolder());
   new ModelTest(_dirModel);
   _plModel = new PlaylistModel(_device);
 
@@ -179,17 +179,19 @@ void QMtpDevice::initializeDeviceStructures()
 void QMtpDevice::findAndRetrieveDeviceIcon()
 {
   qDebug() << "Searching for Device Icon";
-  count_t fileCount = _device->RootFileCount();
-  count_t thread_id = (int)this;
-  QString iconPath = QString("/tmp/QlixDeviceIcon-%1").arg(thread_id); 
+  MTP::Folder* rootFolder = _device->RootFolder();
+  count_t fileCount = rootFolder->FileCount();
+
+  QString iconPath = QString("/tmp/QlixDeviceIcon-%1").arg( (int) this); 
   MTP::File* iconFile= NULL;
   for (count_t i = 0; i < fileCount; i++)
   {
-    MTP::File* curFile = _device->RootFile(i);
+    MTP::File* curFile = rootFolder->ChildFile(i);
     QString name = QString::fromUtf8(curFile->Name());
     name = name.toLower();
     if (name == "devicon.fil")
     {
+      qDebug() << "Found icon file with id: " << curFile->ID();
       iconFile = curFile;
       break;
     }
@@ -218,6 +220,8 @@ void QMtpDevice::findAndRetrieveDeviceIcon()
     else
       _icon = QIcon(QPixmap(":/pixmaps/miscDev.png"));
   }
+  else
+    qDebug() << "No device icon found";
 }
 
 /*
@@ -264,8 +268,8 @@ void QMtpDevice::TransferTrack(QString inpath)
  */
 void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
 {
-  if (in_obj->Type() != MtpFile   || in_obj->Type() != MtpTrack  ||
-      in_obj->Type() != MtpFolder || in_obj->Type() != MtpAlbum  ||
+  if (in_obj->Type() != MtpFile   && in_obj->Type() != MtpTrack  &&
+      in_obj->Type() != MtpFolder && in_obj->Type() != MtpAlbum  &&
       in_obj->Type() != MtpPlaylist)
   {
     qDebug() << "Object of unknown type!" << endl;
@@ -769,8 +773,8 @@ bool QMtpDevice::discoverCoverArt(const QString& in_path,
 
 void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
 {
-  if (in_obj->Type() != MtpFile   || in_obj->Type() != MtpTrack  ||
-      in_obj->Type() != MtpFolder || in_obj->Type() != MtpAlbum  ||
+  if (in_obj->Type() != MtpFile   && in_obj->Type() != MtpTrack  &&
+      in_obj->Type() != MtpFolder && in_obj->Type() != MtpAlbum  &&
       in_obj->Type() != MtpPlaylist)
   {
     qDebug() << "Object of unknown type!" << endl;

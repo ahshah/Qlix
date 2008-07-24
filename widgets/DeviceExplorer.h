@@ -1,4 +1,5 @@
 #include <QWidget>
+#include <QMessageBox>
 #include <QToolBar>
 #include <QSpacerItem>
 #include <QFileInfo>

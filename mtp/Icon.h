@@ -152,6 +152,10 @@ private:
     }
     void LowLevelExtract()
     {
+#ifdef QLIX_DEBUG
+      cout << "Extracting with width: " << _bestImageDimensions.Width << " height: " << _bestImageDimensions.Height << endl; 
+#endif
+
         _bestImagePtr = new byte[_bestImageSize];
         byte tempPtr[_bestImageSize];
         IconDirEntry* icon = _iconList[_bestImage];

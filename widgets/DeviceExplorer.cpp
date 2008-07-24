@@ -553,8 +553,9 @@ void DeviceExplorer::DeleteFromDevice()
 
     if (!confirmDeletion() )
       continue;
+    qDebug() << "Deleting object";
 
-    if (obj->Type() != MtpFile || obj->Type() != MtpAlbum)
+    if (obj->Type() != MtpFile && obj->Type() != MtpTrack)
     {
       if (!confirmContainerDeletion(obj) )
         continue;
@@ -703,7 +704,13 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
  */
 bool DeviceExplorer::confirmDeletion()
 {
-  qDebug() << "Confirm deletion stub!";
+  if (QMessageBox::question(this, "Confirm Deletion",
+                               "Pleaes confirm object deletion",
+                               "&Delete", "&Cancel",
+                               QString::null, 0, 1) == 0)
+    return true;
+  else
+    return false;
 }
 
 /**
@@ -713,5 +720,12 @@ bool DeviceExplorer::confirmDeletion()
  */
 bool DeviceExplorer::confirmContainerDeletion(MTP::GenericObject* in_obj)
 {
-  qDebug() << "Confirm container deletion stub!";
+  if (QMessageBox::question(this, "Confirm Container Deletion",
+                               QString("%1 is a container object, all contained \
+                               objects will be deleted!").arg( QString::fromUtf8(in_obj->Name() ) ),
+                               "&Delete", "&Cancel",
+                               QString::null, 0, 1) == 0)
+    return true;
+  else
+    return false;
 }

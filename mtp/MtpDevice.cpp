@@ -6,9 +6,8 @@
 //TODO Storage IDs are not correctly handled- recheck this- it should be fixed
 //TODO Add autocleanup of broken playlists and albums
 //TODO Remove rootFolders crap
-
+//TODO Implement NewFolder and RemoveFolder
 #include "MtpDevice.h"
-#undef QLIX_DEBUG
 //#define SIMULATE_TRANSFERS
 
 /**
@@ -59,8 +58,6 @@ MtpDevice::~MtpDevice()
     delete _modelName;
     _modelName = NULL;
   }
-
-  ClearObjectMappings();
 }
 
 /**
@@ -76,6 +73,8 @@ void MtpDevice::Initialize()
   _initialized = true;
 //  _progressFunc= NULL;
    _name = LIBMTP_Get_Friendlyname(_device);
+   if (!_name)
+     _name=strdup("MTP Device");
 
   _version = LIBMTP_Get_Deviceversion(_device);
   _syncPartner= LIBMTP_Get_Syncpartner(_device);
@@ -136,63 +135,14 @@ void MtpDevice::FreeSpace(unsigned int in_ID, uint64_t* out_total, uint64_t* out
   *out_free = 0;
 }
 
-/** 
- * @param in_id the file id associated with the MTP::File
- * @return the MTP::File associated with the particular ID or NULL if not found
- */
-MTP::File* const MtpDevice::FindFile(count_t in_id) const
-{
-  return (MTP::File*) find(in_id, MtpFile);
-}
+PlaylistMap MtpDevice::GetPlaylistMap () const { return _playlistMap; }
+FolderMap MtpDevice::GetFolderMap() const { return _folderMap; }
+FileMap   MtpDevice::GetFileMap () const { return _fileMap; }
+TrackMap  MtpDevice::GetTrackMap () const { return _trackMap; }
+AlbumMap  MtpDevice::GetAlbumMap () const { return _albumMap; }
 
-/** 
- * @param in_id the folder ID associated with the MTP::Folder
- * @return the MTP::Folder associated with the particular ID or NULL if not found
- */
-MTP::Folder* const MtpDevice::FindFolder(count_t in_id) const
-{
-  return (MTP::Folder*) find(in_id, MtpFolder);
-}
-
-/** 
- * @param in_id the album ID associated with the MTP::Album
- * @return the MTP::Album associated with the particular ID or NULL if not found
- */
-MTP::Album* const MtpDevice::FindAlbum(count_t in_id) const
-{
-  return (MTP::Album*) find(in_id, MtpAlbum);
-}
-
-
-/** 
- * @param in_id the playlist ID associated with the MTP::Playlist
- * @return the MTP::Playlist associated with the particular ID or NULL if not found
- */
-MTP::Playlist* const MtpDevice::FindPlaylist(count_t in_id) const
-{
-  return (MTP::Playlist*) find(in_id, MtpPlaylist);
-}
-
-/** 
- * @param in_id the track ID associated with the MTP::Track
- * @return the MTP::Track associated with the particular ID or NULL if not found
- */
-MTP::Track* const MtpDevice::FindTrack(count_t in_id) const
-{
-  return (MTP::Track*) find(in_id, MtpTrack);
-}
-
-/**
- * @return the number of folders found at the root level of the device
- */
-count_t MtpDevice::RootFolderCount() const
-{ return _rootFolders.size(); }
-
-/**
- * @return the number of files found at the root level of the device
- */
-count_t MtpDevice::RootFileCount() const
-{ return _rootFiles.size(); }
+vector<MTP::Album*> MtpDevice::Albums() const { return _albums; }
+vector<MTP::Playlist*> MtpDevice::Playlists() const { return _playlists; }
 
 /**
  * @return the Folder at the given index or NULL if it is out of bounds
@@ -203,17 +153,6 @@ MTP::Folder* MtpDevice::RootFolder(count_t idx) const
     return NULL;
   return _rootFolders[idx];
 }
-
-/**
- * @return the root File at the given index or NULL if it is out of bounds
- */
-MTP::File* MtpDevice::RootFile(count_t idx) const
-{ 
-  if (idx > _rootFiles.size() )
-    return NULL;
-  return _rootFiles[idx];
-}
-
 
 /**
  * @return the number of albums on the device
@@ -475,7 +414,8 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, bool firstRun)
     curLevelFolders.push_back(currentFolder);
     
     //find
-    MTP::Folder* const previous = FindFolder(currentFolder->ID());
+    MTP::Folder* const previous = (MTP::Folder*) (find(currentFolder->ID(), 
+                                                     MtpFolder));
     if(previous)
     {
       cerr << "Folder crosslinked with another folder please file a bug report at: "
@@ -534,46 +474,6 @@ void MtpDevice::dbgPrintFolders(MTP::Folder* root, count_t level)
     dbgPrintFolders(temp, level+1);
   }
 }
-/**
- * Frees all memory used by instantiated objects
- */
-void MtpDevice::ClearObjectMappings()
-{
-  quickSanityCheck();
-  for (count_t i = 0; i < _tracks.size(); i++)    { delete _tracks[i];  }
-  for (count_t i = 0; i < _albums.size(); i++)    { delete _albums[i];  }
-  for (count_t i = 0; i < _playlists.size(); i++) { delete _playlists[i];  }
-
-  FileMap::iterator file_iter = _fileMap.begin();
-  for (; file_iter != _fileMap.end(); file_iter++)   
-  {
-    if (file_iter->second) //deletions will set iter->second to NULL
-     delete file_iter->second; 
-  }
-
-  FolderMap::iterator folder_iter = _folderMap.begin();
-  for (; folder_iter != _folderMap.end(); folder_iter++)   
-  {
-    if (folder_iter->second) //deletions will set iter->second to NULL
-     delete folder_iter->second; 
-  }
-
-  _rootFolders.clear();
-  _rootFiles.clear();
-
-  _tracks.clear();
-  _trackMap.clear();
-
-  _albums.clear();
-  _albumMap.clear();
-
-  _playlistMap.clear();
-  _playlists.clear();
-  
-
-  _folderMap.clear();
-  _fileMap.clear();
-}
 
 /**
  * Get the file list and iterate over and add them to their parent folder
@@ -586,8 +486,7 @@ void MtpDevice::createFileStructure()
   {
     MTP::File* currentFile = new MTP::File(fileRoot);
     //Sanity check: find previous instances for crosslinks
-    MTP::File* prev_file = FindFile(currentFile->ID());
-
+    MTP::File* prev_file = (MTP::File*) find(currentFile->ID(), MtpFile); 
     //crosslink check
     if(prev_file)
     {
@@ -599,7 +498,8 @@ void MtpDevice::createFileStructure()
     }
     _fileMap[currentFile->ID()] = currentFile; 
 
-    MTP::Folder* const parentFolder = FindFolder(currentFile->ParentID());
+    MTP::Folder* const parentFolder=
+                       (MTP::Folder*) find(currentFile->ParentID(), MtpFolder);
     if(! parentFolder)
     {
       cerr << "Database corruption. Parent folder for file:" << currentFile->ID()
@@ -631,15 +531,35 @@ void MtpDevice::createTrackBasedStructures()
   while (trackRoot)
   {
     MTP::Track* currentTrack = new MTP::Track(trackRoot);
-    _tracks.push_back(currentTrack);
-//    cout << "Inserting track with ID: " << currentTrack->ID() << endl;
-    MTP::GenericObject* previousFile = FindFile(currentTrack->ID());
+    cout << "Inserting track with ID: " << currentTrack->ID() << endl;
+
+    MTP::Track * prev_track = 
+                             (MTP::Track*) find(currentTrack->ID(), MtpTrack);
+
+    MTP::File * previousFile =  
+                                (MTP::File*) find(currentTrack->ID(), MtpFile);
+
+    //ensure that there exists a file association                                
     if(!previousFile || previousFile->ID() != currentTrack->ID())
     {
       cerr << "Qlix internal database corruption! please report this to: " <<
               "caffein@gmail.com as this is a fairly serious error!" << endl;
       assert(false);
     }
+
+    //crosslink check with previous tracks 
+    if (prev_track)
+    {
+      cerr << "Track crosslinked with another track! Please report this to" 
+           << "caffein@gmail.com" << endl;
+      cerr << "Previous tracks's name: " << prev_track->Name() << endl;
+      cerr << "New track's name: " << currentTrack->Name() << endl;
+      assert(false);
+    }
+
+    //now crossreference the track with the file and the file with the track
+    previousFile->Associate(currentTrack);
+    currentTrack->Associate(previousFile);
 
     MTP::GenericObject* previousTrack = _trackMap[currentTrack->ID()];
     if (previousTrack)
@@ -667,8 +587,10 @@ void MtpDevice::createTrackBasedStructures()
     currentAlbum->SetRowIndex( _albums.size());
     _albums.push_back(currentAlbum);
 
-    MTP::Album* const prev_album = FindAlbum(currentAlbum->ID());
-    MTP::File* file_association = FindFile(currentAlbum->ID());
+    MTP::Album const * const prev_album = 
+                             (MTP::Album*) find(currentAlbum->ID(), MtpAlbum);
+    MTP::File const * const file_association =
+                               (MTP::File*) find(currentAlbum->ID(), MtpFile);
 
     //crosslink check with file database
     if(!file_association)
@@ -688,6 +610,11 @@ void MtpDevice::createTrackBasedStructures()
       cerr << "New album's name: " << currentAlbum->Name() << endl;
       assert(false);
     }
+
+    //now crossreference the album with the file and the file with the album 
+    file_association->Associate(currentAlbum);
+    currentAlbum->Associate(file_association);
+
     _albumMap[currentAlbum->ID()] = currentAlbum; 
 
 
@@ -696,7 +623,8 @@ void MtpDevice::createTrackBasedStructures()
     {
       uint32_t track_id = currentAlbum->ChildTrackID(j);
       //sanity check
-      MTP::Track* const track = FindTrack(track_id);
+      //This is not a const * const as it will be modified once its added
+      MTP::Track * const track = (MTP::Track*) find(track_id, MtpTrack);
       if(!track)
       {
         cerr << "Current track: " << track_id << " does not exist.. skipping"
@@ -722,8 +650,8 @@ void MtpDevice::createTrackBasedStructures()
     currentPlaylist->SetRowIndex(_playlists.size());
     _playlists.push_back(currentPlaylist);
 
-    MTP::Playlist* prev_playlist= FindPlaylist(currentPlaylist->ID());
-    MTP::File* file_association= FindFile(currentPlaylist->ID());
+    MTP::Playlist* prev_playlist= (MTP::Playlist*) find(currentPlaylist->ID(), MtpPlaylist);
+    MTP::File* file_association= (MTP::File*) find(currentPlaylist->ID(), MtpFile);
     
     //crosslink check with file database
     if (file_association)
@@ -741,6 +669,11 @@ void MtpDevice::createTrackBasedStructures()
       assert(false);
     }
 
+    //now crossreference the playlist with the file
+    //and crossreference the file with the playlist 
+    currentPlaylist->Associate(file_association);
+    file_association->Associate(currentPlaylist);
+
     _playlistMap[currentPlaylist->ID()] = currentPlaylist; 
 
     //now iterate over the playlist's children..
@@ -748,7 +681,7 @@ void MtpDevice::createTrackBasedStructures()
     {
       uint32_t track_id = currentPlaylist->ChildTrackID(j);
       //sanity check
-      MTP::Track* const track = FindTrack(track_id);
+      MTP::Track const * const track = (MTP::Track*) find(track_id, MtpTrack);
 
       if (!track)
       {
@@ -1018,13 +951,8 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
     processErrorStack();
     return false;
   }
-
-  ret = LIBMTP_Delete_Object(_device, in_track->ID());
-  if (ret != 0)
-  {
-    processErrorStack();
-    return false;
-  }
+// simulate transfers is kind of redundant here
+  ret = removeObject(in_track->ID());
 #endif
   return true;
 }
@@ -1036,16 +964,7 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
 bool MtpDevice::RemoveAlbum(MTP::Album* in_album)
 {
   assert(in_album);
-
-#ifndef SIMULATE_TRANSFERS
-  bool ret = LIBMTP_Delete_Object(_device, in_album->ID());
-  if (ret != 0)
-  {
-    processErrorStack();
-    return false;
-  }
-#endif
-  return true;
+  return removeObject(in_album->ID());
 }
 
 /**
@@ -1055,19 +974,8 @@ bool MtpDevice::RemoveAlbum(MTP::Album* in_album)
 bool MtpDevice::RemoveFolder(MTP::Folder* in_folder)
 {
   assert(in_folder);
-
-#ifndef SIMULATE_TRANSFERS
-  bool ret = LIBMTP_Delete_Object(_device, in_folder->ID());
-  if (ret != 0)
-  {
-    processErrorStack();
-    return false;
-  }
-#endif
-  return true;
+  return removeObject(in_folder->ID());
 }
-
-
 
 /**
  * Private function that performs a search on a specific object mapping
@@ -1131,57 +1039,29 @@ MTP::GenericObject * const MtpDevice::find(count_t in_id, MtpObjectType in_type)
       return NULL;
   }
 }
-void MtpDevice::quickSanityCheck() const
+
+/**
+ * Creates a new folder on the device, and should update its object id
+ * @param in_folder the folder to be created on the device
+ */
+bool MtpDevice::NewFolder(MTP::Folder* in_folder)
 {
-  count_t mappedObjCount= 0;
-  assert(_tracks.size() == _trackMap.size());
-  assert(_albums.size() == _albumMap.size());
-  assert(_playlists.size() == _playlistMap.size());
+  cout << "New Folder stub!" << endl; 
+  return true;
 }
 
-void MtpDevice::AddToRootFolder(MTP::Folder* in_folder)
+/**
+ * Generic function to remove an object from the device
+ * @param in_id the id of the object to be removed
+ */
+bool MtpDevice::removeObject(count_t in_id)
 {
-  _rootFolders.push_back(in_folder);
-}
-
-void MtpDevice::RemoveFolderFromRoot(MTP::Folder* in_folder)
-{
-  vector<MTP::Folder*>::iterator iter = _rootFolders.begin();
-  count_t i = 0;
-  for (; iter != _rootFolders.end() && i < in_folder->GetRowIndex(); i++)
+#ifndef SIMULATE_TRANSFERS
+  bool ret = LIBMTP_Delete_Object(_device, in_id); 
+  if (ret != 0)
   {
-    iter++;
+    processErrorStack();
+    return false;
   }
-  if (i != in_folder->GetRowIndex())
-  {
-    cerr << "Deletion error: in_folder row index:" << in_folder->GetRowIndex() 
-         << " Root file count: " << _rootFolders.size() << endl;
-    assert(false);
-  }
-
-  _rootFolders.erase(iter);
-  for (i =0; i < _rootFolders.size();i++ )
-  {
-    assert(_rootFolders[i]->GetRowIndex() == i);
-  }
-  return;
-}
-
-void MtpDevice::RemoveFileFromRoot(MTP::File* in_file)
-{
-  vector<MTP::File*>::iterator iter = _rootFiles.begin();
-  count_t i = 0;
-  for (; iter != _rootFiles.end() && i < in_file->GetRowIndex(); i++)
-  {
-    iter++;
-  }
-  if (i != in_file->GetRowIndex())
-  {
-    cerr << "Deletion error: in_file row index:" << in_file->GetRowIndex() 
-         << " Root file count: " << _rootFiles.size() << endl;
-    assert(false);
-  }
-
-  _rootFiles.erase(iter);
-  return;
+#endif
 }

@@ -14,7 +14,7 @@ class DirModel : public QAbstractItemModel
 {
 Q_OBJECT
 public:
-  DirModel(MtpDevice*, QObject* parent = NULL);
+  DirModel(MTP::Folder*, QObject* parent = NULL);
   QModelIndex index(int, int, const QModelIndex& parent= QModelIndex()) const;
   QModelIndex parent (const QModelIndex& index) const;
   int rowCount(const QModelIndex& parent= QModelIndex() ) const ;

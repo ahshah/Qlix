@@ -30,7 +30,6 @@ public:
   ~MtpDevice();
   void Initialize();
   void SetProgressFunction(LIBMTP_progressfunc_t, const void* const );
-  void ClearObjectMappings();
 
 //basic device properties
   char const * const Name() const;
@@ -48,11 +47,22 @@ public:
   bool Fetch(uint32_t, char const * const );
   bool UpdateSpaceInformation();
   void FreeSpace(unsigned int, uint64_t*, uint64_t*);
+
+  PlaylistMap GetPlaylistMap () const;
+  FolderMap GetFolderMap() const;
+  TrackMap  GetTrackMap()  const;
+  FileMap   GetFileMap()   const;
+  AlbumMap  GetAlbumMap()   const;
+
+  vector<MTP::Album*> Albums() const;
+  vector<MTP::Playlist*> Playlists() const;
+  /*
   MTP::File* const FindFile(count_t in_id) const;
   MTP::Folder* const FindFolder(count_t in_id) const;
   MTP::Album* const FindAlbum(count_t in_id) const;
   MTP::Playlist* const FindPlaylist(count_t in_id) const;
   MTP::Track* const FindTrack(count_t in_id) const;
+  */
 
 //Device structures information
   count_t AlbumCount() const;
@@ -60,18 +70,13 @@ public:
 
   MTP::Album* Album(count_t idx) const;
   MTP::Playlist* Playlist(count_t idx) const;
-
-  count_t RootFolderCount() const;
-  count_t RootFileCount() const;
-  void AddToRootFolder(MTP::Folder*);
-  void RemoveFolderFromRoot(MTP::Folder*);
-  void RemoveFileFromRoot(MTP::File*);
   MTP::Folder* RootFolder(count_t idx) const;
-  MTP::File* RootFile(count_t idx) const;
 
-//Extended Album functions
+//Album functions
   bool NewAlbum(MTP::Track*, int, MTP::Album** );
   bool RemoveAlbum(MTP::Album*);
+
+//Extended Album functions
   bool UpdateAlbumArt(MTP::Album*, LIBMTP_filesampledata_t*);
   void AddAlbum(MTP::Album*);
 
@@ -89,18 +94,16 @@ public:
 
 //Extended File functions 
   bool RemoveFile(MTP::File*);
-  bool RemoveFolder(MTP::Folder*);
   bool TransferFile(const char*, MTP::File*);
 
-//Extended Folder functions- TODO: implement these
-//  bool NewFolder(MTP::Folder*);
-//  bool RemoveFolder(MTP::Folder*);
+//Extended Folder functions
+  bool NewFolder(MTP::Folder*);
+  bool RemoveFolder(MTP::Folder*);
 
   LIBMTP_filesampledata_t* DefaultJPEGSample();
 private:
   LIBMTP_mtpdevice_t* RawDevice() const;
   MTP::GenericObject* const find(count_t in_id, MtpObjectType type) const;
-  void quickSanityCheck() const;
   LIBMTP_mtpdevice_t* _device;
   bool _initialized;
   char* _name;
@@ -112,18 +115,20 @@ private:
   count_t _currentBatteryLevel;
   bool _batteryLevelSupport;
 
+  bool removeObject(count_t);
+
   MTP::Folder* _rootFolder;
 
   LIBMTP_progressfunc_t _progressFunc;
   const void* _progressData;
 
-  GenericMap _objectMap;
-  map<uint32_t, MTP::Track*> _trackMap;
-  map<uint32_t, MTP::Album*> _albumMap;
-  map<uint32_t, MTP::Playlist*> _playlistMap;
-  map<uint32_t, MTP::File*> _fileMap;
-  map<uint32_t, MTP::Folder*> _folderMap;
-  void processErrorStack();
+  GenericMap  _objectMap;
+  TrackMap    _trackMap;
+  AlbumMap    _albumMap;
+  PlaylistMap _playlistMap;
+  FileMap     _fileMap;
+  FolderMap   _folderMap;
+
 
   vector <MtpStorage*> _storageDeviceList;
   vector <string> _errorStack;
@@ -142,6 +147,8 @@ private:
   void createFileStructure();
   void createTrackBasedStructures();
 
+  //Error Functions 
+  void processErrorStack();
   //Debug functions
   void dbgPrintSupportedFileTypes();
   void dbgPrintFolders(MTP::Folder*, count_t);

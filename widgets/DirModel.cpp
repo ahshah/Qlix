@@ -1,11 +1,9 @@
 //TODO SampleData for MTP::Files
 #include "widgets/DirModel.h"
 
-DirModel::DirModel(MtpDevice* in_dev, QObject* parent) :
-                       _device(in_dev)
-{
-  _rootFolder = _device->RootFolder();
-}
+DirModel::DirModel(MTP::Folder* in_rootFolder, QObject* parent) :
+                                                      _rootFolder(in_rootFolder)
+{ }
 
 QModelIndex DirModel::index(int row, int col, 
                         const QModelIndex& parent) const
