@@ -5,6 +5,7 @@
 //     No this is a bad idea as sending files updates the file id we discover
 //TODO Storage IDs are not correctly handled- recheck this- it should be fixed
 //TODO Add autocleanup of broken playlists and albums
+//TODO Remove rootFolders crap
 
 #include "MtpDevice.h"
 #undef QLIX_DEBUG
@@ -434,38 +435,38 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, bool firstRun)
   if (!_device)
     return;
   vector<MTP::Folder*> curLevelFolders;
-  LIBMTP_folder_t* folderRoot;
+  LIBMTP_folder_t* rootFolder;
   if (!in_root && firstRun)
   {
-     folderRoot= LIBMTP_Get_Folder_List(_device);
+     rootFolder= LIBMTP_Get_Folder_List(_device);
      LIBMTP_folder_t* fakeRoot = LIBMTP_new_folder_t();
      fakeRoot->folder_id = 0;
      fakeRoot->parent_id = 0;
      fakeRoot->name = strdup(_name);
      fakeRoot->sibling= NULL;
-     fakeRoot->child = folderRoot;
-     folderRoot = fakeRoot;
+     fakeRoot->child = rootFolder;
+     rootFolder = fakeRoot;
   }
   else
-    folderRoot = in_root->RawFolder()->child;
+    rootFolder = in_root->RawFolder()->child;
 
-  while (folderRoot)
+  while (rootFolder)
   {
     //if there is a parent, set the new folder's parent. And add to the 
     //parent's childlist
     MTP::Folder* currentFolder;
     if(in_root)
     {
-      currentFolder =  new MTP::Folder(folderRoot, in_root);
+      currentFolder =  new MTP::Folder(rootFolder, in_root);
       currentFolder->SetRowIndex(in_root->FolderCount());
       in_root->AddChildFolder(currentFolder);
     }
     else //else set the child's parent to NULL indicating its at the root
     {
       assert(_rootFolder ==NULL);
-      currentFolder =  new MTP::Folder(folderRoot, NULL);
+      currentFolder =  new MTP::Folder(rootFolder, NULL);
       //set the row index first as it is zero based
-      currentFolder->SetRowIndex(_rootFolders.size());
+      currentFolder->SetRowIndex(0);
       //set the root folder
       _rootFolder = currentFolder;
     }
@@ -487,7 +488,7 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, bool firstRun)
 
     _folderMap[currentFolder->ID()] = currentFolder; 
 
-    folderRoot = folderRoot->sibling;
+    rootFolder = rootFolder->sibling;
   }
   for (count_t i =0; i < curLevelFolders.size(); i++)
       createFolderStructure(curLevelFolders[i], false);
