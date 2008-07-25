@@ -1,6 +1,7 @@
 #ifndef __DEVICEBUTTON__
 #define __DEVICEBUTTON__
 #include <QToolButton>
+#include <QSettings>
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include <QComboBox>

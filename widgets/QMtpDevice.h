@@ -154,6 +154,4 @@ private:
     QSortFilterProxyModel* _sortedPlaylists;
 
 };
-
-
 #endif

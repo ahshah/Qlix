@@ -77,16 +77,21 @@ void DeviceButton::setupConnections()
  */
 void DeviceButton::buttonClicked() 
 { 
+  QSettings settings;
+  count_t id;
   if (!_comboBox)
-  {
-    count_t id = _device->StorageDevice(0)->ID();
-    _device->SetSelectedStorage(id);
-  }
+    id = _device->StorageDevice(0)->ID();
   else
-  {
-    count_t id = _comboBox->itemData(_comboBox->currentIndex()).toInt();
-    _device->SetSelectedStorage(id);
-  }
+    id = _comboBox->itemData(_comboBox->currentIndex()).toInt();
+
+  _device->SetSelectedStorage(id);
+
+//  settings.setStorage("DefaultStorage", id);
+  settings.setValue("DefaultDevice", _device->Serial());
+  settings.setValue("DefaultStorage", id);
+  settings.sync();
+
+  qDebug() << "Storing and syncing: " << _device->Serial();
   emit Selected(_device); 
 }
 

@@ -70,14 +70,18 @@ bool MtpWatchDog::findDefaultDevice()
   {
     if (QString::fromUtf8(_subSystem->Device(i)->SerialNumber()) == defaultDev)
     {
+      QSettings settings;
+      count_t defaultStorage = settings.value("DefaultStorage").toInt();
       QMtpDevice* threadedDev = new QMtpDevice(_subSystem->Device(i), this);
-      threadedDev->moveToThread(QApplication::instance()->thread());
+      threadedDev->SetSelectedStorage(defaultStorage);
+
+//      threadedDev->moveToThread(QApplication::instance()->thread());
 
       connect(threadedDev, SIGNAL(Initialized (QMtpDevice*)),
               this, SIGNAL(DefaultDevice(QMtpDevice*)), Qt::QueuedConnection);
       assert(!threadedDev->isRunning());
       threadedDev->start();
-      qDebug() << "Found the defualt device: " << defaultDev;
+      qDebug() << "Found the default device: " << defaultDev;
       return true;
     }
   }

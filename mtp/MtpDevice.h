@@ -129,7 +129,6 @@ private:
   FileMap     _fileMap;
   FolderMap   _folderMap;
 
-
   vector <MtpStorage*> _storageDeviceList;
   vector <string> _errorStack;
   vector <string> _supportedFileTypes;

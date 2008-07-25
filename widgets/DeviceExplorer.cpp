@@ -313,6 +313,11 @@ void DeviceExplorer::setupConnections()
   connect(_device, SIGNAL(RemovedFolder(MTP::Folder*)),
           _dirModel->sourceModel(), SLOT(RemoveFolder(MTP::Folder*)),
           Qt::BlockingQueuedConnection);
+
+  connect(_device, SIGNAL(RemovedFile(MTP::File*)),
+          _dirModel->sourceModel(), SLOT(RemoveFile(MTP::File*)),
+          Qt::BlockingQueuedConnection);
+
 }
 
 void DeviceExplorer::Beep(MTP::Track* in_track)

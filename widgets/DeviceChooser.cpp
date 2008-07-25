@@ -36,16 +36,13 @@ void DeviceChooser::initialize()
 void DeviceChooser::ExclusivelySelected(DeviceButton* selected,
                                        QMtpDevice* selectedDev)
 {
-  QSettings settings;
   for (int i = 0; i < _deviceButtons.size(); i++)
   {
     if (_deviceButtons[i] != selected)
       _deviceButtons[i]->RemoveCheck();
   }
-  settings.setValue("DefaultDevice", selectedDev->Serial());
-  qDebug() << "Stored: " << selectedDev->Serial();
-  settings.sync();
 }
+
 /*
  * A function stub that might be needed for later use
  */
@@ -129,5 +126,3 @@ void DeviceChooser::setupConnections(count_t idx)
   QObject::connect(_deviceButtons[idx], SIGNAL(Selected(QMtpDevice*)),
                    this, SIGNAL(DeviceSelected(QMtpDevice*)));
 }
-
-

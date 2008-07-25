@@ -34,6 +34,21 @@ void QMtpDevice::run()
   initializeDeviceStructures();
   findAndRetrieveDeviceIcon();
   unlockusb();
+  for (int i =0; i < _device->StorageDeviceCount(); i++)
+  {
+    MtpStorage* storage = _device->StorageDevice(i);
+    if (storage->ID() == SelectedStorage())
+    {
+      qDebug() << "Found default storage!" << endl;
+      break;
+    }
+    //if we haven't found a storage device
+    if (i+1 >= _device->StorageDeviceCount())
+    {
+      SetSelectedStorage(_device->StorageDevice(0)->ID());
+      qDebug() << "Default storage not found, selecting first";
+    }
+  }
   emit Initialized(this);
 
   while (true)
@@ -495,6 +510,7 @@ void QMtpDevice::SetSelectedStorage(count_t in_storageID)
  */
 unsigned int QMtpDevice::SelectedStorage()
 {
+  qDebug() << "Selected storage: " << _storageID;
   return _storageID;
 }
 
@@ -789,9 +805,11 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
 
     case MtpTrack:
     {
-      _device->RemoveTrack( (MTP::Track*)in_obj);
-      emit RemovedTrack((MTP::Track*)in_obj);
-      //TODO emit removedFile here
+      MTP::GenericFileObject* deletedObj = (MTP::GenericFileObject*) in_obj;
+      assert(deletedObj->Association()->Type() == MtpFile);
+      _device->RemoveTrack( (MTP::Track*)deletedObj);
+      emit RemovedTrack((MTP::Track*)deletedObj);
+      emit RemovedFile((MTP::File*) deletedObj->Association());
       break;
     }
 
@@ -803,9 +821,11 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
     }
     case MtpAlbum:
     {
-      _device->RemoveAlbum( (MTP::Album*)in_obj);
-      emit RemovedAlbum( (MTP::Album*)in_obj);
-      //TODO emit removedFile here
+      MTP::GenericFileObject* deletedObj = (MTP::GenericFileObject*) in_obj;
+      assert(deletedObj->Association()->Type() == MtpFile);
+      _device->RemoveAlbum( (MTP::Album*)deletedObj);
+      emit RemovedAlbum( (MTP::Album*)deletedObj);
+      emit RemovedFile((MTP::File*) deletedObj->Association());
       break;
     }
 

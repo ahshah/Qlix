@@ -375,13 +375,9 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, bool firstRun)
     return;
   vector<MTP::Folder*> curLevelFolders;
   LIBMTP_folder_t* rootFolder;
-  LIBMTP_folder_t* rootFolderBackup;
   if (!in_root && firstRun)
   {
      rootFolder= LIBMTP_Get_Folder_List(_device);
-     //debug take the following line out
-     rootFolderBackup= rootFolder;
-
      LIBMTP_folder_t* fakeRoot = LIBMTP_new_folder_t();
      fakeRoot->folder_id = 0;
      fakeRoot->parent_id = 0;
