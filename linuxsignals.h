@@ -1,3 +1,5 @@
+#include <signal.h>
+#include <stdio.h>
 extern MtpSubSystem _subSystem;
 
 void handler(int sig)
@@ -15,8 +17,13 @@ void handler(int sig)
   _subSystem.ReleaseDevices();
   printf("Ouch! - Qlix received signal %d\n", sig);
 
+  struct sigaction act;
+  act.sa_handler = SIG_DFL;
+  sigemptyset(&act.sa_mask);
+  act.sa_flags = 0;
+  sigaction(sig, &act, 0);
+
   sigprocmask(SIG_UNBLOCK, &previous_set, NULL);
-  exit(1);
 }
 
 void installSignalHandlers()
@@ -33,4 +40,3 @@ void installSignalHandlers()
     sigaction(SIGABRT, &act, 0);
     sigaction(SIGKILL, &act, 0);
 }
-

@@ -3,9 +3,6 @@
 #include <QApplication>
 #include <QPlastiqueStyle>
 #include <QtDebug>
-#include <signal.h>
-
-
 
 #include "mtp/MtpSubSystem.h"
 #include "widgets/QlixMainWindow.h"
@@ -16,7 +13,7 @@
 MtpSubSystem _subSystem;
 int main(int argc, char* argv[])
 {
-//  installSignalHandlers();
+  installSignalHandlers();
 
   QCoreApplication::setOrganizationName("QlixIsOSS");
   QCoreApplication::setOrganizationDomain("Qlix.berlios.de");
