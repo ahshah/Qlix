@@ -16,7 +16,7 @@
 MtpSubSystem _subSystem;
 int main(int argc, char* argv[])
 {
-  installSignalHandlers();
+//  installSignalHandlers();
 
   QCoreApplication::setOrganizationName("QlixIsOSS");
   QCoreApplication::setOrganizationDomain("Qlix.berlios.de");
