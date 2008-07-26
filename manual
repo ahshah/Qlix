@@ -1,0 +1,12 @@
+.TH QLIX2 "1" "July 2008" linux " "User Manuals"
+.SH NAME
+qlix2 \- Manage MTP devices
+.SH SYNOPSIS
+.B qlix2 
+[\fIOPTION\fR]...
+.SH DESCRIPTION
+Qlix is a user interface that allows users to manage MTP devices. It strives
+to leave the smallest possible memory footprint with the fewest possible 
+dependencies, while being easy and intuative to use.
+.SH OPTIONS
+At the moment Qlix2 does not have any options that will affect its behaviour

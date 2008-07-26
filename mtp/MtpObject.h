@@ -30,7 +30,7 @@ public:
   count_t ID() const;
   void SetID(count_t);
   MtpObjectType Type();
-  virtual const char * const Name() const;
+  virtual const char * Name() const;
 
 private:
   MtpObjectType _type;
