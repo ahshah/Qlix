@@ -485,6 +485,7 @@ void MtpDevice::createFileStructure()
   while (fileRoot)
   {
     MTP::File* currentFile = new MTP::File(fileRoot);
+    cout << "Created file: " << currentFile << endl;
     //Sanity check: find previous instances for crosslinks
     MTP::File* prev_file = (MTP::File*) find(currentFile->ID(), MtpFile); 
     //crosslink check
@@ -509,6 +510,8 @@ void MtpDevice::createFileStructure()
     }
     currentFile->SetRowIndex(parentFolder->FileCount());
     parentFolder->AddChildFile(currentFile);
+    if (parentFolder->ID() == 0)
+      cout << "Added new child folder to root, now file count: " << parentFolder->FileCount() << endl;
     currentFile->SetParentFolder(parentFolder);
 
     //move on to the next file
@@ -531,6 +534,7 @@ void MtpDevice::createTrackBasedStructures()
   while (trackRoot)
   {
     MTP::Track* currentTrack = new MTP::Track(trackRoot);
+    cout <<"Creating track: " << currentTrack << endl;
     cout << "Inserting track with ID: " << currentTrack->ID() << endl;
 
     MTP::Track * prev_track = 
@@ -560,7 +564,8 @@ void MtpDevice::createTrackBasedStructures()
     //now crossreference the track with the file and the file with the track
     previousFile->Associate(currentTrack);
     currentTrack->Associate(previousFile);
-
+    cout <<"Track:" << currentTrack << " associated with file: " << previousFile<< endl;
+    cout <<"File:" << previousFile << " associated with Track: " << currentTrack <<endl;
     MTP::GenericObject* previousTrack = _trackMap[currentTrack->ID()];
     if (previousTrack)
     {

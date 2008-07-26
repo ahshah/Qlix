@@ -169,10 +169,13 @@ void QMtpDevice::initializeDeviceStructures()
   _plModel = new PlaylistModel(_device);
 
   _sortedAlbums = new QSortFilterProxyModel();
-  connect(_albumModel, SIGNAL(layoutChanged()),
-          _sortedAlbums, SLOT(invalidate()));
   _sortedPlaylists = new QSortFilterProxyModel();
   _sortedFiles = new MtpDirSorter();
+  connect(_albumModel, SIGNAL(layoutChanged()),
+          _sortedAlbums, SLOT(invalidate()));
+  connect(_dirModel, SIGNAL(layoutChanged()),
+          _sortedFiles, SLOT(invalidate()));
+
   _sortedAlbums->setDynamicSortFilter(true);
   _sortedFiles->setDynamicSortFilter(true);
   _sortedPlaylists->setDynamicSortFilter(true);
@@ -808,8 +811,10 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
       MTP::GenericFileObject* deletedObj = (MTP::GenericFileObject*) in_obj;
       assert(deletedObj->Association()->Type() == MtpFile);
       _device->RemoveTrack( (MTP::Track*)deletedObj);
+
+      MTP::File* association= (MTP::File*) deletedObj->Association();
       emit RemovedTrack((MTP::Track*)deletedObj);
-      emit RemovedFile((MTP::File*) deletedObj->Association());
+      emit RemovedFile(association);
       break;
     }
 
@@ -824,8 +829,10 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
       MTP::GenericFileObject* deletedObj = (MTP::GenericFileObject*) in_obj;
       assert(deletedObj->Association()->Type() == MtpFile);
       _device->RemoveAlbum( (MTP::Album*)deletedObj);
+      MTP::File* association= (MTP::File*) deletedObj->Association();
+
       emit RemovedAlbum( (MTP::Album*)deletedObj);
-      emit RemovedFile((MTP::File*) deletedObj->Association());
+      emit RemovedFile(association);
       break;
     }
 

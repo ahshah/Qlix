@@ -252,4 +252,32 @@ void DirModel::RemoveFolder(MTP::Folder* in_folder)
 void DirModel::RemoveFile(MTP::File* in_file)
 {
   qDebug() << "RemoveFile stub!" << endl;
+  assert(in_file);
+  MTP::Folder* parentFolder = in_file->ParentFolder();
+  QModelIndex parentIdx = createIndex(parentFolder->GetRowIndex(), 0,
+                                      parentFolder);
+  emit beginRemoveRows(parentIdx, in_file->GetRowIndex(), 
+                       in_file->GetRowIndex());
+  for (count_t i =0; i < parentFolder->FileCount();
+      i++)
+  {
+    assert(parentFolder->ChildFile(i)->GetRowIndex() == i);
+  }
+
+  for (count_t i =in_file->GetRowIndex()+1; i < parentFolder->FileCount();
+      i++)
+  {
+    parentFolder->ChildFile(i)->SetRowIndex(i-1);
+  }
+
+  parentFolder->RemoveChildFile(in_file);
+
+  for (count_t i =0; i < parentFolder->FileCount();
+      i++)
+  {
+    assert(parentFolder->ChildFile(i)->GetRowIndex() == i);
+  }
+
+  delete in_file;
+  emit endRemoveRows();
 }
