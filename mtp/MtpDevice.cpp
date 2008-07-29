@@ -1,12 +1,30 @@
-//TODO Improve error handling / Reporting (once theres an error console)
-//TODO Add InsanePlaylist, InsaneAlbums flags that allows us to avoid the 
-//     assertions made WRT necessary MTP file associations with all other types
-//TODO Should raw object references returns be of const types? 
-//     No this is a bad idea as sending files updates the file id we discover
-//TODO Storage IDs are not correctly handled- recheck this- it should be fixed
-//TODO Add autocleanup of broken playlists and albums
-//TODO Remove rootFolders crap
-//TODO Implement NewFolder and RemoveFolder
+/*
+ *   Copyright (C) 2008 Ali Shah <caffein@gmail.com>
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this program; if not, write to the Free Software Foundation, Inc.,
+ *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+TODO Improve error handling / Reporting (once theres an error console)
+TODO Add InsanePlaylist, InsaneAlbums flags that allows us to avoid the 
+     assertions made WRT necessary MTP file associations with all other types
+TODO Should raw object references returns be of const types? 
+     No this is a bad idea as sending files updates the file id we discover
+TODO Storage IDs are not correctly handled- recheck this- it should be fixed
+TODO Add autocleanup of broken playlists and albums
+TODO Remove rootFolders crap
+TODO Implement NewFolder and RemoveFolder
+*/
 #include "MtpDevice.h"
 //#define SIMULATE_TRANSFERS
 
@@ -481,7 +499,7 @@ void MtpDevice::dbgPrintFolders(MTP::Folder* root, count_t level)
  */
 void MtpDevice::createFileStructure()
 {
-  LIBMTP_file_t* fileRoot = LIBMTP_Get_Filelisting(_device);
+  LIBMTP_file_t* fileRoot = LIBMTP_Get_Filelisting_With_Callback(_device, NULL, NULL);
   while (fileRoot)
   {
     MTP::File* currentFile = new MTP::File(fileRoot);
@@ -527,7 +545,7 @@ void MtpDevice::createFileStructure()
 void MtpDevice::createTrackBasedStructures()
 {
   LIBMTP_album_t* albumRoot= LIBMTP_Get_Album_List(_device);
-  LIBMTP_track_t* trackRoot = LIBMTP_Get_Tracklisting(_device);
+  LIBMTP_track_t* trackRoot = LIBMTP_Get_Tracklisting_With_Callback(_device, NULL, NULL);
   LIBMTP_playlist_t* playlistRoot = LIBMTP_Get_Playlist_List(_device);
 
   //create the wrapper tracks
