@@ -81,7 +81,8 @@ signals:
   void NotATrack(SendFileCmd*);
   void UpdateProgress(QString, count_t);
   void CreatedAlbum(MTP::Album*);
-  void AddedTrackToAlbum(MTP::Track*);
+  void AddedTrack(MTP::Track*);
+  void AddedFile(MTP::File*);
 
   void RemovedTrack(MTP::Track*);
   void RemovedFile(MTP::File*);
@@ -106,8 +107,7 @@ private:
 
   void syncTrack(TagLib::FileRef, uint32_t parent); 
   void deleteObject(MTP::GenericObject*);
-  bool syncFile(const QString& path, uint32_t parent);
-  bool syncFile();
+  void syncFile(const QString& path, uint32_t parent);
 
   void lockusb();
   void unlockusb();

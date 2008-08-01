@@ -48,7 +48,7 @@ void GenericObject::SetID( count_t in_id) { _id = in_id; }
  * Simple function to get the type of the current MTP object
  * @return returns the type of the GenericObject
  */
-MtpObjectType GenericObject::Type() { return _type; }
+MtpObjectType GenericObject::Type() const { return _type; }
 
 
 /** 
@@ -69,11 +69,13 @@ GenericFileObject::GenericFileObject(MtpObjectType in_type, uint32_t in_id) :
 {}
 
 /**
- * Sets the objects file association, a file cannot be associated with a file
+ * Sets the objects file association, a file cannot be associated with another
+ * file
+ * @param in_obj the object to associate this object with
  */
-void GenericFileObject::Associate(GenericFileObject* in_obj) 
+void GenericFileObject::Associate(GenericFileObject const * const in_obj) 
 {
-  if (this->Type() == MtpFile)
+  if (Type() == MtpFile)
    assert(in_obj->Type() != MtpFile);
 
    _association = in_obj; 

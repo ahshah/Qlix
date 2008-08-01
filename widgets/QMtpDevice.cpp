@@ -52,7 +52,7 @@ void QMtpDevice::run()
   initializeDeviceStructures();
   findAndRetrieveDeviceIcon();
   unlockusb();
-  for (int i =0; i < _device->StorageDeviceCount(); i++)
+  for (count_t i =0; i < _device->StorageDeviceCount(); i++)
   {
     MtpStorage* storage = _device->StorageDevice(i);
     if (storage->ID() == SelectedStorage())
@@ -662,7 +662,7 @@ void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)
   }
   newTrack->SetParentAlbum(trackAlbum);
   qDebug() << "About to emit AddedTrackToAlbum thread id is: " << currentThread();
-  emit AddedTrackToAlbum(newTrack);
+  emit AddedTrack(newTrack);
   return ;
 }
 
@@ -672,7 +672,7 @@ void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)
  * @param parent the parent id of this file, this should be the id of a
  *               folder
  */
-bool QMtpDevice::syncFile(const QString& in_path, uint32_t parent)
+void QMtpDevice::syncFile(const QString& in_path, uint32_t parent)
 {
   QFileInfo file(in_path);
   QString suffixStr = file.suffix().toUpper();
@@ -686,8 +686,15 @@ bool QMtpDevice::syncFile(const QString& in_path, uint32_t parent)
 
   MTP::File* newFile = SetupFileTransfer(filename, size, parent,
                                                   type); 
-  return _device->TransferFile((const char*) in_path.toUtf8().data(), 
-                                newFile);
+  if (! _device->TransferFile((const char*) in_path.toUtf8().data(), 
+                                newFile) )
+  {
+    qDebug() << "Failed to transfer file";
+    return;
+  }
+  qDebug() << "About to emit AddedFileToAlbum thread id is: " << currentThread();
+  emit AddedFile(newFile);
+  return;
 }
 
 /**

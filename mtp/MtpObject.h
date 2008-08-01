@@ -47,7 +47,7 @@ public:
   virtual ~GenericObject();
   count_t ID() const;
   void SetID(count_t);
-  MtpObjectType Type();
+  MtpObjectType Type() const;
   virtual const char * const Name() const;
 
 private:
@@ -59,7 +59,7 @@ class GenericFileObject : public GenericObject
 {
   public:
   GenericFileObject(MtpObjectType, uint32_t);
-  void Associate(GenericFileObject*);
+  void Associate(GenericFileObject const * const);
   GenericFileObject* Association() const;
 
   private:

@@ -24,6 +24,8 @@ TODO Storage IDs are not correctly handled- recheck this- it should be fixed
 TODO Add autocleanup of broken playlists and albums
 TODO Remove rootFolders crap
 TODO Implement NewFolder and RemoveFolder
+TODO When a file transfer is complete the libmtp struct may have new information
+     this information needs to get propogated up the c++ structs
 */
 #include "MtpDevice.h"
 //#define SIMULATE_TRANSFERS
@@ -1087,4 +1089,5 @@ bool MtpDevice::removeObject(count_t in_id)
     return false;
   }
 #endif
+  return true;
 }

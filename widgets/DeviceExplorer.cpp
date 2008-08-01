@@ -1,6 +1,4 @@
 /*
- *   Copyright (C) 2008 Ali Shah <caffein@gmail.com>
- *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -105,7 +103,10 @@ void DeviceExplorer::ShowAlbums()
       _queueView->show();
   }//  _sortedModel->setSourceModel(_albumModel);
   if (_deviceView->model() != _albumModel)
+  {
     _deviceView->setModel(_albumModel);
+    _deviceView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  }
     _deviceView->setStyleSheet("QTreeView::branch:!adjoins-item, QTreeView::branch:!has-children:open{ background: none} QTreeView::branch:has-children:closed{ image: url(:/pixmaps/TreeView/branch-closed.png)} QTreeView::branch:has-children:open{ image: url(:/pixmaps/TreeView/branch-open.png)}"); 
 /*    //To be continued
  *    _deviceView->setStyleSheet("QTreeView::branch{ background: none} \
@@ -165,7 +166,10 @@ void DeviceExplorer::ShowPlaylists()
   }//  _sortedModel->setSourceModel(_plModel);
 
   if (_deviceView->model() != _plModel)
+  {
     _deviceView->setModel(_plModel);
+    _deviceView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  }
 }
 
 /**
@@ -186,7 +190,10 @@ void DeviceExplorer::ShowFiles()
       _queueView->show();
   }
   if (_deviceView->model() != _dirModel)
+  {
     _deviceView->setModel(_dirModel);
+    _deviceView->setSelectionMode(QAbstractItemView::SingleSelection);
+  }
   _deviceView->setStyleSheet("");
 }
 void DeviceExplorer::UpdateProgressBar(const QString& label,
@@ -302,12 +309,11 @@ void DeviceExplorer::setupConnections()
 
 */
 
-  qDebug() << "_albumModel->thread() : " << _albumModel->sourceModel()->thread();
   connect(_device, SIGNAL(CreatedAlbum(MTP::Album*)),
           _albumModel->sourceModel(), SLOT(AddAlbum(MTP::Album*)),
           Qt::BlockingQueuedConnection);
 
-  connect(_device, SIGNAL(AddedTrackToAlbum(MTP::Track*)),
+  connect(_device, SIGNAL(AddedTrack(MTP::Track*)),
           _albumModel->sourceModel(), SLOT(AddTrack(MTP::Track*)),
           Qt::BlockingQueuedConnection);
 /*
@@ -327,7 +333,6 @@ void DeviceExplorer::setupConnections()
           _albumModel->sourceModel(), SLOT(RemoveAlbum(MTP::Album*)),
           Qt::BlockingQueuedConnection);
 
-  qDebug() << "_dirModel->sourceModel->thread() : " << _dirModel->sourceModel()->thread();
   connect(_device, SIGNAL(RemovedFolder(MTP::Folder*)),
           _dirModel->sourceModel(), SLOT(RemoveFolder(MTP::Folder*)),
           Qt::BlockingQueuedConnection);
@@ -335,6 +340,11 @@ void DeviceExplorer::setupConnections()
   connect(_device, SIGNAL(RemovedFile(MTP::File*)),
           _dirModel->sourceModel(), SLOT(RemoveFile(MTP::File*)),
           Qt::BlockingQueuedConnection);
+
+  connect(_device, SIGNAL(AddedFile(MTP::File*)),
+          _dirModel->sourceModel(), SLOT(AddFile(MTP::File*)),
+          Qt::BlockingQueuedConnection);
+
 
 }
 
@@ -567,6 +577,7 @@ void DeviceExplorer::DeleteFromDevice()
   QAbstractItemModel* theModel = _deviceView->model();
   assert(theModel == _albumModel || theModel == _plModel ||
          theModel == _dirModel || theModel == _unsortedAlbumModel);
+
   idxList = removeIndexDuplicates(idxList, (QSortFilterProxyModel*)theModel);
 
   QModelIndex temp;
