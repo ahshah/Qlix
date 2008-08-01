@@ -83,6 +83,7 @@ void QMtpDevice::run()
 void QMtpDevice::proccessJob(GenericCommand* currentJob)
 {
   CommandCode type = currentJob->GetCommand();
+  qDebug() << "Processing Job with type: " << type;
   switch (type)
   {
     case Initialize:
@@ -92,6 +93,7 @@ void QMtpDevice::proccessJob(GenericCommand* currentJob)
     }
     case SendFile:
     {
+      qDebug() << "Syncing file.. ";
       SendFileCmd* sendCmd = (SendFileCmd*)currentJob;
       QString fullpath = sendCmd->Path;
 
@@ -99,9 +101,12 @@ void QMtpDevice::proccessJob(GenericCommand* currentJob)
                         TagLib::AudioProperties::Accurate);
       if (tagFile.isNull()) 
       {
-        emit NotATrack(sendCmd);
+        qDebug() << "Syncing to root folder..";
+        syncFile(fullpath, 0);
+        delete sendCmd;
         break;
       }
+
       qDebug() << "Syncing track with path: " << fullpath;
       syncTrack(tagFile, sendCmd->ParentID);
       delete sendCmd;
@@ -676,6 +681,8 @@ bool QMtpDevice::syncFile(const QString& in_path, uint32_t parent)
   char* filename = file.completeBaseName().toLocal8Bit().data();
   uint64_t size = (uint64_t) file.size();
   LIBMTP_filetype_t type = MTP::StringToType(suffix);
+
+  qDebug() << "Syncing file of type: " << QString( MTP::TypeToString(type).c_str());
 
   MTP::File* newFile = SetupFileTransfer(filename, size, parent,
                                                   type); 

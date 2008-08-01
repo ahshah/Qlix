@@ -229,6 +229,7 @@ private:
 
   File* _associatedFile;
 };
+
 //TODO this isn't very usefull if you have foreign characters
 static LIBMTP_filetype_t StringToType(const std::string& in_type)
 {
@@ -254,7 +255,7 @@ static LIBMTP_filetype_t StringToType(const std::string& in_type)
   if (in_type == "WMV")
       return LIBMTP_FILETYPE_WMV;
 
-  if (in_type == "AVI")
+  if (in_type == "AVI" || in_type == "SVI")
       return LIBMTP_FILETYPE_AVI;
 
   if (in_type == "MPEG")
