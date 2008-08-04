@@ -613,9 +613,9 @@ void MtpDevice::createTrackBasedStructures()
     currentAlbum->SetRowIndex( _albums.size());
     _albums.push_back(currentAlbum);
 
-    MTP::Album const * const prev_album = 
+    MTP::Album * const prev_album = 
                              (MTP::Album*) find(currentAlbum->ID(), MtpAlbum);
-    MTP::File const * const file_association =
+    MTP::File * const file_association =
                                (MTP::File*) find(currentAlbum->ID(), MtpFile);
 
     //crosslink check with file database

@@ -1,0 +1,14 @@
+2008-08-04  Ali Shah <caffein@gmail.com>
+
+	* Fixed: Video transfers of svi files for samsung devices
+	* Cleanup and commented more Functions
+	* widgets/QMtpDevice.cpp: renamed AddedTrackToAlbum to AddedTrack
+	  Created signal AddedFile and linked it to the directory viewer
+		Track deletions now trigger file deletions
+	  Album deletions now trigger file deletions
+	* All files: Added license information
+	* qlix.1: Added simple man page
+	* DeviceChooser.cpp: Fixed default device selection bug
+	* AlbumModel.cpp: Fixed crash after removal of tracks
+	* linuxsignals.h: Signal handling no longer prevents core duimp
+	* widgets/DeviceExplorer.cpp: Deletions now require confirmation

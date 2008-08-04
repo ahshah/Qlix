@@ -59,7 +59,7 @@ class GenericFileObject : public GenericObject
 {
   public:
   GenericFileObject(MtpObjectType, uint32_t);
-  void Associate(GenericFileObject const * const);
+  void Associate(GenericFileObject* );
   GenericFileObject* Association() const;
 
   private:

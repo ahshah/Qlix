@@ -65,7 +65,8 @@ const char* const  GenericObject::Name() const { return ""; }
  * @return a new GenericObject
  */
 GenericFileObject::GenericFileObject(MtpObjectType in_type, uint32_t in_id) :
-                                     GenericObject(in_type, in_id)
+                                     GenericObject(in_type, in_id),
+                                     _association(NULL)
 {}
 
 /**
@@ -73,11 +74,13 @@ GenericFileObject::GenericFileObject(MtpObjectType in_type, uint32_t in_id) :
  * file
  * @param in_obj the object to associate this object with
  */
-void GenericFileObject::Associate(GenericFileObject const * const in_obj) 
+void GenericFileObject::Associate(GenericFileObject* in_obj) 
 {
   if (Type() == MtpFile)
    assert(in_obj->Type() != MtpFile);
 
+  //assert that we don't call this function twice on the same object
+  assert(!_association);
    _association = in_obj; 
 }
 
