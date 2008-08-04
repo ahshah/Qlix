@@ -27,6 +27,7 @@ TODO Implement NewFolder and RemoveFolder
 TODO When a file transfer is complete the libmtp struct may have new information
      this information needs to get propogated up the c++ structs
 */
+
 #include "MtpDevice.h"
 //#define SIMULATE_TRANSFERS
 
