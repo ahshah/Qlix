@@ -1,3 +1,6 @@
+2008-08-13  Ali Shah <caffein@gmail.com>
+	* Fixed: License incompatibility with QT Concurrent's modeltest
+
 2008-08-04  Ali Shah <caffein@gmail.com>
 
 	* Fixed: Video transfers of svi files for samsung devices
