@@ -20,11 +20,14 @@
 TODO Improve error handling / Reporting (once theres an error console)
 TODO Add InsanePlaylist, InsaneAlbums flags that allows us to avoid the 
      assertions made WRT necessary MTP file associations with all other types
-TODO Should raw object references returns be of const types? 
-     No this is a bad idea as sending files updates the file id we discover
+TODO Q. Should raw object references returns be of const types? 
+     A. No this is a bad idea as sending files updates the file id we discover
 TODO Storage IDs are not correctly handled- recheck this- it should be fixed
 TODO Add autocleanup of broken playlists and albums
-TODO Remove rootFolders crap
+
+TODO Remove RootFolder(count_t idx) function
+TODO ReWrite dbgPrintFolders to account for the fake root folder we create
+
 TODO Implement NewFolder and RemoveFolder
 TODO When a file transfer is complete the libmtp struct may have new information
      this information needs to get propogated up the c++ structs
