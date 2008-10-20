@@ -8,8 +8,7 @@
  *   and appearing in the file COPYING included in the packaging of
  *   this file.  
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   This program is distributed in the hope that it will be useful, *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License version 2.0 for more details.
  *
@@ -39,6 +38,7 @@ public:
   ~MtpSubSystem();
   void ReleaseDevices();
   void Initialize();
+  void SetAutoFixOptions(AutoFixOpts in_autofixopts);
 
   count_t DeviceCount() const;
 
@@ -51,6 +51,6 @@ private:
   vector <MtpDevice*> _devList;
   LIBMTP_mtpdevice_t* _deviceList;
   MTPErrorVector _errorList;
-
+  AutoFixOpts _autoFixOptions; 
 };
 #endif

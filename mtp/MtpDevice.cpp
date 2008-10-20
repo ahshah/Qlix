@@ -35,14 +35,14 @@ TODO When a file transfer is complete the libmtp struct may have new information
 
 #include "MtpDevice.h"
 //#define SIMULATE_TRANSFERS
-
 /**
  * Creates a MtpDevice
  * @param in_device The raw LIBMtp device
  * @return Returns the requested device
  */
-MtpDevice::MtpDevice(LIBMTP_mtpdevice_t* in_device)  :
+MtpDevice::MtpDevice(LIBMTP_mtpdevice_t* in_device, AutoFixOpts in_opts)  :
                      _initialized(false),
+                     _autoFixOptions(in_opts),
                      _rootFolder(NULL)
 {
   _device = in_device;
@@ -511,7 +511,7 @@ void MtpDevice::createFileStructure()
   while (fileRoot)
   {
     MTP::File* currentFile = new MTP::File(fileRoot);
-    cout << "Created file: " << currentFile << endl;
+    cout << "Created file: " << currentFile << " with id: "<< currentFile->ID() << endl;
     //Sanity check: find previous instances for crosslinks
     MTP::File* prev_file = (MTP::File*) find(currentFile->ID(), MtpFile); 
     //crosslink check
@@ -685,7 +685,7 @@ void MtpDevice::createTrackBasedStructures()
     MTP::File* file_association= (MTP::File*) find(currentPlaylist->ID(), MtpFile);
     
     //crosslink check with file database
-    if (file_association)
+    if (!file_association)
     {
        cerr << "Playlist not crosslinked with file as expected!" << 
                " Please report this to caffein@gmail.com" << endl;
@@ -697,6 +697,11 @@ void MtpDevice::createTrackBasedStructures()
     {
       cerr << "Playlist crosslinked with another playlist! Please report this "
            << "to caffein@gmail.com" << endl;
+      cerr << "Previous playlist name: " << prev_playlist->Name() << endl;
+      cerr << "Previous playlist ID: " << prev_playlist->ID() << endl;
+
+      cerr << "Current playlist name: " << currentPlaylist->Name() << endl;
+      cerr << "Current playlist ID: " << currentPlaylist->ID() << endl;
       assert(false);
     }
 
@@ -716,11 +721,22 @@ void MtpDevice::createTrackBasedStructures()
 
       if (!track)
       {
-        cerr << "Current track: " << track_id << "belongs to a playlist but"
-             << " does not exist on the device. This usually happens when"
-             << " faulty MTP programs delete items from the device."
-             << " Please report this to caffein@gmail.com" << endl;
-        assert(false);
+        cerr << "Current track: " << track_id << " belongs to a playlist but"
+             << " does not exist on the device." << endl 
+             << " This usually happens when faulty MTP programs delete files" << endl
+             << " from the device without deleting the associated track object"<< endl
+             << " or a file was created and added to a playlist without" << endl
+             << " creating a track association." << endl
+             << "Please report this to caffein@gmail.com" << endl << endl
+             << "Please backup your music and run Qlix with the" 
+             << " --FixBadPlaylists option." << endl << endl;
+        if (!_autoFixOptions.AutoFixPlaylists)
+          assert(false);
+        else
+        {
+          cout << "AutoFixPlaylists() here" << endl;
+          return;
+        }
         //TODO add an autocorrect option
       }
       currentPlaylist->AddTrack( (MTP::Track*) track );

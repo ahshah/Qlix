@@ -18,10 +18,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+//TODO Find out how to get TagLIB to print its version
+
 #include <libmtp.h>
 #include <QMainWindow>
 #include <QApplication>
 #include <QPlastiqueStyle>
+#include <QString>
 #include <QtDebug>
 
 #include "mtp/MtpSubSystem.h"
@@ -30,22 +33,37 @@
 #include "linuxsignals.h"
 #endif
 
+void printLibraryVersions();
+AutoFixOpts ParseAutoFixOpts(unsigned int argc, char* argv[]);
+
 MtpSubSystem _subSystem;
 int main(int argc, char* argv[])
 {
   installSignalHandlers();
+  printLibraryVersions();
 
+  /** Setup D-BUS information */
   QCoreApplication::setOrganizationName("QlixIsOSS");
   QCoreApplication::setOrganizationDomain("Qlix.berlios.de");
   QCoreApplication::setApplicationName("Qlix");
+  /** Setup QSettings */
   QSettings settings;
   QString ret = settings.value("DefaultDevice").toString();
+  
+  /** Setup QApplication */
   QApplication app(argc, argv);
   app.setStyle("Plastique");
+
+  /** Grab AutoFix options */
+  AutoFixOpts opts = ParseAutoFixOpts(argc, argv);
+
+  _subSystem.SetAutoFixOptions(opts); 
+  if (opts.AutoFixPlaylists)
+    cout << "Working" << endl;
   //app.setStyleSheet("QTreeView::branch:!adjoins-item{ border-color: none;}"); works
   //app.setStyleSheet("QTreeView::branch:!adjoins-item{ background: none}"); 
-//  app.setStyleSheet("QTreeView::branch:!adjoins-item:!has-children{ foreground: red}"); 
- // app.setStyleSheet("QTreeView::branch:adjoins-item:has-children{ background: cyan}"); 
+  //app.setStyleSheet("QTreeView::branch:!adjoins-item:!has-children{ foreground: red}"); 
+  //app.setStyleSheet("QTreeView::branch:adjoins-item:has-children{ background: cyan}"); 
 
   QlixMainWindow qmw(&_subSystem);
   qmw.show();
@@ -53,3 +71,28 @@ int main(int argc, char* argv[])
   app.exec();
   return 0;
 } 
+
+/**
+ * This function will print the version of all dependent  libraries
+ **/
+void printLibraryVersions()
+{ 
+  cout << "LIBMTP VERSION: " + string(LIBMTP_VERSION_STRING) << endl;
+}
+
+AutoFixOpts ParseAutoFixOpts(unsigned int argc, char* argv[])
+{
+  bool AutoFixPlaylists = false;
+  for (unsigned int i =0; i < argc; i ++)
+  {
+    QString str(argv[i]);
+    str = str.toLower();
+    cout << "param: " << str.toStdString() << endl;
+    if (str == "--fixbadplaylists")
+    {
+      AutoFixPlaylists = true;
+      cout << "FOUND!!!" << endl;
+    }
+  }
+  return AutoFixOpts(AutoFixPlaylists);
+}

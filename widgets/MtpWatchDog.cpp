@@ -18,6 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+
 #include "widgets/MtpWatchDog.h"
   // Currently libmtp does not support polling 
   // In the future this will probably be supported by HAL/DBUS signals that

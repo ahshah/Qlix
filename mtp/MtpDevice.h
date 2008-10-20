@@ -46,7 +46,7 @@ class MtpDevice
 {
 public:
 //Internal functions
-  MtpDevice(LIBMTP_mtpdevice_t* in_);
+  MtpDevice(LIBMTP_mtpdevice_t* in_device, AutoFixOpts in_opts);
   ~MtpDevice();
   void Initialize();
   void SetProgressFunction(LIBMTP_progressfunc_t, const void* const );
@@ -134,6 +134,7 @@ private:
   count_t _maxBatteryLevel;
   count_t _currentBatteryLevel;
   bool _batteryLevelSupport;
+  AutoFixOpts _autoFixOptions;
 
   bool removeObject(count_t);
 

@@ -18,13 +18,17 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+//TODO Use svn build numbers instead of arbitrary build numbers
 #include "QlixMainWindow.h"
+
 
 QlixMainWindow::QlixMainWindow(MtpSubSystem* in_subsystem)
 {
   setMinimumSize(800,500);
   QWidget::setWindowIcon(QIcon(":/pixmaps/qlix.xpm"));
-  QWidget::setWindowTitle("Qlix");
+
+  QString buildStr = QString("Qlix (Build %1)").arg(BUILD_VERSION);
+  QWidget::setWindowTitle(buildStr);
 
   _watchDog = new MtpWatchDog(in_subsystem);
   _deviceChooser = new DeviceChooser(this);

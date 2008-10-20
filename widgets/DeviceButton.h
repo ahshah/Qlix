@@ -29,6 +29,7 @@
 #include <QSpacerItem>
 #include "widgets/QMtpDevice.h"
 #include "mtp/MtpStorage.h"
+
 /** 
  * @class a button class that displays the device icon and auto connect box,
  * and depending on how many storage devices exist on the device, a combo box

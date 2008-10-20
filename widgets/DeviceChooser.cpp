@@ -40,6 +40,7 @@ void DeviceChooser::initialize()
 {
   _chooserGroupBox = new QGroupBox("Choose a device");
   _chooserLayout = new QGridLayout(_chooserGroupBox);
+
   _chooserLayout->setVerticalSpacing(40);
   _chooserLayout->setColumnMinimumWidth(0, 160);
 
@@ -119,7 +120,8 @@ void DeviceChooser::createNoDeviceWidget()
 }
 
 
-/** Creates the Detecting Devices widget
+/** 
+ * Creates the Detecting Devices widget
  */
 void DeviceChooser::createDetectDevicesWidget()
 {

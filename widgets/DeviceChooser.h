@@ -34,6 +34,7 @@
 
 #include <libmtp.h>
 #include "types.h"
+#include "build.h"
 #include "mtp/MtpSubSystem.h"
 #include "widgets/DeviceButton.h"
 #include "widgets/MtpWatchDog.h"
@@ -85,6 +86,7 @@ private:
   QButtonVector _deviceButtons;
   QGridLayout* _chooserLayout;
   QGroupBox*  _chooserGroupBox;
+  QLabel*     _buildLabel;
 
   NoDevice* _noDeviceWidget;
   NoDevice* _detectDevicesWidget;
@@ -142,7 +144,7 @@ private:
     QSpacerItem* _bottom;
     QLabel* _text;
     QLabel* _image;
-
+    QLabel* _buildLabel;
   };
 };
 #endif

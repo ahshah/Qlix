@@ -42,4 +42,24 @@ enum QlixProgressType
   FreeSpaceUsage,
   TransferAmount
 };
+
+struct AutoFixOpts
+{
+  AutoFixOpts(bool in_AutoFixPlaylists) :
+                                        AutoFixPlaylists(in_AutoFixPlaylists)
+  { }
+
+  AutoFixOpts(const AutoFixOpts& in_opts) :
+                                        AutoFixPlaylists(in_opts.AutoFixPlaylists)
+  { }
+
+  AutoFixOpts& operator = (const AutoFixOpts& in_opts)
+  {
+    (const_cast<bool&> (this->AutoFixPlaylists)) = in_opts.AutoFixPlaylists;
+    return *this;
+  }
+
+  const bool AutoFixPlaylists;
+};
+
 #endif
