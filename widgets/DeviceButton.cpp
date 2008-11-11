@@ -51,7 +51,7 @@ DeviceButton::DeviceButton (QMtpDevice* in_device, QWidget* parent) :
   }
 
   _button->setText(name);
-  _button->setIcon(_device->Icon());
+  _button->setIcon(QIcon(QPixmap::fromImage(_device->IconImage(), Qt::ColorOnly)));
   _button->setMinimumSize(QSize(160,160));
   _button->setMaximumSize(QSize(160,160));
   _button->setIconSize(QSize(128,128));

@@ -54,7 +54,7 @@ MtpObjectType GenericObject::Type() const { return _type; }
 /** 
  * @return the name of this object
  */
-const char* const  GenericObject::Name() const { return ""; }
+const char* GenericObject::Name() const { return ""; }
 
 
 
@@ -114,14 +114,28 @@ count_t Track::GetRowIndex() const { return _rowIndex; }
 
 /**
  * Sets the visual row index for this track 
- * */
+ **/
 void Track::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
 
+/**
+ * Get the visual row index for this track when peering through the playlist
+ */
+count_t Track::GetPlaylistRowIndex() const  { return _plRowIndex; }
 
-/** Retreives the name of the wrapped Track
+/**
+ * set the visual row index for this track when peering through the playlist 
+ * container
+ */
+void Track::SetPlaylistRowIndex(count_t in_idx) 
+{ 
+  _plRowIndex = in_idx;
+}
+
+/** 
+ * Retreives the name of the wrapped Track
  * @return the tracks's UTF8 name 
  */
-char const * const Track::Name() const
+char const * Track::Name() const
 {
   return _rawTrack->title;
 }
@@ -129,7 +143,7 @@ char const * const Track::Name() const
 /** Retreives the name of the wrapped Album
  * @return the album's UTF8 name 
  */
-char const * const Track::AlbumName() const
+char const * Track::AlbumName() const
 {
   return _rawTrack->album;
 }
@@ -137,7 +151,7 @@ char const * const Track::AlbumName() const
 /** Returns the raw track that this object wraps around
  * @return the raw track;
  */
-LIBMTP_track_t* const Track::RawTrack() const
+LIBMTP_track_t* Track::RawTrack() const
 {
   return _rawTrack;
 }
@@ -145,7 +159,7 @@ LIBMTP_track_t* const Track::RawTrack() const
 /** Retreives the file name of the wrapped Track
  * @return the tracks's UTF8 name 
  */
-char const * const Track::FileName() const
+char const * Track::FileName() const
 {
   return _rawTrack->filename;
 }
@@ -153,7 +167,7 @@ char const * const Track::FileName() const
 /** Retreives the Artist name of the wrapped Track
  * @return the tracks's UTF8 name 
  */
-char const * const Track::ArtistName() const
+char const * Track::ArtistName() const
 {
   return _rawTrack->artist;
 }
@@ -161,7 +175,7 @@ char const * const Track::ArtistName() const
 /** Retreives the genre of the wrapped Track
  * @return the tracks's UTF8 name 
  */
-char const * const Track::Genre() const
+char const * Track::Genre() const
 {
   return _rawTrack->genre;
 }
@@ -245,7 +259,7 @@ void File::SetRowIndex(count_t in_idx)
  * Returns the name of the file
  * @return The name of the file as a Utf8 string
  */
-char const * const File::Name() const
+char const * File::Name() const
 {
   //TODO error checking here?
   //     no, this should be the caller's duty
@@ -255,7 +269,7 @@ char const * const File::Name() const
 /** Returns the raw file that this object wraps around
  * @return the raw file;
  */
-LIBMTP_file_t* const File::RawFile() const
+LIBMTP_file_t* File::RawFile() const
 {
   return _rawFile;
 }
@@ -339,7 +353,7 @@ count_t Folder::FolderCount() const
 /** Retreives the name of the wrapped folder or "" if it doesn't exist
  * @return the folder's UTF8 name or a blank string if it doesn't exist
  */
-char const* const Folder::Name() const
+const char* Folder::Name() const
 {
   if (!_rawFolder)
     return "";
@@ -381,6 +395,10 @@ void Folder::RemoveChildFolder(Folder* in_folder)
   return;
 }
 
+/** 
+ * Remove a direct child file from the folder's list of child files.
+ * @param in_file The file to remove.
+ * */
 void Folder::RemoveChildFile(File* in_file)
 {
   vector<MTP::File*>::iterator iter = _childFiles.begin();
@@ -486,11 +504,11 @@ LIBMTP_album_t const* Album::RawAlbum()
 
 
 /** Removes the track at the given index of the album.
- *  The caller must ensure that the album is then updated on the device
+ *  The caller must ensure that the album container is then updated on the
+ *  device
  * @param in_index the track to remove
- * @param updateInternalStruct condition whether or not to update the
- *        structure on the device
  */
+
 void Album::RemoveTrack(count_t in_index)
 {
   if (in_index > _childTracks.size())
@@ -524,22 +542,29 @@ void Album::RemoveTrack(count_t in_index)
 //  cout << "after removal album size: " << TrackCount() << endl;
 }
 
-void Album::RemoveFromRawAlbum(count_t index)
+/** 
+ * Removes the track at the given index of the album's internal structure.
+ * @param in_index the track index to remove
+ */
+void Album::RemoveFromRawAlbum(count_t in_index)
 {
     count_t trackCount = _rawAlbum->no_tracks;
     count_t* tracks = NULL;
     if (trackCount-1 > 0)
       tracks = new count_t[trackCount-1];
-    for (count_t i =0; i < index; i++)
+    for (count_t i =0; i < in_index; i++)
     {
       tracks[i] = _rawAlbum->tracks[i];
     }
-    for (count_t i = index+1; i < trackCount; i++)
+    for (count_t i = in_index+1; i < trackCount; i++)
     {
       tracks[i-1] = _rawAlbum->tracks[i];
     }
 
     _rawAlbum->no_tracks = trackCount -1;
+
+//TODO do we delete the internal track list or no? 
+//Question posted on nov 10th to mail list
 //    delete [] _rawAlbum->tracks;
     _rawAlbum->tracks = tracks;
 }
@@ -547,7 +572,7 @@ void Album::RemoveFromRawAlbum(count_t index)
 /** Retreives the name of the wrapped Album
  * @return the album's UTF8 name 
  */
-char const * const Album::Name() const
+char const * Album::Name() const
 {
   return _rawAlbum->name;
 }
@@ -556,18 +581,18 @@ char const * const Album::Name() const
  * Retreives the artist name of the wrapped Album
  * @return the albums's artist name in UTF8
  */
-char const * const Album::ArtistName() const
+char const * Album::ArtistName() const
 {
   cout << "Artist: " << _rawAlbum->artist << endl;
   return _rawAlbum->artist;
 }
 
-
-
-
 /**
  * Albums are container objects that hold a list of tracks that 
  * reside underneath them
+ * If the object is not initialized then we return the track count from the raw
+ * container representation
+ * Otherwise return the vector size
  * @return the track count under this album
  */ 
 count_t Album::TrackCount() const 
@@ -620,10 +645,8 @@ count_t Album::GetRowIndex() const { return _rowIndex; }
  * */
 void Album::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
 
-
-
-
-/** Creates a new Playlist object
+/**
+ * Creates a new Playlist object
  * @param in_pl t pointer to the LIBMTP_playlist_t wrap over
  * @return a new Playlist object
  */
@@ -634,10 +657,11 @@ Playlist::Playlist(LIBMTP_playlist_t* in_pl) :
   _rawPlaylist =  in_pl;
 }
 
-/** Returns the name of this Playlist
+/**
+ * Returns the name of this Playlist
  * @return the name of this playlist;
  */
-char const * const Playlist::Name() const
+char const * Playlist::Name() const
 {
   return _rawPlaylist->name;
 }
@@ -652,7 +676,8 @@ void Playlist::AddTrack(Track* in_track)
   in_track->SetParentPlaylist(this);
 }
 
-/** Returns the child track at the given index
+/**
+ * Returns the child track at the given index
  * @param idx the index of the child track in the Playlists vector
  * @return the child tradck at the given index or null if it doesn't exist
  */
@@ -662,6 +687,7 @@ Track* Playlist::ChildTrack(count_t idx) const
     return NULL;
   return _childTracks[idx];
 }
+
 /**
  * Playlists are also container objects that hold a list of tracks that 
  * reside underneath them
@@ -680,7 +706,7 @@ count_t Playlist::TrackCount() const
  * @param idx the index of the requested track id
  * @return the uint32_t track ID specified at the given index
  */ 
-//there is a serious bug here if the trackcount is off from the underlying obj
+//FIXME there is a serious bug here if the trackcount is off from the underlying obj
 uint32_t Playlist::ChildTrackID(count_t idx) const
 {
   assert(idx < TrackCount());
@@ -703,5 +729,83 @@ count_t Playlist::GetRowIndex() const { return _rowIndex; }
  * @param in_row the new row of this playlist
  * */
 void Playlist::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
+
+/** Removes the track at the given index of the playlist.
+ *  The caller must ensure that the playlist container is then updated on the
+ *  device
+ * @param in_index the track to remove
+ */
+void Playlist::RemoveTrack(count_t in_index)
+{
+  if (in_index > _childTracks.size())
+    return;
+  //cout << "before removal album size: " << _childTracks.size() << endl;
+  Track* deletedTrack = _childTracks[in_index];
+  vector<Track*>::iterator iter = _childTracks.begin();
+  vector<Track*>::iterator backup_iter;
+  int i =0;
+  while (*iter !=  deletedTrack) 
+  { 
+    i++;
+    iter++; 
+    assert(iter != _childTracks.end());
+  }
+  //cout << "Iterator found index at: " << i << " vs " << in_index << endl;
+
+  backup_iter = iter +1;
+  //Ensure that objects below this object have the correct index
+  while (backup_iter != _childTracks.end())
+  {
+    Track* currentTrack = (*backup_iter);
+    int prevIdx =  (*backup_iter)->GetRowIndex( );
+    assert(prevIdx != 0);
+    (*backup_iter)->SetRowIndex( (*backup_iter)->GetRowIndex() -1);
+    backup_iter++;
+  }
+  assert(*iter == deletedTrack); 
+  _childTracks.erase(iter);
+  delete deletedTrack;
+  //cout << "after removal album size: " << TrackCount() << endl;
+}
+
+/**
+ * Removes the track at the given index of the playlist's internal structure.
+ * @param in_index the track index to remove.
+ */
+const LIBMTP_playlist_t* Playlist::RawPlaylist()
+{
+  return _rawPlaylist;
+}
+
+/**
+ * Removes the track at the given index of the playlist's internal structure.
+ * @param in_index the track index to remove
+ */
+void Playlist::RemoveFromRawPlaylist(count_t in_index)
+{
+    count_t trackCount = _rawPlaylist->no_tracks;
+    count_t* tracks = NULL;
+
+    cout << "RemoveFromRawPlaylists start: " << trackCount << endl;
+    if (trackCount-1 > 0)
+      tracks = new count_t[trackCount-1];
+    for (count_t i =0; i < in_index; i++)
+    {
+      tracks[i] = _rawPlaylist->tracks[i];
+    }
+    for (count_t i = in_index+1; i < trackCount; i++)
+    {
+      tracks[i-1] = _rawPlaylist->tracks[i];
+    }
+
+    _rawPlaylist->no_tracks = trackCount -1;
+
+    cout << "RemoveFromRawPlaylists end: " << _rawPlaylist->no_tracks<< endl;
+    cout << "RemoveFromRawPlaylists end2: " << tracks << endl;
+    //TODO do we delete the internal track list or no? 
+    //Question posted on nov 10th to mail list
+    //delete [] _rawPlaylist->tracks;
+    _rawPlaylist->tracks = tracks;
+}
 
 }

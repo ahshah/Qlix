@@ -37,8 +37,8 @@ public:
   uint64_t FreeObjectSpace() const;
   unsigned int ID() const;
 
-  const char* const  Description() const;
-  const char* const VolumeID() const;
+  const char* Description() const;
+  const char* VolumeID() const;
 
 private:
   unsigned int _id;

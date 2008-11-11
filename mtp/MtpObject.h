@@ -50,7 +50,7 @@ public:
   count_t ID() const;
   void SetID(count_t);
   MtpObjectType Type() const;
-  virtual const char * const Name() const;
+  virtual const char* Name() const;
 
 private:
   MtpObjectType _type;
@@ -76,7 +76,7 @@ class File : public GenericFileObject
 public:
   File(LIBMTP_file_t*);
   count_t ParentID() const;
-  virtual const char * const Name() const;
+  virtual const char * Name() const;
 
   void SetParentFolder(Folder*);
   Folder* ParentFolder() const;
@@ -84,7 +84,7 @@ public:
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);
 
-  LIBMTP_file_t* const RawFile() const;
+  LIBMTP_file_t* RawFile() const;
 private:
   LIBMTP_file_t* _rawFile;
   LIBMTP_filesampledata_t _sampleData;
@@ -103,7 +103,7 @@ public:
   count_t FolderCount() const;
   Folder* ParentFolder() const;
 
-  virtual char const * const Name() const;
+  virtual char const * Name() const;
   Folder* ChildFolder(count_t ) const;
   File* ChildFile(count_t ) const;
 
@@ -134,18 +134,22 @@ public:
   count_t ParentFolderID() const;
   void SetParentAlbum(Album*);
   void SetParentPlaylist(Playlist*);
-  virtual const char* const Name() const;
-  const char* const FileName() const;
-  const char* const Genre() const;
-  const char* const AlbumName() const;
-  const char* const ArtistName() const;
+
+  virtual const char* Name() const;
+  const char* FileName() const;
+  const char* Genre() const;
+  const char* AlbumName() const;
+  const char* ArtistName() const;
   Album* ParentAlbum() const;
   Playlist* ParentPlaylist() const;
   //Not such a hot idea..
-  LIBMTP_track_t* const RawTrack() const;
+  LIBMTP_track_t* RawTrack() const;
 
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);
+
+  count_t GetPlaylistRowIndex() const;
+  void SetPlaylistRowIndex(count_t);
 
 
   //to be deprecated
@@ -157,6 +161,7 @@ private:
 
   File* _associatedFile;
   count_t _rowIndex;
+  count_t _plRowIndex;
 };
 
 /** 
@@ -170,7 +175,7 @@ public:
   count_t TrackCount() const;
   void SetCover(LIBMTP_filesampledata_t const * in_sample);
 
-  LIBMTP_album_t const* RawAlbum();
+  const LIBMTP_album_t* RawAlbum();
   uint32_t ChildTrackID(count_t ) const;
   void SetInitialized();
   bool Initialized();
@@ -182,8 +187,8 @@ public:
   void RemoveFromRawAlbum(count_t index);
   void RemoveTrack(count_t in_index);
 
-  virtual const char* const Name() const;
-  const char* const ArtistName() const;
+  virtual const char* Name() const;
+  const char* ArtistName() const;
 
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);
@@ -209,7 +214,7 @@ class Playlist: public GenericFileObject
 public:
   Playlist(LIBMTP_playlist_t*);
   count_t TrackCount() const;
-  virtual const char* const Name() const;
+  virtual const char* Name() const;
 
   void AddTrack(Track* );
   Track* ChildTrack(count_t idx) const; 
@@ -219,11 +224,14 @@ public:
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);
 
+  void RemoveFromRawPlaylist(count_t index);
+  void RemoveTrack(count_t index);
+
+  const LIBMTP_playlist_t* RawPlaylist();
 
   void SetAssociation(File*);
   File* Association();
 private:
-  count_t _trackCount;
   count_t _rowIndex;
   bool _initialized;
   LIBMTP_playlist_t* _rawPlaylist;

@@ -52,11 +52,11 @@ public:
   void SetProgressFunction(LIBMTP_progressfunc_t, const void* const );
 
 //basic device properties
-  char const * const Name() const;
-  char const * const SerialNumber() const;
-  char const * const Version() const;
-  char const * const SyncPartner() const;
-  char const * const ModelName() const;
+  const char* Name() const;
+  const char* SerialNumber() const;
+  const char* Version() const;
+  const char* SyncPartner() const;
+  const char* ModelName() const;
   bool BatteryLevelSupport() const;
   float BatteryLevel() const;
   unsigned int StorageDeviceCount() const;
@@ -64,7 +64,7 @@ public:
   MTP::Folder* RootFolder() const;
 
 //basic actions
-  bool Fetch(uint32_t, char const * const );
+  bool Fetch(uint32_t, const char* );
   bool UpdateSpaceInformation();
   void FreeSpace(unsigned int, uint64_t*, uint64_t*);
 
@@ -123,7 +123,7 @@ public:
   LIBMTP_filesampledata_t* DefaultJPEGSample();
 private:
   LIBMTP_mtpdevice_t* RawDevice() const;
-  MTP::GenericObject* const find(count_t in_id, MtpObjectType type) const;
+  MTP::GenericObject* find(count_t in_id, MtpObjectType type) const;
   LIBMTP_mtpdevice_t* _device;
   bool _initialized;
   char* _name;
@@ -166,6 +166,7 @@ private:
   void createFolderStructure(MTP::Folder*, bool);
   void createFileStructure();
   void createTrackBasedStructures();
+  void autoFixPlaylist(MTP::Playlist*);
 
   //Error Functions 
   void processErrorStack();

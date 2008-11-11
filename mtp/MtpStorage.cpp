@@ -47,6 +47,6 @@ uint64_t MtpStorage::FreeSpace() const { return _freeSpace; }
 uint64_t MtpStorage::FreeObjectSpace() const { return _freeObjectSpace; }
 unsigned int MtpStorage::ID() const {  return _id; }
 
-const char* const MtpStorage::Description() const { return _description; }
-const char* const MtpStorage::VolumeID() const  { return _volumeID;  }
+const char* MtpStorage::Description() const { return _description; }
+const char* MtpStorage::VolumeID() const  { return _volumeID;  }
 

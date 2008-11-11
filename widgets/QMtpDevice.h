@@ -58,9 +58,10 @@ class QMtpDevice : public QThread
   Q_OBJECT
 public:
   QMtpDevice(MtpDevice*, MtpWatchDog*, QObject* parent = NULL);
+  virtual ~QMtpDevice();
   QString Name();
   QString Serial();
-  QIcon Icon();
+  QImage IconImage();
 
   void TransferTrack(QString filepath);
   void TransferFrom(MTP::GenericObject*, QString );
@@ -121,7 +122,9 @@ private:
   MtpDevice* _device;
 
   MtpWatchDog* _watchDog;
-  QIcon _icon;
+  QImage _icon;
+  //delete this when done
+  char* _iconBuf;
   QString _name;
   QString _serial;
   count_t _storageID;

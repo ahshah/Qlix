@@ -20,6 +20,8 @@
 TODO Improve error handling / Reporting (once theres an error console)
 TODO Add InsanePlaylist, InsaneAlbums flags that allows us to avoid the 
      assertions made WRT necessary MTP file associations with all other types
+TODO What should we do if playlist items are located on another storage? 
+     Does the find function behave correctly in this case?
 TODO Q. Should raw object references returns be of const types? 
      A. No this is a bad idea as sending files updates the file id we discover
 TODO Storage IDs are not correctly handled- recheck this- it should be fixed
@@ -237,7 +239,7 @@ bool MtpDevice::Fetch(uint32_t in_id, char const * const path)
 /**
  * @return the name of the device as a UTF8 string
  */
-char const * const MtpDevice::Name() const
+const char* MtpDevice::Name() const
 {
   return _name;
 }
@@ -246,7 +248,7 @@ char const * const MtpDevice::Name() const
  * @return Returns the device serial number as a UTF8 string
  * This is mostly used for quickly connecting to a default device
  */
-char const * const MtpDevice::SerialNumber() const
+const char* MtpDevice::SerialNumber() const
 {
   return _serialNumber;
 }
@@ -254,7 +256,7 @@ char const * const MtpDevice::SerialNumber() const
 /**
  * @return the version of the device as a UTF8 string
  */
-char const * const MtpDevice::Version() const
+const char* MtpDevice::Version() const
 {
   return _version;
 }
@@ -262,7 +264,7 @@ char const * const MtpDevice::Version() const
 /**
  * @return the sync partner of the device as a UTF8 string
  */
-char const * const MtpDevice::SyncPartner() const
+const char* MtpDevice::SyncPartner() const
 {
   return _syncPartner;
 }
@@ -270,7 +272,7 @@ char const * const MtpDevice::SyncPartner() const
 /**
  * @return the model name of the device as a UTF8 string
  */
-char const * const MtpDevice::ModelName() const
+const char* MtpDevice::ModelName() const
 {
   return _modelName;
 }
@@ -717,7 +719,7 @@ void MtpDevice::createTrackBasedStructures()
     {
       uint32_t track_id = currentPlaylist->ChildTrackID(j);
       //sanity check
-      MTP::Track const * const track = (MTP::Track*) find(track_id, MtpTrack);
+      MTP::Track* const track = (MTP::Track*) find(track_id, MtpTrack);
 
       if (!track)
       {
@@ -734,11 +736,22 @@ void MtpDevice::createTrackBasedStructures()
           assert(false);
         else
         {
-          cout << "AutoFixPlaylists() here" << endl;
-          return;
+          cout << "Playlist: " << currentPlaylist->Name() 
+               << " has non-existant track. Autofixing.." << endl;
+          currentPlaylist->RemoveFromRawPlaylist(j);
+#ifndef SIMULATE_TRANSFERS
+          int ret = LIBMTP_Update_Playlist(_device, currentPlaylist->RawPlaylist());
+          if (ret != 0)
+          {
+            processErrorStack();
+            cout << "Failed to auto correct playlist." << endl;
+          }
+#endif
+          continue;
         }
         //TODO add an autocorrect option
       }
+      track->SetPlaylistRowIndex(j);
       currentPlaylist->AddTrack( (MTP::Track*) track );
     }
     currentPlaylist->SetInitialized();
@@ -987,16 +1000,28 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
 {
   assert(in_track);
   MTP::Album* parentAlbum = in_track->ParentAlbum();
-  parentAlbum->SetInitialized();
+  MTP::Playlist* parentPl = in_track->ParentPlaylist();
 
+  //Why do we do this?
+  parentAlbum->SetInitialized();
   parentAlbum->RemoveFromRawAlbum(in_track->GetRowIndex());
+
+  if(parentPl)
+    parentPl->RemoveFromRawPlaylist(in_track->GetPlaylistRowIndex());
 
 #ifndef SIMULATE_TRANSFERS
   int ret = LIBMTP_Update_Album(_device, parentAlbum->RawAlbum());
   if (ret != 0)
-  {
     processErrorStack();
-    return false;
+
+  if (parentPl)
+  {
+    ret = LIBMTP_Update_Playlist(_device, parentPl->RawPlaylist());
+    if (ret != 0)
+    {
+      processErrorStack();
+      return false;
+    }
   }
 // simulate transfers is kind of redundant here
   ret = removeObject(in_track->ID());
@@ -1032,7 +1057,7 @@ bool MtpDevice::RemoveFolder(MTP::Folder* in_folder)
  * @return the requested associated object, or NULL for invalid types or 
  * inconclusive searches
  */
-MTP::GenericObject * const MtpDevice::find(count_t in_id, MtpObjectType in_type) const
+MTP::GenericObject * MtpDevice::find(count_t in_id, MtpObjectType in_type) const
 {
   switch(in_type)
   {

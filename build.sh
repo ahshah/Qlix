@@ -1,23 +1,19 @@
-BUILD_VER=`cat BUILD`
-echo \
-"If you are not a developer for Qlix please do not use this build script as \n \
-it will mess up te build versioning system and will make it difficult to \n \
-report bugs.\n \
-Instead use the following sequence: \n \
-\$ qmake -makefile \n \
-\$ make \n \
-\$ ./qlix \n"
-
+BUILD_VER=`svn info | grep Revision | sed 's/Revision\:\ \([0-9]*\)/\1/'`
+BUILD_VER=$((BUILD_VER + 1))
 echo "CURRENT BUILD VERSION: " $BUILD_VER
-make
-if [ $? -eq 0 ]
+
+if [ ! "$QLIXDEVELOPER" ]
 then
-  echo "Build successfull- incrementing build version" 
-  let "BUILD_VER += 1"
+  echo \
+    "If you are not a developer for Qlix please do not use this build script as \n \
+    it will mess up the build versioning system and will make it difficult to \n \
+    report bugs.\n \
+    Instead use the following sequence: \n \
+    \$ qmake -makefile \n \
+    \$ make \n \
+    \$ ./qlix \n"
+  exit
 else
-  echo "Unsuccessful build"
+  echo "enum { BUILD_VERSION = $BUILD_VER  };" > build.h
+  make
 fi
-
-
-echo "enum { BUILD_VERSION = " $BUILD_VER " };" > build.h
-echo $BUILD_VER > BUILD

@@ -31,14 +31,24 @@ QMtpDevice::QMtpDevice(MtpDevice* in_device, MtpWatchDog* in_watchDog,
                        QThread(parent),
                        _device(in_device),
                        _watchDog(in_watchDog),
-                       _icon(QPixmap(":/pixmaps/miscDev.png"))
+                       _icon(QImage(":/pixmaps/miscDev.png")),
+                       _iconBuf(NULL)
 { 
   _device->SetProgressFunction(progressWrapper, this);
 }
 
+QMtpDevice::~QMtpDevice()
+{
+  if (_iconBuf)
+  {
+    delete _iconBuf;
+    _iconBuf = NULL;
+  }
+}
+
 QString QMtpDevice::Name() { return  _name; }
 QString QMtpDevice::Serial() { return  _serial; }
-QIcon QMtpDevice::Icon() { return _icon; }
+QImage QMtpDevice::IconImage() { return _icon; }
 
 void QMtpDevice::IssueCommand(GenericCommand* in_cmd)
 {
@@ -241,7 +251,6 @@ void QMtpDevice::findAndRetrieveDeviceIcon()
   }
   if (iconFile)
   {
-    QPixmap image;
     _device->Fetch(iconFile->ID(), iconPath.toLatin1());
     QFile img_file(iconPath);
     if (img_file.exists())
@@ -252,16 +261,17 @@ void QMtpDevice::findAndRetrieveDeviceIcon()
       if (devIcon.IsValid())
       {
           size_t temp = devIcon.GetBestImageSize();
-          char buf[temp];
-          devIcon.Extract(buf);
+          _iconBuf= new char[temp];
+          //unecessary
+          memset(_iconBuf, 0, temp);
+          devIcon.Extract(_iconBuf);
           Dimensions dim = devIcon.GetDimensions();
-          QImage tempImage( (uchar*)buf, dim.Width, dim.Height, QImage::Format_ARGB32);
-          image = (QPixmap::fromImage(tempImage));
+          _icon = QImage( (uchar*)_iconBuf, dim.Width, dim.Height, QImage::Format_ARGB32);
+//          _icon.save("/tmp/qlix-test.png", "PNG");
       }
-      _icon = QIcon(QPixmap(image));
     }
     else
-      _icon = QIcon(QPixmap(":/pixmaps/miscDev.png"));
+      _icon = QImage(":/pixmaps/miscDev.png");
   }
   else
     qDebug() << "No device icon found";
