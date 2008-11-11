@@ -1,3 +1,14 @@
+2008-11-11  Ali Shah <caffein@gmail.com>
+	* Modified build script to reflect svn revision number
+	* Removed most warnings caused by new version of gcc (4.3.2)
+	* Added an --FixBrokenPlaylist function
+	* Added comments to various files
+	* MTP::Playlist abstraction is more fleshed out
+	* Fixed bug with broken QPixmap images in DeviceChooser buttons
+	* Added auto build numeration scripts that need to be changed to use SVN 
+	* revision numbers instead of arbitrary revisions
+	* A --FixBadPlaylists option has been added that needs to be implemented
+
 2008-08-13  Ali Shah <caffein@gmail.com>
 	* Fixed: License incompatibility with QT Concurrent's modeltest
 
