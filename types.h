@@ -45,21 +45,30 @@ enum QlixProgressType
 
 struct AutoFixOpts
 {
-  AutoFixOpts(bool in_AutoFixPlaylists) :
-                                        AutoFixPlaylists(in_AutoFixPlaylists)
+  AutoFixOpts(bool in_AutoFixPlaylists = false, bool in_AutoFixAlbums = false, 
+              bool in_SimulateTransfers = false) :
+                                        AutoFixPlaylists(in_AutoFixPlaylists),
+                                        AutoFixAlbums(in_AutoFixAlbums),
+                                        SimulateTransfers(in_SimulateTransfers)
   { }
 
   AutoFixOpts(const AutoFixOpts& in_opts) :
-                                        AutoFixPlaylists(in_opts.AutoFixPlaylists)
+                                        AutoFixPlaylists(in_opts.AutoFixPlaylists),
+                                        AutoFixAlbums(in_opts.AutoFixAlbums),
+                                        SimulateTransfers(in_opts.SimulateTransfers)
   { }
 
   AutoFixOpts& operator = (const AutoFixOpts& in_opts)
   {
     (const_cast<bool&> (this->AutoFixPlaylists)) = in_opts.AutoFixPlaylists;
+    (const_cast<bool&> (this->AutoFixAlbums)) = in_opts.AutoFixAlbums;
+    (const_cast<bool&> (this->SimulateTransfers)) = in_opts.SimulateTransfers;
     return *this;
   }
 
   const bool AutoFixPlaylists;
+  const bool AutoFixAlbums;
+  const bool SimulateTransfers;
 };
 
 #endif

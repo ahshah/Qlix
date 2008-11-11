@@ -18,14 +18,24 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 TODO Improve error handling / Reporting (once theres an error console)
+TODO Remove ifdefs for SIMULATE_TRANSFERS and make it an option we can pass 
+     qlix
+
 TODO Add InsanePlaylist, InsaneAlbums flags that allows us to avoid the 
      assertions made WRT necessary MTP file associations with all other types
+TODO Add autocleanup of broken playlists and albums
+TODO Autocleanup of broken playlists and albums should attempt to find the raw
+     file structure and attempt to create track based information from it
+     this might be tedious since you have to read tag information and this can
+     only be done if you transfer the file over to the computer
+
 TODO What should we do if playlist items are located on another storage? 
      Does the find function behave correctly in this case?
+
 TODO Q. Should raw object references returns be of const types? 
      A. No this is a bad idea as sending files updates the file id we discover
+
 TODO Storage IDs are not correctly handled- recheck this- it should be fixed
-TODO Add autocleanup of broken playlists and albums
 
 TODO Remove RootFolder(count_t idx) function
 TODO ReWrite dbgPrintFolders to account for the fake root folder we create
@@ -33,6 +43,8 @@ TODO ReWrite dbgPrintFolders to account for the fake root folder we create
 TODO Implement NewFolder and RemoveFolder
 TODO When a file transfer is complete the libmtp struct may have new information
      this information needs to get propogated up the c++ structs
+     This is especially the case when some devices do not support utf8 
+     characters- libmtp modifies these names before sending it over the wire
 */
 
 #include "MtpDevice.h"
@@ -214,7 +226,6 @@ MTP::Playlist* MtpDevice::Playlist(count_t idx) const
   return _playlists[idx];
 }
 
-
 /**
  * Retrieves the object to the specificed path
  * @param in_id the item id of the requested Mtp object
@@ -226,6 +237,7 @@ bool MtpDevice::Fetch(uint32_t in_id, char const * const path)
   if (!_device)
     return false;
 //TODO get error log
+//What does get error log mean?
   int ret= LIBMTP_Get_File_To_File(_device, in_id, path, 
                                    _progressFunc, _progressData);
   if (ret != 0)
@@ -660,14 +672,42 @@ void MtpDevice::createTrackBasedStructures()
       MTP::Track * const track = (MTP::Track*) find(track_id, MtpTrack);
       if(!track)
       {
-        cerr << "Current track: " << track_id << " does not exist.. skipping"
-        << " this usually happens when MTP programs do not remove files " 
-        << " correctly" << endl;
-        //TODO add an autocorrect option here
-        //report this to caffein@gmail.com" << endl;
-        //assert(false);
-        continue;
+        
+        cerr << "Current track: " << track_id << " is associated with an album"
+        << " but it does not exist on the device." << endl 
+        << " This usually happens when faulty MTP programs delete files" << endl
+        << " from the device without deleting the associated track object"<< endl
+        << " or a file was created and added to a playlist without" << endl
+        << " creating a track association." << endl
+        << "Please report this to caffein@gmail.com" << endl << endl
+        << "Please backup your music and run Qlix with the" 
+        << " --FixBadAlbums option." << endl << endl;
+        if (!_autoFixOptions.AutoFixAlbums)
+          assert(false);
+        else
+        {
+          cout << "Album: " << currentAlbum->Name() << " "
+               << currentAlbum->ID()
+               << " has a non-existant track association. Autofixing.." << endl;
+          currentAlbum->RemoveFromRawAlbum(j);
+
+          //If we simulate transfers then we do not make any calls that might update
+          //The underlying device
+          if (!_autoFixOptions.SimulateTransfers)
+          {
+            int ret = LIBMTP_Update_Album(_device, currentAlbum->RawAlbum());
+            if (ret != 0)
+            {
+              processErrorStack();
+              cout << "Failed to auto correct playlist." << endl;
+            }
+          }
+          continue;
+        }
+
       }
+
+      //AddTrack will set the track's (album) row index as well
       currentAlbum->AddTrack(track);
     }
 
@@ -736,22 +776,25 @@ void MtpDevice::createTrackBasedStructures()
           assert(false);
         else
         {
-          cout << "Playlist: " << currentPlaylist->Name() 
-               << " has non-existant track. Autofixing.." << endl;
+          cout << "Playlist: " << currentPlaylist->Name()  << " " 
+          << currentPlaylist->ID() << " has non-existant track. Autofixing.." 
+          << endl;
+
           currentPlaylist->RemoveFromRawPlaylist(j);
-#ifndef SIMULATE_TRANSFERS
+          if (_autoFixOptions.SimulateTransfers)
+            continue;
+
           int ret = LIBMTP_Update_Playlist(_device, currentPlaylist->RawPlaylist());
           if (ret != 0)
           {
             processErrorStack();
             cout << "Failed to auto correct playlist." << endl;
           }
-#endif
           continue;
         }
-        //TODO add an autocorrect option
       }
-      track->SetPlaylistRowIndex(j);
+
+      //AddTrack will set the track's (playlist) row index as well
       currentPlaylist->AddTrack( (MTP::Track*) track );
     }
     currentPlaylist->SetInitialized();
@@ -769,19 +812,22 @@ void MtpDevice::createTrackBasedStructures()
 bool MtpDevice::TransferTrack(const char* in_path, MTP::Track* in_track)
 {
   cout << "Track's storage id: " << in_track->RawTrack()->storage_id << endl;
-
-#ifndef SIMULATE_TRANSFERS
-  int ret = LIBMTP_Send_Track_From_File(_device, in_path, in_track->RawTrack(),
-                                        _progressFunc, _progressData);
-  if (ret != 0)
+  if (! _autoFixOptions.SimulateTransfers)
   {
-    processErrorStack();
-    return false;
+    int ret = LIBMTP_Send_Track_From_File(_device, in_path, 
+                                          in_track->RawTrack(),
+                                          _progressFunc, _progressData);
+    if (ret != 0)
+    {
+      processErrorStack();
+      return false;
+    }
   }
-#endif
 
   //necessary due to stupid inheritence
+  // ^ does not make sense, did I mean to say due to "stupid composition" ?
   //TODO fix this?
+  // ^ fix what precisely?
   in_track->SetID(in_track->RawTrack()->item_id);
   cout << "Transfer succesfull, new id: " << in_track->ID() << endl;
   UpdateSpaceInformation();
@@ -871,15 +917,18 @@ bool MtpDevice::NewAlbum(MTP::Track* in_track, int in_storageID,
 //  cout << "Set the album's first track to: " << *(newAlbum->tracks) << endl;
   newAlbum->no_tracks = 0;
   newAlbum->next = NULL;
-#ifndef SIMULATE_TRANSFERS
-  int ret =  LIBMTP_Create_New_Album(_device, newAlbum);
-  if (ret != 0)
+
+  if (!_autoFixOptions.SimulateTransfers)
   {
-    (*out_album) = NULL;
-    processErrorStack();
-    return false;
+    int ret =  LIBMTP_Create_New_Album(_device, newAlbum);
+    if (ret != 0)
+    {
+      (*out_album) = NULL;
+      processErrorStack();
+      return false;
+    }
   }
-#endif
+
   UpdateSpaceInformation();
   LIBMTP_filesampledata_t sample;
   sample.size = 0;
@@ -982,16 +1031,20 @@ bool MtpDevice::AddTrackToAlbum(MTP::Track* in_track, MTP::Album* in_album)
 {
   in_album->SetInitialized();
   in_album->AddTrackToRawAlbum(in_track);
-#ifndef SIMULATE_TRANSFERS
+  //if we are simulating then we return true
+  if (_autoFixOptions.SimulateTransfers)
+    return true;
+
+  //otherwise we update the album on the device accordingly
   int ret = LIBMTP_Update_Album(_device, in_album->RawAlbum());
   if (ret != 0)
   {
     processErrorStack();
     return false;
   }
-#endif
   return true;
 }
+
 /**
  * Removes a track from the device
  * @param in_track the track to remove
@@ -1002,14 +1055,18 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
   MTP::Album* parentAlbum = in_track->ParentAlbum();
   MTP::Playlist* parentPl = in_track->ParentPlaylist();
 
-  //Why do we do this?
+  //Q. Why do we do this?
+  //A. Quick answer because if the album is not initialized we goto the
+  //   raw MTP object for information.
   parentAlbum->SetInitialized();
   parentAlbum->RemoveFromRawAlbum(in_track->GetRowIndex());
 
   if(parentPl)
     parentPl->RemoveFromRawPlaylist(in_track->GetPlaylistRowIndex());
+  
+  if (_autoFixOptions.SimulateTransfers)
+    return true;
 
-#ifndef SIMULATE_TRANSFERS
   int ret = LIBMTP_Update_Album(_device, parentAlbum->RawAlbum());
   if (ret != 0)
     processErrorStack();
@@ -1023,10 +1080,10 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
       return false;
     }
   }
-// simulate transfers is kind of redundant here
+  // simulate transfers is kind of redundant here
+  // why?
   ret = removeObject(in_track->ID());
-#endif
-  return true;
+  return ret;
 }
 
 /** 
@@ -1128,13 +1185,14 @@ bool MtpDevice::NewFolder(MTP::Folder* in_folder)
  */
 bool MtpDevice::removeObject(count_t in_id)
 {
-#ifndef SIMULATE_TRANSFERS
+  if (_autoFixOptions.SimulateTransfers)
+    return true;
+
   bool ret = LIBMTP_Delete_Object(_device, in_id); 
   if (ret != 0)
   {
     processErrorStack();
     return false;
   }
-#endif
   return true;
 }

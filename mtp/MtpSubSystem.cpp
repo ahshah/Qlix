@@ -24,7 +24,7 @@ TODO better error handling
 /**
  * Does nothing for now, besides initializing LIBmtp
 */
-MtpSubSystem::MtpSubSystem() : _autoFixOptions(false)
+MtpSubSystem::MtpSubSystem() : _autoFixOptions()
 {
   LIBMTP_Init();
 }

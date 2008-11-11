@@ -23,7 +23,8 @@ using namespace MTP;
 namespace MTP
 {
 
-/** Creates a new GenericObject, a generic base class for MTP objects
+/**
+ * Creates a new GenericObject, a generic base class for MTP objects
  * @param in_type the MTP type of the new GenericObject to be created
  * @return a new GenericObject
  */
@@ -56,8 +57,6 @@ MtpObjectType GenericObject::Type() const { return _type; }
  */
 const char* GenericObject::Name() const { return ""; }
 
-
-
 /** 
  * Creates a new GenericFileObject, a generic base class for File MTP objects
  * That are crosslinked with each other
@@ -71,7 +70,16 @@ GenericFileObject::GenericFileObject(MtpObjectType in_type, uint32_t in_id) :
 
 /**
  * Sets the objects file association, a file cannot be associated with another
- * file
+ * file. 
+ * This is used to associate container structures to their underlying file
+ * counter parts since LIBMTP makes a distinction between a container's 
+ * specific structure (eg. folder, playlist, album) and its underlying 
+ * file/object representation.
+ * Thus for each playlist there is a file associated with it as well.
+ * The same goes for albums, but not for folders (they are a special type of
+ * container)
+ * Also- when deleting an album, one should take care to delete its associated
+ * file/object reference since it is not guaranteed that it will be deleted.
  * @param in_obj the object to associate this object with
  */
 void GenericFileObject::Associate(GenericFileObject* in_obj) 
@@ -93,7 +101,8 @@ GenericFileObject* GenericFileObject::Association() const
 }
 
 
-/** Creates a new Track object
+/** 
+ * Creates a new Track object
  * @param in_track A pointer to the LIBMTP_track_t to wrap over
  * @return a new Track object
  */
@@ -123,7 +132,7 @@ void Track::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
 count_t Track::GetPlaylistRowIndex() const  { return _plRowIndex; }
 
 /**
- * set the visual row index for this track when peering through the playlist 
+ * Set the visual row index for this track when peering through the playlist 
  * container
  */
 void Track::SetPlaylistRowIndex(count_t in_idx) 
@@ -140,7 +149,8 @@ char const * Track::Name() const
   return _rawTrack->title;
 }
 
-/** Retreives the name of the wrapped Album
+/** 
+ * Retreives the name of the wrapped Album
  * @return the album's UTF8 name 
  */
 char const * Track::AlbumName() const
@@ -148,7 +158,8 @@ char const * Track::AlbumName() const
   return _rawTrack->album;
 }
 
-/** Returns the raw track that this object wraps around
+/**
+ * Returns the raw track that this object wraps around
  * @return the raw track;
  */
 LIBMTP_track_t* Track::RawTrack() const
@@ -156,7 +167,8 @@ LIBMTP_track_t* Track::RawTrack() const
   return _rawTrack;
 }
 
-/** Retreives the file name of the wrapped Track
+/**
+ * Retreives the file name of the wrapped Track
  * @return the tracks's UTF8 name 
  */
 char const * Track::FileName() const
@@ -164,7 +176,8 @@ char const * Track::FileName() const
   return _rawTrack->filename;
 }
 
-/** Retreives the Artist name of the wrapped Track
+/**
+ * Retreives the Artist name of the wrapped Track
  * @return the tracks's UTF8 name 
  */
 char const * Track::ArtistName() const
@@ -172,7 +185,8 @@ char const * Track::ArtistName() const
   return _rawTrack->artist;
 }
 
-/** Retreives the genre of the wrapped Track
+/**
+ * Retreives the genre of the wrapped Track
  * @return the tracks's UTF8 name 
  */
 char const * Track::Genre() const
@@ -180,35 +194,39 @@ char const * Track::Genre() const
   return _rawTrack->genre;
 }
 
-/** Returns the parent id of this track
+/**
+ * Returns the parent id of this track
  * @return the parent id of this track
  */
 count_t Track::ParentFolderID() const { return _rawTrack->parent_id; }
 
-
-/** Sets the parent album of this track
+/**
+ * Sets the parent album of this track
  * @param in_album the parent album of this track
  */
 void Track::SetParentAlbum(Album* in_album) {_parentAlbum = in_album; }
 
-
-/** Sets the parent playlist of this track
+/**
+ * Sets the parent playlist of this track
  * @param in_pl the parent playlist of this track
  */
 void Track::SetParentPlaylist(Playlist* in_pl) {_parentPlaylist = in_pl; }
 
-/** Returns the parent Album of this track
+/** 
+ * Returns the parent Album of this track
  * @return the parent Album of this track
  */
 Album* Track::ParentAlbum() const { return _parentAlbum; }
 
-/** Returns the parent Playlist of this track
+/**
+ * Returns the parent Playlist of this track
  * @return the parent Playlist of this track
  */
 Playlist* Track::ParentPlaylist() const { return _parentPlaylist; }
 
 
-/** Creates a new File object and and stores its representative data
+/**
+ * Creates a new File object and and stores its representative data
  * @param in_file A pointer to the LIBMTP_file_to wrap over
  * @param in_sample A pointer to the LIBMTP_filesampledata_t
  * @return a new File object
@@ -563,13 +581,14 @@ void Album::RemoveFromRawAlbum(count_t in_index)
 
     _rawAlbum->no_tracks = trackCount -1;
 
-//TODO do we delete the internal track list or no? 
-//Question posted on nov 10th to mail list
-//    delete [] _rawAlbum->tracks;
+    //LIBMTP does not know that its the tracks association has been removed
+    //TODO will this cause problems in LIBMTP's caching system?
+    delete [] _rawAlbum->tracks;
     _rawAlbum->tracks = tracks;
 }
 
-/** Retreives the name of the wrapped Album
+/**
+ * Retreives the name of the wrapped Album
  * @return the album's UTF8 name 
  */
 char const * Album::Name() const
@@ -666,12 +685,14 @@ char const * Playlist::Name() const
   return _rawPlaylist->name;
 }
 
-
-/** Adds a track to the list of child tracks
+/** 
+ * Adds a track to the list of child tracks. This function also sets the child
+ * tracks rowIndex
  * @param in_track the pointer to the child track to add
  */
 void Playlist::AddTrack(Track* in_track) 
 {
+  in_track->SetPlaylistRowIndex(_childTracks.size());
   _childTracks.push_back(in_track);
   in_track->SetParentPlaylist(this);
 }
@@ -802,9 +823,10 @@ void Playlist::RemoveFromRawPlaylist(count_t in_index)
 
     cout << "RemoveFromRawPlaylists end: " << _rawPlaylist->no_tracks<< endl;
     cout << "RemoveFromRawPlaylists end2: " << tracks << endl;
-    //TODO do we delete the internal track list or no? 
-    //Question posted on nov 10th to mail list
-    //delete [] _rawPlaylist->tracks;
+
+    //LIBMTP does not know that its the tracks association has been removed
+    //TODO will this cause problems in LIBMTP's caching system?
+    delete [] _rawPlaylist->tracks;
     _rawPlaylist->tracks = tracks;
 }
 

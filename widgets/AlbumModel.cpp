@@ -17,10 +17,13 @@
  *   with this program; if not, write to the Free Software Foundation, Inc.,
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- *   TODO  check duplicate enteries when adding files to an album
+ *   TODO Check duplicate enteries when adding files to an album
+ *   TODO Find an intelligent way to check if we find an actual sample now 
+ *        that the SIMULATE_TRANSFER has been deprecated 
  */
 
 #include "widgets/AlbumModel.h"
+
 /**
  * Construct a new AlbumModel
  */
@@ -192,9 +195,12 @@ QVariant AlbumModel::data(const QModelIndex& index, int role ) const
         QPixmap ret;
         ret.loadFromData( (const uchar*)sample.data, sample.size);
 //        qDebug() << "album decoration found:" << sample.filetype  << " with size: " << sample.size;
-#ifdef SIMULATE_TRANSFERS
-        qDebug()  << "Actual sample found in simulate mode!";
-#endif
+
+//TODO Find an intelligent way to do this now that the SIMULATE_TRANSFER 
+//directive has been deprecated
+//#ifdef SIMULATE_TRANSFERS
+//        qDebug()  << "Actual sample found in simulate mode!";
+//#endif
         return ret.scaledToWidth(24, Qt::SmoothTransformation);
       }
       else 

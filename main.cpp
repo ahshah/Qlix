@@ -83,6 +83,8 @@ void printLibraryVersions()
 AutoFixOpts ParseAutoFixOpts(unsigned int argc, char* argv[])
 {
   bool AutoFixPlaylists = false;
+  bool AutoFixAlbums= false;
+  bool SimulateTransfers= false;
   for (unsigned int i =0; i < argc; i ++)
   {
     QString str(argv[i]);
@@ -91,8 +93,19 @@ AutoFixOpts ParseAutoFixOpts(unsigned int argc, char* argv[])
     if (str == "--fixbadplaylists")
     {
       AutoFixPlaylists = true;
-      cout << "FOUND!!!" << endl;
+      cout << "FOUND PL FIX!!!" << endl;
+    }
+    else if (str == "--autofixalbums")
+    {
+      AutoFixAlbums = true;
+      cout << "FOUND ALBUM FIX!!!" << endl;
+    }
+    else if (str == "--simulatetransfers")
+    {
+      SimulateTransfers = true;
+      cout << "FOUND SIMULATE TRANSFERS FIX!!!" << endl;
     }
   }
-  return AutoFixOpts(AutoFixPlaylists);
+
+  return AutoFixOpts(AutoFixPlaylists, AutoFixAlbums, SimulateTransfers);
 }
