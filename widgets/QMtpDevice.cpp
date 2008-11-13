@@ -72,6 +72,7 @@ void QMtpDevice::run()
       qDebug() << "Found default storage!" << endl;
       break;
     }
+
     //if we haven't found a storage device
     if (i+1 >= _device->StorageDeviceCount())
     {
@@ -154,7 +155,8 @@ void QMtpDevice::proccessJob(GenericCommand* currentJob)
     case Delete:
     {
       DeleteObjCmd* deleteThis = (DeleteObjCmd*)currentJob;
-      qDebug() << "Whether the filter supports changes: " <<_sortedAlbums->dynamicSortFilter();
+      qDebug() << "Whether the filter supports changes: " <<
+                  _sortedAlbums->dynamicSortFilter();
       deleteObject(deleteThis->Object);
       delete deleteThis;
       //_albumModel->Delete(deleteThis->Object);
@@ -843,6 +845,7 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
     qDebug() << "Object of unknown type!" << endl;
     assert(false);
   }
+
   switch (in_obj->Type())
   {
     case MtpFile:
@@ -882,6 +885,7 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
 
     case MtpPlaylist:
     {
+      qDebug() << "Requested playlist deletion";
       break;
     }
    }

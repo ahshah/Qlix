@@ -715,7 +715,8 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
         ret.push_back(mapped);
         MTP::GenericObject* tempObj = (MTP::GenericObject*) mapped.internalPointer();
         assert(tempObj->Type() == MtpTrack ||  tempObj->Type() == MtpFile ||
-               tempObj->Type() == MtpAlbum || tempObj->Type() == MtpFolder);
+               tempObj->Type() == MtpAlbum || tempObj->Type() == MtpFolder || 
+               tempObj->Type() == MtpPlaylist);
       }
       else
         ret.push_back(first);
@@ -759,10 +760,11 @@ bool DeviceExplorer::confirmDeletion()
  */
 bool DeviceExplorer::confirmContainerDeletion(MTP::GenericObject* in_obj)
 {
+  QString msg = QString("%1 is a container object, all contained\
+    objects will be deleted!").arg( QString::fromUtf8(in_obj->Name() ) );
+
   if (QMessageBox::question(this, "Confirm Container Deletion",
-                               QString("%1 is a container object, all contained \
-                               objects will be deleted!").arg( QString::fromUtf8(in_obj->Name() ) ),
-                               "&Delete", "&Cancel",
+                               msg, "&Delete", "&Cancel",
                                QString::null, 0, 1) == 0)
     return true;
   else

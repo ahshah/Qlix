@@ -18,6 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 TODO Improve error handling / Reporting (once theres an error console)
+TODO Deleting tracks does not update the free space reported.
 TODO Remove ifdefs for SIMULATE_TRANSFERS and make it an option we can pass 
      qlix
 

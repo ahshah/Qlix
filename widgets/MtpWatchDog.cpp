@@ -57,7 +57,6 @@ void MtpWatchDog::run()
   }
   else
   {
-    qDebug() << "Device count > 0";
     if (!findDefaultDevice())
       createDevices();
     Unlock();
