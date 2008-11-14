@@ -44,10 +44,11 @@ QModelIndex PlaylistModel::index(int row, int col,
   if (row >= (int)pl->TrackCount())
     return QModelIndex();
 
-  MTP::Track* track = pl->ChildTrack(row);
-  assert (track->Type() == MtpTrack);
+  MTP::ShadowTrack* strack = pl->ChildTrack(row);
+  assert (strack->Type() == MtpShadowTrack);
+  assert (strack->GetTrack()->Type() == MtpTrack);
 
-  return createIndex(row, col, track);
+  return createIndex(row, col, strack);
 }
 
 QModelIndex PlaylistModel::parent(const QModelIndex& idx) const
@@ -57,11 +58,10 @@ QModelIndex PlaylistModel::parent(const QModelIndex& idx) const
 
   MTP::GenericObject* obj=(MTP::GenericObject*) idx.internalPointer();
 
-  if(obj->Type() == MtpTrack)
+  if(obj->Type() == MtpShadowTrack)
   {
-    MTP::Playlist* parent = ((MTP::Track*)obj)->ParentPlaylist();
+    MTP::Playlist* parent = ((MTP::ShadowTrack*)obj)->ParentPlaylist();
     QModelIndex ret = index((int)parent->GetRowIndex() - 1, 0, QModelIndex()); 
-
     return ret;
   }
   else if (obj->Type() == MtpPlaylist)
@@ -80,7 +80,7 @@ int PlaylistModel::rowCount(const QModelIndex& parent) const
   if (!parent.isValid() )
     return _device->PlaylistCount();
   MTP::GenericObject* obj= (MTP::GenericObject*)parent.internalPointer();
-  if(obj->Type() == MtpTrack)
+  if(obj->Type() == MtpShadowTrack)
     return 0;
   else if (obj->Type() == MtpPlaylist)
     return ((MTP::Playlist*)obj)->TrackCount();
@@ -108,10 +108,10 @@ QVariant PlaylistModel::data(const QModelIndex& index, int role ) const
         QString first = QString::fromUtf8(tempPlaylist->Name());
         return (first);
     }
-    else if (temp->Type() == MtpTrack && index.column() == 0)
+    else if (temp->Type() == MtpShadowTrack && index.column() == 0)
     {
-        MTP::Track* tempTrack = (MTP::Track*)temp;
-        QString temp = QString::fromUtf8(tempTrack->Name());
+        MTP::ShadowTrack* tempTrack = (MTP::ShadowTrack*)temp;
+        QString temp = QString::fromUtf8(tempTrack->GetTrack()->Name());
         return temp;
     }
   }
@@ -124,7 +124,7 @@ QVariant PlaylistModel::data(const QModelIndex& index, int role ) const
           QPixmap ret(":/pixmaps/playlisticon.png");
           return ret.scaledToWidth(24, Qt::SmoothTransformation);
     }
-    else if (temp->Type() == MtpTrack && index.column() == 0)
+    else if (temp->Type() == MtpShadowTrack && index.column() == 0)
     {
         return QIcon(QPixmap (":/pixmaps/track.png"));
     }
@@ -145,4 +145,15 @@ QVariant PlaylistModel::data(const QModelIndex& index, int role ) const
     }
   }
   return QVariant();
+}
+
+void PlaylistModel::RemoveTrack(MTP::ShadowTrack* in_strack)
+{
+  qDebug() << "Called playlist RemoveTrack";
+  MTP::Playlist* parentPl = in_strack->ParentPlaylist();
+  QModelIndex parentIdx = createIndex(parentPl->GetRowIndex(), 0, parentPl);
+  emit beginRemoveRows(parentIdx, in_strack->RowIndex(), 
+                       in_strack->RowIndex());
+  parentPl->RemoveTrack(in_strack->RowIndex());
+  emit endRemoveRows();
 }

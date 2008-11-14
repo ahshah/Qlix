@@ -18,6 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  *   TODO context/selection sensative context menus..
+ *   TODO serious bug in removeIndexDuplicates
  */
 
 #include "DeviceExplorer.h"
@@ -212,7 +213,7 @@ void DeviceExplorer::UpdateProgressBar(const QString& label,
   _progressBar->setValue(percent);
   if (percent == 100)
   {
-    updateDeviceSpace();
+    UpdateDeviceSpace();
   }
 }
 
@@ -226,7 +227,7 @@ void DeviceExplorer::SetProgressBar(QProgressBar* in_progressbar)
 {
   _progressBar = in_progressbar;
   _progressBar->setTextVisible(true);
-  updateDeviceSpace();
+  UpdateDeviceSpace();
 }
 
 
@@ -334,6 +335,9 @@ void DeviceExplorer::setupConnections()
           _albumModel->sourceModel(), SLOT(RemoveTrack(MTP::Track*)),
           Qt::BlockingQueuedConnection);
 
+  connect(_device, SIGNAL(RemovedTrack(MTP::Track*)),
+          this, SLOT( UpdateDeviceSpace()));
+
   connect(_device, SIGNAL(RemovedAlbum(MTP::Album*)),
           _albumModel->sourceModel(), SLOT(RemoveAlbum(MTP::Album*)),
           Qt::BlockingQueuedConnection);
@@ -350,6 +354,9 @@ void DeviceExplorer::setupConnections()
           _dirModel->sourceModel(), SLOT(AddFile(MTP::File*)),
           Qt::BlockingQueuedConnection);
 
+  connect(_device, SIGNAL(RemovedTrackFromPlaylist(MTP::ShadowTrack*)),
+          _plModel->sourceModel(), SLOT(RemoveTrack(MTP::ShadowTrack*)),
+          Qt::BlockingQueuedConnection);
 
 }
 
@@ -360,7 +367,7 @@ void DeviceExplorer::Beep(MTP::Track* in_track)
   _albumModel->invalidate();
 }
 
-void DeviceExplorer::updateDeviceSpace()
+void DeviceExplorer::UpdateDeviceSpace()
 {
   if (!_progressBar)
     return;
@@ -418,8 +425,6 @@ void DeviceExplorer::updateDeviceSpace()
   QString label =  usedDisplaySize + " of " + totalDisplaySize ;
   count_t percent = (count_t)(((double) used / (double) total) * 100);
 
-  qDebug() << "Free space reported: " << free;
-  qDebug() << "Total space reported: " << total;
   _progressBar->setFormat(label);
   _progressBar->setValue(percent);
 }
@@ -594,7 +599,8 @@ void DeviceExplorer::DeleteFromDevice()
       continue;
     qDebug() << "Deleting object";
 
-    if (obj->Type() != MtpFile && obj->Type() != MtpTrack)
+    if (obj->Type() != MtpFile && obj->Type() != MtpTrack &&
+        obj->Type() != MtpShadowTrack)
     {
       if (!confirmContainerDeletion(obj) )
         continue;
@@ -716,7 +722,8 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
         MTP::GenericObject* tempObj = (MTP::GenericObject*) mapped.internalPointer();
         assert(tempObj->Type() == MtpTrack ||  tempObj->Type() == MtpFile ||
                tempObj->Type() == MtpAlbum || tempObj->Type() == MtpFolder || 
-               tempObj->Type() == MtpPlaylist);
+               tempObj->Type() == MtpPlaylist ||
+               tempObj->Type() == MtpShadowTrack);
       }
       else
         ret.push_back(first);
@@ -724,6 +731,8 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
   }
   qDebug() << "Found :" << dupCount << " duplicates" << endl;
   qDebug() << "ret size:" <<ret.size();
+  qSort(ret.begin(), ret.end(), modelLessThan);
+#define ALBUMDEBUG
 #ifdef ALBUMDEBUG
   QModelIndex temp;
   qDebug() << "__Selection order__";
@@ -744,6 +753,8 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
  */
 bool DeviceExplorer::confirmDeletion()
 {
+  return true;
+  /*
   if (QMessageBox::question(this, "Confirm Deletion",
                                "Pleaes confirm object deletion",
                                "&Delete", "&Cancel",
@@ -751,6 +762,7 @@ bool DeviceExplorer::confirmDeletion()
     return true;
   else
     return false;
+    */
 }
 
 /**
@@ -760,6 +772,8 @@ bool DeviceExplorer::confirmDeletion()
  */
 bool DeviceExplorer::confirmContainerDeletion(MTP::GenericObject* in_obj)
 {
+  return true;
+  /*
   QString msg = QString("%1 is a container object, all contained\
     objects will be deleted!").arg( QString::fromUtf8(in_obj->Name() ) );
 
@@ -769,4 +783,13 @@ bool DeviceExplorer::confirmContainerDeletion(MTP::GenericObject* in_obj)
     return true;
   else
     return false;
+    */
 }
+bool DeviceExplorer::modelLessThan(const QModelIndex& left, const QModelIndex& right)
+{
+  if (left.row() < right.row())
+    return false;
+  else
+    return true;
+}
+

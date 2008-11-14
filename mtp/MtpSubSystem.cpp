@@ -24,7 +24,7 @@ TODO better error handling
 /**
  * Does nothing for now, besides initializing LIBmtp
 */
-MtpSubSystem::MtpSubSystem() : _autoFixOptions()
+MtpSubSystem::MtpSubSystem() : _commandLineOpts()
 {
   LIBMTP_Init();
 }
@@ -37,11 +37,11 @@ MtpSubSystem::~MtpSubSystem()
 
 /**
   * Sets the MTP autofix options 
-  * @param in_autofixopts the autofix options that configure the subsystem
+  * @param in_commandlineopts the autofix options that configure the subsystem
   */
-void MtpSubSystem::SetAutoFixOptions(AutoFixOpts in_autofixopts)
+void MtpSubSystem::SetAutoFixOptions(CommandLineOptions in_commandlineopts)
 {
-  _autoFixOptions = in_autofixopts;
+  _commandLineOpts = in_commandlineopts;
 }
 
 /**
@@ -55,7 +55,7 @@ void MtpSubSystem::Initialize()
   LIBMTP_mtpdevice_t* _dlist = _deviceList;
   while(_dlist)
   {
-    MtpDevice* dev = new MtpDevice(_dlist, _autoFixOptions);
+    MtpDevice* dev = new MtpDevice(_dlist, _commandLineOpts);
     _devList.push_back(dev);
     _dlist = _dlist->next;
   }
@@ -65,7 +65,7 @@ void MtpSubSystem::Initialize()
     return;
   for (int i =0; i < 7; i++)
   {
-    MtpDevice* dev = new MtpDevice(first, _autoFixOptions);
+    MtpDevice* dev = new MtpDevice(first, _commandLineOpts);
     _devList.push_back(dev);
   }
 #endif

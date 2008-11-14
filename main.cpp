@@ -34,7 +34,7 @@
 #endif
 
 void printLibraryVersions();
-AutoFixOpts ParseAutoFixOpts(unsigned int argc, char* argv[]);
+CommandLineOptions ParseCommandLineOptions(unsigned int argc, char* argv[]);
 
 MtpSubSystem _subSystem;
 int main(int argc, char* argv[])
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
   app.setStyle("Plastique");
 
   /** Grab AutoFix options */
-  AutoFixOpts opts = ParseAutoFixOpts(argc, argv);
+  CommandLineOptions opts = ParseCommandLineOptions(argc, argv);
 
   _subSystem.SetAutoFixOptions(opts); 
   if (opts.AutoFixPlaylists)
@@ -80,11 +80,12 @@ void printLibraryVersions()
   cout << "LIBMTP VERSION: " + string(LIBMTP_VERSION_STRING) << endl;
 }
 
-AutoFixOpts ParseAutoFixOpts(unsigned int argc, char* argv[])
+CommandLineOptions ParseCommandLineOptions(unsigned int argc, char* argv[])
 {
   bool AutoFixPlaylists = false;
   bool AutoFixAlbums= false;
   bool SimulateTransfers= false;
+  bool DebugOutput = false;
   for (unsigned int i =0; i < argc; i ++)
   {
     QString str(argv[i]);
@@ -100,12 +101,16 @@ AutoFixOpts ParseAutoFixOpts(unsigned int argc, char* argv[])
       AutoFixAlbums = true;
       cout << "FOUND ALBUM FIX!!!" << endl;
     }
-    else if (str == "--simulatetransfers")
+    else if (str == "--simulate")
     {
       SimulateTransfers = true;
       cout << "FOUND SIMULATE TRANSFERS FIX!!!" << endl;
     }
+    else if (str == "--debug")
+    {
+      DebugOutput = true;
+    }
   }
 
-  return AutoFixOpts(AutoFixPlaylists, AutoFixAlbums, SimulateTransfers);
+  return CommandLineOptions(AutoFixPlaylists, AutoFixAlbums, SimulateTransfers, DebugOutput);
 }

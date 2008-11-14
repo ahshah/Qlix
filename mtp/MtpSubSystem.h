@@ -38,7 +38,7 @@ public:
   ~MtpSubSystem();
   void ReleaseDevices();
   void Initialize();
-  void SetAutoFixOptions(AutoFixOpts in_autofixopts);
+  void SetAutoFixOptions(CommandLineOptions in_autofixopts);
 
   count_t DeviceCount() const;
 
@@ -51,6 +51,6 @@ private:
   vector <MtpDevice*> _devList;
   LIBMTP_mtpdevice_t* _deviceList;
   MTPErrorVector _errorList;
-  AutoFixOpts _autoFixOptions; 
+  CommandLineOptions _commandLineOpts; 
 };
 #endif

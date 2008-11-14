@@ -18,6 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <QtAlgorithms>
 #include <QWidget>
 #include <QMessageBox>
 #include <QToolBar>
@@ -72,6 +73,7 @@ public slots:
   void ShowQueue(bool);
   void UpdateProgressBar(const QString&, count_t percent);
   void Beep(MTP::Track* in_track);
+  void UpdateDeviceSpace();
 
 signals:
 
@@ -111,11 +113,11 @@ private:
   void hidePlaylistTools();
   void hideFileTools();
 
-  void updateDeviceSpace();
   void clearActions();
 
   bool confirmDeletion();
   bool confirmContainerDeletion(MTP::GenericObject*);
+  static bool modelLessThan(const QModelIndex&, const QModelIndex&);
 
 //  QModelIndexList removeAlbumDuplicates(const QModelIndexList&);
   QModelIndexList removeIndexDuplicates(const QModelIndexList&,

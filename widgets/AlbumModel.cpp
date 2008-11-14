@@ -20,6 +20,7 @@
  *   TODO Check duplicate enteries when adding files to an album
  *   TODO Find an intelligent way to check if we find an actual sample now 
  *        that the SIMULATE_TRANSFER has been deprecated 
+ *   TODO replace functions such as GetRowIndex() with RowIndex()
  */
 
 #include "widgets/AlbumModel.h"
@@ -220,10 +221,8 @@ QVariant AlbumModel::data(const QModelIndex& index, int role ) const
   if (role == Qt::SizeHintRole)
   {
     MTP::GenericObject* temp = (MTP::GenericObject*) index.internalPointer();
-    /*
     if (temp->Type() == MtpAlbum && index.column() == 0)
       return QSize(28, 28);
-      */
   }
   if (role == Qt::FontRole)
   {
@@ -247,7 +246,7 @@ QVariant AlbumModel::data(const QModelIndex& index, int role ) const
 void AlbumModel::AddAlbum(MTP::Album* in_album)
 {
   //invalid parent for root items
-  qDebug() << "Called Add Album" << endl;
+  //qDebug() << "Called Add Album" << endl;
   QModelIndex parentIdx = QModelIndex();
 
   emit beginInsertRows(parentIdx, _albumList.size(), _albumList.size());

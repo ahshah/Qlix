@@ -109,8 +109,7 @@ GenericFileObject* GenericFileObject::Association() const
 
 Track::Track(LIBMTP_track_t* in_track) :
             GenericFileObject(MtpTrack, in_track->item_id),
-            _parentAlbum (NULL),
-            _parentPlaylist(NULL)
+            _parentAlbum (NULL)
 {
   assert(in_track);
   _rawTrack = in_track;
@@ -125,20 +124,6 @@ count_t Track::GetRowIndex() const { return _rowIndex; }
  * Sets the visual row index for this track 
  **/
 void Track::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
-
-/**
- * Get the visual row index for this track when peering through the playlist
- */
-count_t Track::GetPlaylistRowIndex() const  { return _plRowIndex; }
-
-/**
- * Set the visual row index for this track when peering through the playlist 
- * container
- */
-void Track::SetPlaylistRowIndex(count_t in_idx) 
-{ 
-  _plRowIndex = in_idx;
-}
 
 /** 
  * Retreives the name of the wrapped Track
@@ -195,6 +180,48 @@ char const * Track::Genre() const
 }
 
 /**
+ * Associates a shadow track to this track- this helps us keep track of 
+ * playlist membership when a track is deleted
+ * @returns the association index of the track
+ */
+count_t Track::AssociateShadowTrack(ShadowTrack* in_track)
+{
+  count_t idx = _shadowTracks.size();
+  _shadowTracks.push_back(in_track);
+  return idx;
+}
+
+/**
+ * Disassociates a shadow track to this track- we do this when a track is 
+ * removed from a playlist.
+ **/
+void Track::DisassociateShadowTrack(count_t in_idx)
+{
+  assert(in_idx < _shadowTracks.size());
+  assert(_shadowTracks[in_idx] != NULL);
+  _shadowTracks[in_idx] = NULL;
+}
+
+/**
+ * @return the number of shadow track associations. Useful to iterate over all
+ * assoicated tracks.
+ **/
+count_t Track::ShadowAssociationCount()
+{
+  return _shadowTracks.size();
+}
+
+/**
+ * Returns the ShadowTrack by index of association.
+ * @param in_index the index of the associated track. 
+ * @returns the track at the given index or NULL if the track was removed
+ **/
+ShadowTrack* Track::ShadowAssociation(count_t in_index)
+{
+  return _shadowTracks[in_index];
+}
+
+/**
  * Returns the parent id of this track
  * @return the parent id of this track
  */
@@ -206,24 +233,45 @@ count_t Track::ParentFolderID() const { return _rawTrack->parent_id; }
  */
 void Track::SetParentAlbum(Album* in_album) {_parentAlbum = in_album; }
 
-/**
- * Sets the parent playlist of this track
- * @param in_pl the parent playlist of this track
- */
-void Track::SetParentPlaylist(Playlist* in_pl) {_parentPlaylist = in_pl; }
-
 /** 
  * Returns the parent Album of this track
  * @return the parent Album of this track
  */
 Album* Track::ParentAlbum() const { return _parentAlbum; }
 
-/**
- * Returns the parent Playlist of this track
- * @return the parent Playlist of this track
- */
-Playlist* Track::ParentPlaylist() const { return _parentPlaylist; }
+ShadowTrack::ShadowTrack(Track* in_track, Playlist* in_pl, count_t in_idx) : 
+                         GenericObject(MtpShadowTrack, 0),
+                         _track(in_track),
+                         _parentPlaylist(in_pl),
+                         _rowIndex(in_idx)
+{ 
+  _trackAssociationIndex = _track->AssociateShadowTrack(this);
+}
 
+ShadowTrack::~ShadowTrack()
+{
+  _track->DisassociateShadowTrack(_trackAssociationIndex);
+}
+
+count_t ShadowTrack::RowIndex() const
+{
+  return _rowIndex;
+}
+
+void ShadowTrack::SetRowIndex(count_t in_idx)
+{
+  _rowIndex = in_idx;
+}
+
+Playlist* ShadowTrack::ParentPlaylist() const
+{
+  return _parentPlaylist;
+}
+
+const Track* ShadowTrack::GetTrack() const
+{
+  return _track;
+}
 
 /**
  * Creates a new File object and and stores its representative data
@@ -549,9 +597,9 @@ void Album::RemoveTrack(count_t in_index)
   while (backup_iter != _childTracks.end())
   {
     Track* currentTrack = (*backup_iter);
-    int prevIdx =  (*backup_iter)->GetRowIndex( );
+    int prevIdx =  currentTrack->GetRowIndex( );
     assert(prevIdx != 0);
-    (*backup_iter)->SetRowIndex( (*backup_iter)->GetRowIndex() -1);
+    currentTrack->SetRowIndex( currentTrack->GetRowIndex() -1);
     backup_iter++;
   }
   assert(*iter == deletedTrack); 
@@ -567,24 +615,39 @@ void Album::RemoveTrack(count_t in_index)
 void Album::RemoveFromRawAlbum(count_t in_index)
 {
     count_t trackCount = _rawAlbum->no_tracks;
+    assert(trackCount != 0);
+    assert(in_index < trackCount);
+
     count_t* tracks = NULL;
-    if (trackCount-1 > 0)
+    if (trackCount > 1)
+    {
       tracks = new count_t[trackCount-1];
-    for (count_t i =0; i < in_index; i++)
-    {
-      tracks[i] = _rawAlbum->tracks[i];
-    }
-    for (count_t i = in_index+1; i < trackCount; i++)
-    {
-      tracks[i-1] = _rawAlbum->tracks[i];
-    }
+      for (count_t i =0; i < in_index; i++)
+      {
+        tracks[i] = _rawAlbum->tracks[i];
+      }
+      for (count_t i = in_index+1; i < trackCount; i++)
+      {
+        tracks[i-1] = _rawAlbum->tracks[i];
+      }
 
-    _rawAlbum->no_tracks = trackCount -1;
-
-    //LIBMTP does not know that its the tracks association has been removed
-    //TODO will this cause problems in LIBMTP's caching system?
-    delete [] _rawAlbum->tracks;
-    _rawAlbum->tracks = tracks;
+      //LIBMTP does not know that its the tracks association has been removed
+      _rawAlbum->no_tracks = trackCount -1;
+      //TODO will this cause problems in LIBMTP's caching system?
+      delete [] _rawAlbum->tracks;
+      _rawAlbum->tracks = tracks;
+    }
+    else if (trackCount == 1)
+    {
+      _rawAlbum->no_tracks = 0;
+      //see TODO note above regarding LIBMTP's caching system
+      delete [] _rawAlbum->tracks;
+      _rawAlbum->tracks = NULL;
+    }
+    else if (trackCount == 0)
+    {
+      _rawAlbum->tracks = NULL;
+    }
 }
 
 /**
@@ -692,9 +755,15 @@ char const * Playlist::Name() const
  */
 void Playlist::AddTrack(Track* in_track) 
 {
+  ShadowTrack* strack = new ShadowTrack(in_track, this, _childTracks.size());
+  _childTracks.push_back(strack);
+  cout << "track count:" << _childTracks.size();
+  cout << " given rowid:" << strack->RowIndex() << endl;
+  /*
   in_track->SetPlaylistRowIndex(_childTracks.size());
   _childTracks.push_back(in_track);
   in_track->SetParentPlaylist(this);
+  */
 }
 
 /**
@@ -702,8 +771,9 @@ void Playlist::AddTrack(Track* in_track)
  * @param idx the index of the child track in the Playlists vector
  * @return the child tradck at the given index or null if it doesn't exist
  */
-Track* Playlist::ChildTrack(count_t idx) const
+ShadowTrack* Playlist::ChildTrack(count_t idx) const
 {
+  assert(idx < _childTracks.size());
   if (idx >= _childTracks.size())
     return NULL;
   return _childTracks[idx];
@@ -731,7 +801,10 @@ count_t Playlist::TrackCount() const
 uint32_t Playlist::ChildTrackID(count_t idx) const
 {
   assert(idx < TrackCount());
-  return _rawPlaylist->tracks[idx];
+  if (!_initialized)
+    return _rawPlaylist->tracks[idx];
+  else
+    return _childTracks[idx]->GetTrack()->ID();
 }
 
 /** 
@@ -761,9 +834,9 @@ void Playlist::RemoveTrack(count_t in_index)
   if (in_index > _childTracks.size())
     return;
   //cout << "before removal album size: " << _childTracks.size() << endl;
-  Track* deletedTrack = _childTracks[in_index];
-  vector<Track*>::iterator iter = _childTracks.begin();
-  vector<Track*>::iterator backup_iter;
+  ShadowTrack* deletedTrack = _childTracks[in_index];
+  vector<ShadowTrack*>::iterator iter = _childTracks.begin();
+  vector<ShadowTrack*>::iterator backup_iter;
   int i =0;
   while (*iter !=  deletedTrack) 
   { 
@@ -777,10 +850,10 @@ void Playlist::RemoveTrack(count_t in_index)
   //Ensure that objects below this object have the correct index
   while (backup_iter != _childTracks.end())
   {
-    Track* currentTrack = (*backup_iter);
-    int prevIdx =  (*backup_iter)->GetRowIndex( );
+    ShadowTrack* currentTrack = (*backup_iter);
+    int prevIdx =  (*backup_iter)->RowIndex();
     assert(prevIdx != 0);
-    (*backup_iter)->SetRowIndex( (*backup_iter)->GetRowIndex() -1);
+    (*backup_iter)->SetRowIndex( (*backup_iter)->RowIndex() -1);
     backup_iter++;
   }
   assert(*iter == deletedTrack); 
@@ -804,30 +877,44 @@ const LIBMTP_playlist_t* Playlist::RawPlaylist()
  */
 void Playlist::RemoveFromRawPlaylist(count_t in_index)
 {
+    cout << "Remove pl index: " << in_index<< endl;
     count_t trackCount = _rawPlaylist->no_tracks;
+    assert(trackCount != 0);
+    assert(in_index < trackCount);
+
     count_t* tracks = NULL;
-
-    cout << "RemoveFromRawPlaylists start: " << trackCount << endl;
-    if (trackCount-1 > 0)
+    if (trackCount > 1)
+    {
       tracks = new count_t[trackCount-1];
-    for (count_t i =0; i < in_index; i++)
-    {
-      tracks[i] = _rawPlaylist->tracks[i];
-    }
-    for (count_t i = in_index+1; i < trackCount; i++)
-    {
-      tracks[i-1] = _rawPlaylist->tracks[i];
-    }
+      for (count_t i =0; i < in_index; i++)
+      {
+        tracks[i] = _rawPlaylist->tracks[i];
+      }
+      for (count_t i = in_index+1; i < trackCount; i++)
+      {
+        tracks[i-1] = _rawPlaylist->tracks[i];
+      }
 
-    _rawPlaylist->no_tracks = trackCount -1;
+      _rawPlaylist->no_tracks = trackCount -1;
+      delete [] _rawPlaylist->tracks;
+      _rawPlaylist->tracks = tracks;
+    }
+    else if (trackCount == 1)
+    {
+      //LIBMTP does not know that its the tracks association has been removed
+      //TODO will this cause problems in LIBMTP's caching system?
+      _rawPlaylist->no_tracks = 0;
+      delete [] _rawPlaylist->tracks;
+      _rawPlaylist->tracks = NULL;
+    }
+    else if (trackCount == 0)
+    {
+      _rawPlaylist->tracks = NULL;
+    }
 
     cout << "RemoveFromRawPlaylists end: " << _rawPlaylist->no_tracks<< endl;
     cout << "RemoveFromRawPlaylists end2: " << tracks << endl;
 
-    //LIBMTP does not know that its the tracks association has been removed
-    //TODO will this cause problems in LIBMTP's caching system?
-    delete [] _rawPlaylist->tracks;
-    _rawPlaylist->tracks = tracks;
 }
 
 }

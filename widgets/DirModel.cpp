@@ -88,7 +88,7 @@ QModelIndex DirModel::parent(const QModelIndex& idx) const
     if (!parent) 
       return QModelIndex();
      MTP::File* fobj = (MTP::File*) obj;
-    qDebug() << "file" << QString::fromUtf8(fobj->Name()) << " 's parent is: " << QString::fromUtf8(parent->Name());
+//    qDebug() << "file" << QString::fromUtf8(fobj->Name()) << " 's parent is: " << QString::fromUtf8(parent->Name());
     return createIndex(parent->GetRowIndex(), 0, parent);
   }
   else

@@ -46,7 +46,7 @@ class MtpDevice
 {
 public:
 //Internal functions
-  MtpDevice(LIBMTP_mtpdevice_t* in_device, AutoFixOpts in_opts);
+  MtpDevice(LIBMTP_mtpdevice_t* in_device, CommandLineOptions in_opts);
   ~MtpDevice();
   void Initialize();
   void SetProgressFunction(LIBMTP_progressfunc_t, const void* const );
@@ -102,11 +102,10 @@ public:
 
 // Track/Album
   bool AddTrackToAlbum(MTP::Track*, MTP::Album*);
-  bool RemoveTrackFromAlbum(MTP::Track*, MTP::Album*);
 
 //Track/Playlist functions
   bool AddTrackToPlaylist(MTP::Track*, MTP::Playlist*);
-  bool RemoveTrackFromPlaylist(MTP::Track*, MTP::Playlist*);
+  bool RemoveTrackFromPlaylist( MTP::Playlist*, count_t in_idx);
 
 //Extended Track functions
   bool RemoveTrack(MTP::Track*);
@@ -134,7 +133,7 @@ private:
   count_t _maxBatteryLevel;
   count_t _currentBatteryLevel;
   bool _batteryLevelSupport;
-  AutoFixOpts _autoFixOptions;
+  CommandLineOptions _commandLineOpts;
 
   bool removeObject(count_t);
 

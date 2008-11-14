@@ -92,6 +92,7 @@ signals:
   void RemovedAlbum(MTP::Album*);
   void RemovedFolder(MTP::Folder*);
 
+  void RemovedTrackFromPlaylist(MTP::ShadowTrack*);
 protected:
   void run();
 

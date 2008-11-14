@@ -21,8 +21,10 @@
  *   TODO memory leaks
  *   TODO update model correctly
  *   TODO move model information out of this thread and back into the main thread
- *   TODO should the model just use queuedConnections for removing and 
+ *   Q. Should the model just use queuedConnections for removing and 
  *   adding tracks/files/objects
+ *   A. Yes this seems to be the right thing to do..
+ *
  */
 #include "widgets/QMtpDevice.h"
 
@@ -221,10 +223,14 @@ void QMtpDevice::initializeDeviceStructures()
   _sortedPlaylists->setSourceModel(_plModel);
   _sortedFiles->setSourceModel(_dirModel);
 
-  this->moveToThread(_sortedAlbums->thread());
+  //this makes no sense:
+  //this->moveToThread(_sortedAlbums->thread());
   _sortedAlbums->moveToThread(QApplication::instance()->thread());
-  _albumModel->moveToThread(QApplication::instance()->thread());
+  _sortedPlaylists->moveToThread(QApplication::instance()->thread());
   _sortedFiles->moveToThread(QApplication::instance()->thread());
+
+  _plModel->moveToThread(QApplication::instance()->thread());
+  _albumModel->moveToThread(QApplication::instance()->thread());
   _dirModel->moveToThread(QApplication::instance()->thread());
 } 
 
@@ -233,7 +239,6 @@ void QMtpDevice::initializeDeviceStructures()
  */
 void QMtpDevice::findAndRetrieveDeviceIcon()
 {
-  qDebug() << "Searching for Device Icon";
   MTP::Folder* rootFolder = _device->RootFolder();
   count_t fileCount = rootFolder->FileCount();
 
@@ -325,7 +330,7 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
 {
   if (in_obj->Type() != MtpFile   && in_obj->Type() != MtpTrack  &&
       in_obj->Type() != MtpFolder && in_obj->Type() != MtpAlbum  &&
-      in_obj->Type() != MtpPlaylist)
+      in_obj->Type() != MtpPlaylist && in_obj->Type() != MtpShadowTrack)
   {
     qDebug() << "Object of unknown type!" << endl;
     assert(false);
@@ -336,6 +341,7 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
   switch(in_obj->Type())
   {
     case MtpTrack:
+    case MtpShadowTrack:
     case MtpFile:
     {
       cmd = new DeleteObjCmd(in_obj);
@@ -359,7 +365,7 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
     case MtpPlaylist:
     {
       MTP::Playlist* pl = (MTP::Playlist*) in_obj;
-      MTP::Track* currentTrack;
+      MTP::ShadowTrack* currentTrack;
       for (count_t i = 0; i < pl->TrackCount(); i++)
       {
         currentTrack = pl->ChildTrack(i);
@@ -465,11 +471,11 @@ void QMtpDevice::TransferFrom(MTP::GenericObject* obj, QString filePath)
     case MtpPlaylist:
     {
       MTP::Playlist* pl = (MTP::Playlist*) obj;
-      MTP::Track* currentTrack;
+      MTP::ShadowTrack* currentTrack;
       for (count_t i = 0; i < pl->TrackCount(); i++)
       {
         currentTrack = pl->ChildTrack(i);
-        QString trackName = QString::fromUtf8(currentTrack->FileName());
+        QString trackName = QString::fromUtf8(currentTrack->GetTrack()->FileName());
         QString actualPath = filePath + QDir::separator() + trackName;
         cmd = new GetObjCmd (currentTrack->ID(), actualPath);
         IssueCommand(cmd);
@@ -840,7 +846,7 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
 {
   if (in_obj->Type() != MtpFile   && in_obj->Type() != MtpTrack  &&
       in_obj->Type() != MtpFolder && in_obj->Type() != MtpAlbum  &&
-      in_obj->Type() != MtpPlaylist)
+      in_obj->Type() != MtpPlaylist && in_obj->Type() != MtpShadowTrack)
   {
     qDebug() << "Object of unknown type!" << endl;
     assert(false);
@@ -857,11 +863,31 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
     {
       MTP::GenericFileObject* deletedObj = (MTP::GenericFileObject*) in_obj;
       assert(deletedObj->Association()->Type() == MtpFile);
-      _device->RemoveTrack( (MTP::Track*)deletedObj);
+      bool ret = _device->RemoveTrack( (MTP::Track*)deletedObj);
+      if (ret)
+      {
+        MTP::File* association= (MTP::File*) deletedObj->Association();
+        MTP::Track* deletedTrack = ((MTP::Track*)deletedObj);
+        for (count_t i = 0; i < deletedTrack->ShadowAssociationCount(); i++)
+        {
+          MTP::ShadowTrack* strack = deletedTrack->ShadowAssociation(i);
+          if (strack)
+            emit RemovedTrackFromPlaylist(strack);
+        }
+        emit RemovedTrack(deletedTrack);
+        emit RemovedFile(association);
+      }
+      break;
+    }
 
-      MTP::File* association= (MTP::File*) deletedObj->Association();
-      emit RemovedTrack((MTP::Track*)deletedObj);
-      emit RemovedFile(association);
+    case MtpShadowTrack:
+    {
+      MTP::ShadowTrack* deletedTrack = (MTP::ShadowTrack*) in_obj;
+      MTP::Playlist* parent = deletedTrack->ParentPlaylist();
+      bool ret;
+      ret = _device->RemoveTrackFromPlaylist(parent, deletedTrack->RowIndex());
+      if (ret)
+        emit RemovedTrackFromPlaylist(deletedTrack);
       break;
     }
 
@@ -871,15 +897,18 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
       emit RemovedFolder((MTP::Folder*) in_obj);
       break;
     }
+
     case MtpAlbum:
     {
       MTP::GenericFileObject* deletedObj = (MTP::GenericFileObject*) in_obj;
       assert(deletedObj->Association()->Type() == MtpFile);
-      _device->RemoveAlbum( (MTP::Album*)deletedObj);
+      bool ret = _device->RemoveAlbum( (MTP::Album*)deletedObj);
       MTP::File* association= (MTP::File*) deletedObj->Association();
-
-      emit RemovedAlbum( (MTP::Album*)deletedObj);
-      emit RemovedFile(association);
+      if (ret)
+      {
+        emit RemovedAlbum( (MTP::Album*)deletedObj);
+        emit RemovedFile(association);
+      }
       break;
     }
 

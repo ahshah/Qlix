@@ -40,6 +40,8 @@ public:
   int rowCount(const QModelIndex& parent= QModelIndex() ) const ;
   int columnCount(const QModelIndex& parent= QModelIndex() ) const;
   QVariant data(const QModelIndex& , int role = Qt::DisplayRole ) const;
+public slots:
+  void RemoveTrack(MTP::ShadowTrack*);
 private:
   MtpDevice* _device;
 };

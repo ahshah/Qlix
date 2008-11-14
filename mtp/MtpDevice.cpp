@@ -55,9 +55,9 @@ TODO When a file transfer is complete the libmtp struct may have new information
  * @param in_device The raw LIBMtp device
  * @return Returns the requested device
  */
-MtpDevice::MtpDevice(LIBMTP_mtpdevice_t* in_device, AutoFixOpts in_opts)  :
+MtpDevice::MtpDevice(LIBMTP_mtpdevice_t* in_device, CommandLineOptions in_opts)  :
                      _initialized(false),
-                     _autoFixOptions(in_opts),
+                     _commandLineOpts(in_opts),
                      _rootFolder(NULL)
 {
   _device = in_device;
@@ -165,8 +165,12 @@ void MtpDevice::FreeSpace(unsigned int in_ID, uint64_t* out_total, uint64_t* out
     if (_storageDeviceList[i]->ID() == in_ID)
     {
       MtpStorage* storage_dev = _storageDeviceList[i];
-      cout << "Storage reporting: " << storage_dev->TotalSpace() << " and " <<
-               storage_dev->FreeSpace() << endl;;
+
+      if (_commandLineOpts.DebugOutput)
+      {
+        cout << "Storage reporting: " << storage_dev->TotalSpace() << " and " <<
+                 storage_dev->FreeSpace() << endl;;
+      }
       *out_total = storage_dev->TotalSpace();
       *out_free = storage_dev->FreeSpace();
       return;
@@ -380,10 +384,11 @@ void MtpDevice::createObjectStructure()
   createFileStructure();
   createTrackBasedStructures();
 
-#ifdef QLIX_DEBUG
-  //dbgPrintSupportedFileTypes();
-  //dbgPrintFolders(NULL, 0);
-#endif
+  if (_commandLineOpts.DebugOutput)
+  {
+    dbgPrintSupportedFileTypes();
+    dbgPrintFolders(NULL, 0);
+  }
 }
 
 /*
@@ -526,7 +531,8 @@ void MtpDevice::createFileStructure()
   while (fileRoot)
   {
     MTP::File* currentFile = new MTP::File(fileRoot);
-    cout << "Created file: " << currentFile << " with id: "<< currentFile->ID() << endl;
+    if (_commandLineOpts.DebugOutput)
+      cout << "Created file: " << currentFile << " with id: "<< currentFile->ID() << endl;
     //Sanity check: find previous instances for crosslinks
     MTP::File* prev_file = (MTP::File*) find(currentFile->ID(), MtpFile); 
     //crosslink check
@@ -551,8 +557,11 @@ void MtpDevice::createFileStructure()
     }
     currentFile->SetRowIndex(parentFolder->FileCount());
     parentFolder->AddChildFile(currentFile);
-    if (parentFolder->ID() == 0)
-      cout << "Added new child folder to root, now file count: " << parentFolder->FileCount() << endl;
+    if (_commandLineOpts.DebugOutput)
+    {
+      if (parentFolder->ID() == 0)
+       cout << "Added new child folder to root, now file count: " << parentFolder->FileCount() << endl;
+    }
     currentFile->SetParentFolder(parentFolder);
 
     //move on to the next file
@@ -575,8 +584,11 @@ void MtpDevice::createTrackBasedStructures()
   while (trackRoot)
   {
     MTP::Track* currentTrack = new MTP::Track(trackRoot);
-    cout <<"Creating track: " << currentTrack << endl;
-    cout << "Inserting track with ID: " << currentTrack->ID() << endl;
+    if (_commandLineOpts.DebugOutput)
+    {
+      cout <<"Creating track: " << currentTrack << endl;
+      cout << "Inserting track with ID: " << currentTrack->ID() << endl;
+    }
 
     MTP::Track * prev_track = 
                              (MTP::Track*) find(currentTrack->ID(), MtpTrack);
@@ -605,8 +617,12 @@ void MtpDevice::createTrackBasedStructures()
     //now crossreference the track with the file and the file with the track
     previousFile->Associate(currentTrack);
     currentTrack->Associate(previousFile);
-    cout <<"Track:" << currentTrack << " associated with file: " << previousFile<< endl;
-    cout <<"File:" << previousFile << " associated with Track: " << currentTrack <<endl;
+
+    if (_commandLineOpts.DebugOutput)
+    {
+      cout <<"Track:" << currentTrack << " associated with file: " << previousFile<< endl;
+      cout <<"File:" << previousFile << " associated with Track: " << currentTrack <<endl;
+    }
     MTP::GenericObject* previousTrack = _trackMap[currentTrack->ID()];
     if (previousTrack)
     {
@@ -623,11 +639,12 @@ void MtpDevice::createTrackBasedStructures()
   {
     LIBMTP_filesampledata_t temp;
     LIBMTP_Get_Representative_Sample(_device, albumRoot->album_id, &temp); 
-#ifdef QLIX_DEBUG
-    cout << "Discovered a sample of type: " << temp.filetype 
-         << " with height: " << temp.height << " and width: "
-         << temp.width << " with size: " << temp.size << endl;
-#endif
+    if (_commandLineOpts.DebugOutput)
+    {
+      cout << "Discovered a sample of type: " << temp.filetype 
+           << " with height: " << temp.height << " and width: "
+           << temp.width << " with size: " << temp.size << endl;
+    }
 
     MTP::Album* currentAlbum = new MTP::Album(albumRoot, temp);
     currentAlbum->SetRowIndex( _albums.size());
@@ -683,18 +700,17 @@ void MtpDevice::createTrackBasedStructures()
         << "Please report this to caffein@gmail.com" << endl << endl
         << "Please backup your music and run Qlix with the" 
         << " --FixBadAlbums option." << endl << endl;
-        if (!_autoFixOptions.AutoFixAlbums)
+        if (!_commandLineOpts.AutoFixAlbums)
           assert(false);
         else
         {
-          cout << "Album: " << currentAlbum->Name() << " "
-               << currentAlbum->ID()
+          cout << "Album: " << currentAlbum->Name() << " " << currentAlbum->ID()
                << " has a non-existant track association. Autofixing.." << endl;
           currentAlbum->RemoveFromRawAlbum(j);
 
           //If we simulate transfers then we do not make any calls that might update
           //The underlying device
-          if (!_autoFixOptions.SimulateTransfers)
+          if (!_commandLineOpts.SimulateTransfers)
           {
             int ret = LIBMTP_Update_Album(_device, currentAlbum->RawAlbum());
             if (ret != 0)
@@ -718,7 +734,6 @@ void MtpDevice::createTrackBasedStructures()
 
   while(playlistRoot)
   {
-
     MTP::Playlist* currentPlaylist = new MTP::Playlist(playlistRoot);
     //set the row index first, as it is zero based
     currentPlaylist->SetRowIndex(_playlists.size());
@@ -773,7 +788,7 @@ void MtpDevice::createTrackBasedStructures()
              << "Please report this to caffein@gmail.com" << endl << endl
              << "Please backup your music and run Qlix with the" 
              << " --FixBadPlaylists option." << endl << endl;
-        if (!_autoFixOptions.AutoFixPlaylists)
+        if (!_commandLineOpts.AutoFixPlaylists)
           assert(false);
         else
         {
@@ -782,7 +797,7 @@ void MtpDevice::createTrackBasedStructures()
           << endl;
 
           currentPlaylist->RemoveFromRawPlaylist(j);
-          if (_autoFixOptions.SimulateTransfers)
+          if (_commandLineOpts.SimulateTransfers)
             continue;
 
           int ret = LIBMTP_Update_Playlist(_device, currentPlaylist->RawPlaylist());
@@ -812,8 +827,9 @@ void MtpDevice::createTrackBasedStructures()
  */
 bool MtpDevice::TransferTrack(const char* in_path, MTP::Track* in_track)
 {
-  cout << "Track's storage id: " << in_track->RawTrack()->storage_id << endl;
-  if (! _autoFixOptions.SimulateTransfers)
+  if (_commandLineOpts.DebugOutput)
+    cout << "Track's storage id: " << in_track->RawTrack()->storage_id << endl;
+  if (! _commandLineOpts.SimulateTransfers)
   {
     int ret = LIBMTP_Send_Track_From_File(_device, in_path, 
                                           in_track->RawTrack(),
@@ -830,7 +846,8 @@ bool MtpDevice::TransferTrack(const char* in_path, MTP::Track* in_track)
   //TODO fix this?
   // ^ fix what precisely?
   in_track->SetID(in_track->RawTrack()->item_id);
-  cout << "Transfer succesfull, new id: " << in_track->ID() << endl;
+  if (_commandLineOpts.DebugOutput)
+    cout << "Transfer succesfull, new id: " << in_track->ID() << endl;
   UpdateSpaceInformation();
   return true;
 }
@@ -911,15 +928,18 @@ bool MtpDevice::NewAlbum(MTP::Track* in_track, int in_storageID,
   newAlbum->parent_id = 0;
   newAlbum->storage_id = in_storageID;
 
-  cerr << "Created new album with name: " << newAlbum->name << endl;
-  cerr << "Created new album with artist: " << newAlbum->artist << endl;
-  cerr << "Created new album with genre: " << newAlbum->genre << endl;
+  if (_commandLineOpts.DebugOutput)
+  {
+    cerr << "Created new album with name: " << newAlbum->name << endl;
+    cerr << "Created new album with artist: " << newAlbum->artist << endl;
+    cerr << "Created new album with genre: " << newAlbum->genre << endl;
+  }
 //  *(newAlbum->tracks) = in_track->ID();
 //  cout << "Set the album's first track to: " << *(newAlbum->tracks) << endl;
   newAlbum->no_tracks = 0;
   newAlbum->next = NULL;
 
-  if (!_autoFixOptions.SimulateTransfers)
+  if (!_commandLineOpts.SimulateTransfers)
   {
     int ret =  LIBMTP_Create_New_Album(_device, newAlbum);
     if (ret != 0)
@@ -1033,11 +1053,32 @@ bool MtpDevice::AddTrackToAlbum(MTP::Track* in_track, MTP::Album* in_album)
   in_album->SetInitialized();
   in_album->AddTrackToRawAlbum(in_track);
   //if we are simulating then we return true
-  if (_autoFixOptions.SimulateTransfers)
+  if (_commandLineOpts.SimulateTransfers)
     return true;
 
   //otherwise we update the album on the device accordingly
   int ret = LIBMTP_Update_Album(_device, in_album->RawAlbum());
+  if (ret != 0)
+  {
+    processErrorStack();
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Removes a track from an associated playlist
+ * @param in_idx The track index to be removed 
+ * @param in_pl The container playlist that will reflect the removal
+ */
+bool MtpDevice::RemoveTrackFromPlaylist(MTP::Playlist* in_pl, count_t in_idx)
+{ 
+  assert(in_pl->TrackCount() > in_idx);
+  in_pl->RemoveFromRawPlaylist(in_idx);
+  if (_commandLineOpts.SimulateTransfers)
+    return true;
+
+  int ret = LIBMTP_Update_Playlist(_device, in_pl->RawPlaylist());
   if (ret != 0)
   {
     processErrorStack();
@@ -1054,7 +1095,6 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
 {
   assert(in_track);
   MTP::Album* parentAlbum = in_track->ParentAlbum();
-  MTP::Playlist* parentPl = in_track->ParentPlaylist();
 
   //Q. Why do we do this?
   //A. Quick answer because if the album is not initialized we goto the
@@ -1062,16 +1102,34 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
   parentAlbum->SetInitialized();
   parentAlbum->RemoveFromRawAlbum(in_track->GetRowIndex());
 
-  if(parentPl)
-    parentPl->RemoveFromRawPlaylist(in_track->GetPlaylistRowIndex());
+ // if(parentPl)
+ //   parentPl->RemoveFromRawPlaylist(in_track->GetPlaylistRowIndex());
   
-  if (_autoFixOptions.SimulateTransfers)
+  if (_commandLineOpts.SimulateTransfers)
     return true;
 
+  bool emminentFailure = false;
   int ret = LIBMTP_Update_Album(_device, parentAlbum->RawAlbum());
   if (ret != 0)
+  {
     processErrorStack();
-
+    emminentFailure = true;
+  }
+  for (count_t i = 0; i < in_track->ShadowAssociationCount(); i++)
+  {
+    MTP::ShadowTrack* strack = in_track->ShadowAssociation(i);
+    if (strack == NULL)
+      continue;
+    MTP::Playlist* parentPl = strack->ParentPlaylist();
+    parentPl->RemoveFromRawPlaylist(strack->RowIndex());
+    ret = LIBMTP_Update_Playlist(_device, parentPl->RawPlaylist());
+    if (ret != 0 )
+    {
+      processErrorStack();
+      emminentFailure = true;
+    }
+  }
+/*
   if (parentPl)
   {
     ret = LIBMTP_Update_Playlist(_device, parentPl->RawPlaylist());
@@ -1081,10 +1139,17 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
       return false;
     }
   }
+  */
   // simulate transfers is kind of redundant here
   // why?
   ret = removeObject(in_track->ID());
-  return ret;
+  if (ret != 0 )
+  {
+      processErrorStack();
+      emminentFailure = true;
+  }
+  UpdateSpaceInformation();
+  return emminentFailure;
 }
 
 /** 
@@ -1094,6 +1159,7 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
 bool MtpDevice::RemoveAlbum(MTP::Album* in_album)
 {
   assert(in_album);
+  UpdateSpaceInformation();
   return removeObject(in_album->ID());
 }
 
@@ -1104,6 +1170,7 @@ bool MtpDevice::RemoveAlbum(MTP::Album* in_album)
 bool MtpDevice::RemoveFolder(MTP::Folder* in_folder)
 {
   assert(in_folder);
+  UpdateSpaceInformation();
   return removeObject(in_folder->ID());
 }
 
@@ -1186,7 +1253,7 @@ bool MtpDevice::NewFolder(MTP::Folder* in_folder)
  */
 bool MtpDevice::removeObject(count_t in_id)
 {
-  if (_autoFixOptions.SimulateTransfers)
+  if (_commandLineOpts.SimulateTransfers)
     return true;
 
   bool ret = LIBMTP_Delete_Object(_device, in_id); 
@@ -1195,5 +1262,6 @@ bool MtpDevice::removeObject(count_t in_id)
     processErrorStack();
     return false;
   }
+  UpdateSpaceInformation();
   return true;
 }
