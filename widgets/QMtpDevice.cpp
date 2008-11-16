@@ -57,7 +57,6 @@ void QMtpDevice::IssueCommand(GenericCommand* in_cmd)
   QMutexLocker locker(&_jobLock);
   _jobs.push_back(in_cmd);
   _noJobsCondition.wakeOne();
-  qDebug() << "Issued command";
 }
 
 void QMtpDevice::run()
@@ -98,7 +97,6 @@ void QMtpDevice::run()
 void QMtpDevice::proccessJob(GenericCommand* currentJob)
 {
   CommandCode type = currentJob->GetCommand();
-  qDebug() << "Processing Job with type: " << type;
   switch (type)
   {
     case Initialize:
@@ -157,8 +155,6 @@ void QMtpDevice::proccessJob(GenericCommand* currentJob)
     case Delete:
     {
       DeleteObjCmd* deleteThis = (DeleteObjCmd*)currentJob;
-      qDebug() << "Whether the filter supports changes: " <<
-                  _sortedAlbums->dynamicSortFilter();
       deleteObject(deleteThis->Object);
       delete deleteThis;
       //_albumModel->Delete(deleteThis->Object);

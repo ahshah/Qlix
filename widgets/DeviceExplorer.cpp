@@ -28,6 +28,7 @@
  * @param parent the parent widget of this widget, should QlixMainWindow
  */
 DeviceExplorer::DeviceExplorer(QMtpDevice* in_device, QWidget* parent) :
+                              QWidget(parent),
                               _device(in_device),
                               _progressBar(NULL)
 {
@@ -673,9 +674,75 @@ QModelIndexList DeviceExplorer::removeAlbumDuplicates
  * @param in_list the list of indicies selected
  * @param in_model the model that in_list applies to
  */
+//TODO why is in_model a QAbstractItemModel instead of a QSortFilterProxy model?
+//TODO why does the return list contain indicies to the QSortModel rather than
+//     the underlying model?
+//TODO potential optimization using a map structure
 QModelIndexList DeviceExplorer::removeIndexDuplicates(
-                                const QModelIndexList& in_list, 
+                                QModelIndexList& in_list, 
                                 const QAbstractItemModel* in_model)
+{
+  qDebug() << "Called removeIndexDuplicates";
+  if (in_model == _albumModel)
+  {
+    QModelIndexList ParentList;
+    QModelIndexList::iterator iter = in_list.begin();
+    for(iter = in_list.begin(); iter != in_list.end();)
+    {
+      QModelIndex mapped = ((QSortFilterProxyModel*)in_model)->mapToSource(*iter);
+      MTP::GenericObject* tempObj = (MTP::GenericObject*) mapped.internalPointer();
+      if(tempObj->Type() == MtpAlbum)
+      {
+        ParentList.push_back(mapped);
+        iter = in_list.erase(iter);
+        continue;
+      }
+      //we iterate here as QList::erase returns the next item inline
+      iter++;
+    }
+
+    QModelIndexList ret;
+    QModelIndex temp;
+    //Place albums on return list
+    foreach(temp, ParentList)
+      ret.push_back(temp);
+
+    //Find redundant tracks by iterating over each one and checking its parent
+    //in the parent list
+    count_t dup = 0;
+    for (iter = in_list.begin(); iter != in_list.end(); iter++)
+    {
+      QModelIndex mapped = _albumModel->mapToSource(*iter);
+      MTP::GenericObject* tempObj = (MTP::GenericObject*) mapped.internalPointer();
+      assert(tempObj->Type() == MtpTrack);
+      bool skip = false;
+      MTP::Track* tempTrack = (MTP::Track*) tempObj;
+      for (QModelIndexList::const_iterator piter = ParentList.begin(); 
+           piter != ParentList.end(); piter++)
+      {
+        MTP::Album* tempObj = (MTP::Album*) piter->internalPointer();
+        if (tempObj == tempTrack->ParentAlbum())
+         skip = true;
+      }
+      if (!skip)
+        ret.push_back(mapped);
+      else
+        dup++;
+    }
+    qDebug() << "__Selection order__ | dup count:" << dup;
+    int i = 0;
+    foreach(temp, ret)
+    {
+//      QModelIndex temp2 = _albumModel->mapToSource(temp);
+      QString tempOut = (((AlbumModel*)_albumModel->sourceModel())->data(
+                                            temp, Qt::DisplayRole)).toString();
+      qDebug()<< i << ": " << tempOut;
+      i++;
+    }
+    return ret;
+  }
+}
+/*
 {
   qDebug() << "Called removeIndexDuplicates";
   QModelIndexList ret;
@@ -734,18 +801,10 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
   qSort(ret.begin(), ret.end(), modelLessThan);
 #define ALBUMDEBUG
 #ifdef ALBUMDEBUG
-  QModelIndex temp;
-  qDebug() << "__Selection order__";
-  int i = 0;
-  foreach(temp, ret)
-  {
-    QString tempOut = (((AlbumModel*)_albumModel->sourceModel())->data(temp, Qt::DisplayRole)).toString();
-    qDebug()<< i << ": " << tempOut;
-    i++;
-  }
 #endif
   return ret;
 }
+*/
 
 /**
  * This function creates a popup and requests the user to confirm the deletion 

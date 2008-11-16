@@ -120,7 +120,7 @@ private:
   static bool modelLessThan(const QModelIndex&, const QModelIndex&);
 
 //  QModelIndexList removeAlbumDuplicates(const QModelIndexList&);
-  QModelIndexList removeIndexDuplicates(const QModelIndexList&,
+  QModelIndexList removeIndexDuplicates(QModelIndexList&,
                                         const QAbstractItemModel*);
   QGridLayout* _layout; 
   ViewPort _view;

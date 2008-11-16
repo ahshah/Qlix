@@ -16,6 +16,7 @@
  *   You should have received a copy of the GNU General Public License along
  *   with this program; if not, write to the Free Software Foundation, Inc.,
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *   TODO Move CommandLineOpts to singleton pattern
  */
 
 #ifndef __TYPES__
@@ -46,8 +47,15 @@ enum QlixProgressType
   TransferAmount
 };
 
-struct CommandLineOptions
+class CommandLineOptions
 {
+public:
+  const bool AutoFixPlaylists;
+  const bool AutoFixAlbums;
+  const bool SimulateTransfers;
+  const bool DebugOutput;
+private:
+
   CommandLineOptions(bool in_AutoFixPlaylists = false, bool in_AutoFixAlbums = false, 
               bool in_SimulateTransfers = false, bool in_DebugOutput = false) :
                                         AutoFixPlaylists(in_AutoFixPlaylists),
@@ -72,11 +80,8 @@ struct CommandLineOptions
     return *this;
   }
 
-  const bool AutoFixPlaylists;
-  const bool AutoFixAlbums;
-  const bool SimulateTransfers;
-  const bool DebugOutput;
 };
+
 namespace MTP
 {
 //TODO this isn't very usefull if you have foreign characters

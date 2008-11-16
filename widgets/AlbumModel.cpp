@@ -263,7 +263,7 @@ void AlbumModel::AddAlbum(MTP::Album* in_album)
  */
 void AlbumModel::AddTrack(MTP::Track* in_track)
 {
-  qDebug() << "Called AddTrack";
+  //qDebug() << "Called AddTrack";
   MTP::Album* parentAlbum = in_track->ParentAlbum();
   assert(parentAlbum);
   in_track->SetRowIndex(parentAlbum->TrackCount());
@@ -286,7 +286,7 @@ void AlbumModel::AddTrack(MTP::Track* in_track)
 void AlbumModel::RemoveAlbum(MTP::Album* in_album)
 {
   //invalid parent for root items
-  qDebug() << "Called RemoveAlbum";
+  //qDebug() << "Called RemoveAlbum";
   assert(in_album);
   assert(in_album->GetRowIndex() < _albumList.size());
   QModelIndex parentIdx = QModelIndex();
@@ -307,7 +307,6 @@ void AlbumModel::RemoveAlbum(MTP::Album* in_album)
  */
 void AlbumModel::RemoveTrack(MTP::Track* in_track)
 {
-  qDebug() << "Called RemoveTrack";
   MTP::Album* parentAlbum = in_track->ParentAlbum();
   assert(parentAlbum);
 
