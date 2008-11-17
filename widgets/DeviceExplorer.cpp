@@ -62,7 +62,9 @@ DeviceExplorer::DeviceExplorer(QMtpDevice* in_device, QWidget* parent) :
 
   //add the widgets to the layout
   _fsDeviceSplit->addWidget(_fsView);
-  _fsDeviceSplit->addWidget(_deviceView);
+  _fsDeviceSplit->addWidget(_albumView);
+  _fsDeviceSplit->addWidget(_deviceRightView);
+  _albumView->hide();
   _queueSplit->addWidget(_fsDeviceSplit);
   _queueSplit->addWidget(_queueView);
 
@@ -88,7 +90,7 @@ DeviceExplorer::DeviceExplorer(QMtpDevice* in_device, QWidget* parent) :
   setupConnections();
   setupMenus();
 
-  _deviceView->addActions(_commonDeviceActions->actions());
+  _deviceRightView->addActions(_commonDeviceActions->actions());
   _fsView->addActions(_commonFSActions->actions());
 }
 
@@ -103,20 +105,23 @@ void DeviceExplorer::ShowAlbums()
   {
     _deviceManagerWidget->hide();
     _preferencesWidget->hide();
+    _albumView->hide();
     _fsView->show();
-    _deviceView->show();
+    _deviceRightView->show();
     _otherWidgetShown = false;
     if (_queueShown)
       _queueView->show();
   }//  _sortedModel->setSourceModel(_albumModel);
-  if (_deviceView->model() != _albumModel)
+  if (_deviceRightView->model() != _albumModel)
   {
-    _deviceView->setModel(_albumModel);
-    _deviceView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    _albumView->hide();
+    _fsView->show();
+    _deviceRightView->setModel(_albumModel);
+    _deviceRightView->setSelectionMode(QAbstractItemView::ExtendedSelection);
   }
-    _deviceView->setStyleSheet("QTreeView::branch:!adjoins-item, QTreeView::branch:!has-children:open{ background: none} QTreeView::branch:has-children:closed{ image: url(:/pixmaps/TreeView/branch-closed.png)} QTreeView::branch:has-children:open{ image: url(:/pixmaps/TreeView/branch-open.png)}"); 
+    _deviceRightView->setStyleSheet("QTreeView::branch:!adjoins-item, QTreeView::branch:!has-children:open{ background: none} QTreeView::branch:has-children:closed{ image: url(:/pixmaps/TreeView/branch-closed.png)} QTreeView::branch:has-children:open{ image: url(:/pixmaps/TreeView/branch-open.png)}"); 
 /*    //To be continued
- *    _deviceView->setStyleSheet("QTreeView::branch{ background: none} \
+ *    _deviceRightView->setStyleSheet("QTreeView::branch{ background: none} \
                                 QTreeView::branch:adjoins-item:!has-children{ image: url(:/pixmaps/TreeView/branch-end.png)} \
                                 QTreeView::branch:has-children:closed{ image: url(:/pixmaps/TreeView/branch-closed.png)} \
                                 QTreeView::branch:has-children:open{ image: url(:/pixmaps/TreeView/branch-open.png)}"); 
@@ -141,14 +146,23 @@ void DeviceExplorer::setupToolBars()
 
 void DeviceExplorer::setupDeviceView() 
 {
-  _deviceView = new QTreeView();
-  _deviceView->setModel(_albumModel);
-  _deviceView->setSelectionBehavior(QAbstractItemView::SelectRows);
-  _deviceView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-  _deviceView->setSortingEnabled(true);
-  _deviceView->sortByColumn(0, Qt::AscendingOrder);
-  _deviceView->header()->hide();
-  _deviceView->setAlternatingRowColors(true);
+  _deviceRightView = new QTreeView();
+  _deviceRightView->setModel(_albumModel);
+  _deviceRightView->setSelectionBehavior(QAbstractItemView::SelectRows);
+  _deviceRightView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  _deviceRightView->setSortingEnabled(true);
+  _deviceRightView->sortByColumn(0, Qt::AscendingOrder);
+  _deviceRightView->header()->hide();
+  _deviceRightView->setAlternatingRowColors(true);
+
+  _albumView = new QTreeView();
+  _albumView->setModel(_albumModel);
+  _albumView->setSelectionBehavior(QAbstractItemView::SelectRows);
+  _albumView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  _albumView->setSortingEnabled(true);
+  _albumView->sortByColumn(0, Qt::AscendingOrder);
+  _albumView->header()->hide();
+  _albumView->setAlternatingRowColors(true);
 }
 
 
@@ -165,17 +179,20 @@ void DeviceExplorer::ShowPlaylists()
   {
     _deviceManagerWidget->hide();
     _preferencesWidget->hide();
-    _fsView->show();
-    _deviceView->show();
+    _fsView->hide();
+    _deviceRightView->show();
+    _albumView->show();
     _otherWidgetShown = false;
     if (_queueShown)
       _queueView->show();
   }//  _sortedModel->setSourceModel(_plModel);
 
-  if (_deviceView->model() != _plModel)
+  if (_deviceRightView->model() != _plModel)
   {
-    _deviceView->setModel(_plModel);
-    _deviceView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    _fsView->hide();
+    _albumView->show();
+    _deviceRightView->setModel(_plModel);
+    _deviceRightView->setSelectionMode(QAbstractItemView::ExtendedSelection);
   }
 }
 
@@ -190,18 +207,21 @@ void DeviceExplorer::ShowFiles()
   {
     _deviceManagerWidget->hide();
     _preferencesWidget->hide();
+    _albumView->hide();
     _fsView->show();
-    _deviceView->show();
+    _deviceRightView->show();
     _otherWidgetShown = false;
     if (_queueShown)
       _queueView->show();
   }
-  if (_deviceView->model() != _dirModel)
+  if (_deviceRightView->model() != _dirModel)
   {
-    _deviceView->setModel(_dirModel);
-    _deviceView->setSelectionMode(QAbstractItemView::SingleSelection);
+    _albumView->hide();
+    _fsView->show();
+    _deviceRightView->setModel(_dirModel);
+    _deviceRightView->setSelectionMode(QAbstractItemView::SingleSelection);
   }
-  _deviceView->setStyleSheet("");
+  _deviceRightView->setStyleSheet("");
 }
 void DeviceExplorer::UpdateProgressBar(const QString& label,
                                        count_t percent)
@@ -247,7 +267,7 @@ void DeviceExplorer::ShowPreferences()
 
   else
   {
-    _deviceView->hide();
+    _deviceRightView->hide();
     _fsView->hide();
     _queueView->hide();
     _preferencesWidget->show();
@@ -282,7 +302,7 @@ void DeviceExplorer::ShowDeviceManager()
   }
   else
   {
-    _deviceView->hide();
+    _deviceRightView->hide();
     _fsView->hide();
     _queueView->hide();
     _deviceManagerWidget->show();
@@ -507,7 +527,7 @@ void DeviceExplorer::setupFileSystemView()
 void DeviceExplorer::setupMenus()
 {
   _fsView->setContextMenuPolicy(Qt::ActionsContextMenu);
-  _deviceView->setContextMenuPolicy(Qt::ActionsContextMenu);
+  _deviceRightView->setContextMenuPolicy(Qt::ActionsContextMenu);
   //setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
@@ -530,7 +550,7 @@ void DeviceExplorer::TransferToDevice()
     idxList.pop_front();
   }
 /*
-    selctedModel = _deviceView->selectionModel();
+    selctedModel = _deviceRightView->selectionModel();
     idxList = selectedModel->selectedRows();
 */
     while (!fileList.empty())
@@ -560,7 +580,7 @@ void DeviceExplorer::TransferFromDevice()
   }
 
   QString transferPath = info.canonicalFilePath();
-  QItemSelectionModel* selectedModel = _deviceView->selectionModel();
+  QItemSelectionModel* selectedModel = _deviceRightView->selectionModel();
   QModelIndexList idxList= selectedModel->selectedRows();
   if (idxList.empty())
   {
@@ -568,7 +588,7 @@ void DeviceExplorer::TransferFromDevice()
     return;
   }
 
-  QAbstractItemModel* theModel = _deviceView->model();
+  QAbstractItemModel* theModel = _deviceRightView->model();
   assert(theModel == _albumModel || theModel == _plModel ||
          theModel == _dirModel);
   idxList = removeIndexDuplicates(idxList, (QSortFilterProxyModel*)theModel);
@@ -592,14 +612,14 @@ void DeviceExplorer::TransferFromDevice()
 void DeviceExplorer::DeleteFromDevice()
 {
   qDebug() << "Deleting form device..";
-  QItemSelectionModel* selectedModel = _deviceView->selectionModel();
+  QItemSelectionModel* selectedModel = _deviceRightView->selectionModel();
   QModelIndexList idxList = selectedModel->selectedRows();
   if (idxList.empty())
   {
     qDebug() << "nothing selected!";
     return;
   }
-  QAbstractItemModel* theModel = _deviceView->model();
+  QAbstractItemModel* theModel = _deviceRightView->model();
   assert(theModel == _albumModel || theModel == _plModel ||
          theModel == _dirModel || theModel == _unsortedAlbumModel);
 

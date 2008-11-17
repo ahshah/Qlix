@@ -136,7 +136,8 @@ private:
 //Queue representation
   QListView* _queueView;
 
-  QTreeView* _deviceView;
+  QTreeView* _deviceRightView;
+  QTreeView* _albumView;
   QSortFilterProxyModel* _albumModel;
   AlbumModel* _unsortedAlbumModel;
   QSortFilterProxyModel* _plModel;
