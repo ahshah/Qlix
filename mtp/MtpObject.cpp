@@ -789,7 +789,9 @@ count_t Playlist::TrackCount() const
   if (!_initialized)
    return _rawPlaylist->no_tracks; 
   else
+  {
     return _childTracks.size();
+  }
 }
 
 /**

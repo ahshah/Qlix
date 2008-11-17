@@ -105,7 +105,9 @@ public:
 
 //Track/Playlist functions
   bool AddTrackToPlaylist(MTP::Track*, MTP::Playlist*);
-  bool RemoveTrackFromPlaylist( MTP::Playlist*, count_t in_idx);
+  bool RemoveShadowTrack(MTP::ShadowTrack* in_track);
+  bool RemovePlaylist(MTP::Playlist* in_pl);
+  bool NewPlaylist(MTP::Playlist**);
 
 //Extended Track functions
   bool RemoveTrack(MTP::Track*);

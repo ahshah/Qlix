@@ -20,20 +20,27 @@
 
 #include "widgets/PlaylistModel.h"
 
-PlaylistModel::PlaylistModel(MtpDevice* in_dev, QObject* parent) :
-                       _device(in_dev)
+PlaylistModel::PlaylistModel(vector<MTP::Playlist*> in_pls, QObject* parent) :
+                       _plList(in_pls)
 { }
 
 QModelIndex PlaylistModel::index(int row, int col, 
                         const QModelIndex& parent) const
 { 
-  if(!parent.isValid() && (row >= (int)_device->PlaylistCount()))
+  if (col < 0 || row < 0)
+    return QModelIndex();
+  if (!parent.isValid() && row >= (int) _plList.size())
     return QModelIndex();
 
-  else if (!parent.isValid() )
+  if (!parent.isValid() && col == 0)
   {
-    MTP::Playlist* pl = _device->Playlist(row);
+    MTP::Playlist* pl = _plList[row];
     return createIndex(row, col, (void*) pl);
+  }
+
+  if (!parent.isValid() && col > 0)
+  {
+    return QModelIndex();
   }
 
   MTP::GenericObject* obj= (MTP::GenericObject*)parent.internalPointer();
@@ -51,6 +58,12 @@ QModelIndex PlaylistModel::index(int row, int col,
   return createIndex(row, col, strack);
 }
 
+/** 
+ * Returns the parent of the given index
+ * @param idx the index of whose parent we must create
+ * @return an index constructured of parent the passed paramameter idx or an
+ * invalid index if the parent is the root level
+ */
 QModelIndex PlaylistModel::parent(const QModelIndex& idx) const
 {
   if (!idx.isValid())
@@ -75,10 +88,16 @@ QModelIndex PlaylistModel::parent(const QModelIndex& idx) const
   return QModelIndex();
 }
 
+/**
+ * Returns the row count of the parent. This should be the number of shadow
+ * tracks under a playlist or 0 if the parent happens to be a shadow track
+ * @param parent the parent item whos row counts we are trying to discover
+ * @return the number of rows that exist under the given parameter: parent
+ */ 
 int PlaylistModel::rowCount(const QModelIndex& parent) const 
 { 
   if (!parent.isValid() )
-    return _device->PlaylistCount();
+    return _plList.size();
   MTP::GenericObject* obj= (MTP::GenericObject*)parent.internalPointer();
   if(obj->Type() == MtpShadowTrack)
     return 0;
@@ -94,11 +113,14 @@ int PlaylistModel::rowCount(const QModelIndex& parent) const
 
 int PlaylistModel::columnCount(const QModelIndex& parent ) const 
 { 
-    return 2;
+    return 1;
 }
 
 QVariant PlaylistModel::data(const QModelIndex& index, int role ) const
 { 
+  if (!index.isValid())
+    return QVariant();
+
   if (role == Qt::DisplayRole)
   {
     MTP::GenericObject* temp = (MTP::GenericObject*) index.internalPointer();
@@ -146,6 +168,15 @@ QVariant PlaylistModel::data(const QModelIndex& index, int role ) const
   }
   return QVariant();
 }
+void PlaylistModel::AddTrack(MTP::ShadowTrack* in_strack)
+{
+  qDebug() << "PlaylistModel::AddTrack stub";
+}
+
+void PlaylistModel::AddPlaylist(MTP::Playlist* in_pl)
+{
+  qDebug() << "PlaylistModel::AddPlaylist stub";
+}
 
 void PlaylistModel::RemoveTrack(MTP::ShadowTrack* in_strack)
 {
@@ -155,5 +186,22 @@ void PlaylistModel::RemoveTrack(MTP::ShadowTrack* in_strack)
   emit beginRemoveRows(parentIdx, in_strack->RowIndex(), 
                        in_strack->RowIndex());
   parentPl->RemoveTrack(in_strack->RowIndex());
+  emit endRemoveRows();
+}
+
+void PlaylistModel::RemovePlaylist(MTP::Playlist* in_pl)
+{
+  assert(in_pl);
+  assert(in_pl->GetRowIndex() < _plList.size());
+  QModelIndex parentIdx = QModelIndex();
+  emit beginRemoveRows(parentIdx, in_pl->GetRowIndex(),
+                                  in_pl->GetRowIndex());
+
+  for (index_t i =in_pl->GetRowIndex()+1; i < _plList.size(); i++)
+    _plList[i]->SetRowIndex(i -1);
+
+  std::vector<MTP::Playlist*>::iterator iter;
+  iter = _plList.begin() + in_pl->GetRowIndex();
+  _plList.erase(iter);
   emit endRemoveRows();
 }

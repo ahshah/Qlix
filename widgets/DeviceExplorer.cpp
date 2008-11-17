@@ -292,6 +292,7 @@ void DeviceExplorer::ShowDeviceManager()
 
 void DeviceExplorer::setupConnections()
 {
+  /** Widget connections */
   connect(_fsView, SIGNAL( doubleClicked ( const QModelIndex& )),
           this, SLOT(SwitchFilesystemDir(const QModelIndex&)));
 
@@ -306,43 +307,13 @@ void DeviceExplorer::setupConnections()
 
   connect(_transferToDevice, SIGNAL(triggered(bool)),
           this, SLOT(TransferToDevice()));
-  /*
-  connect(_device, SIGNAL(AlbumCreated(MTP::Album*)),
-          temp, SLOT(Beep()), Qt::QuuuedConnection);
-  */
-  /*
-  connect(_device, SIGNAL(CreatedAlbum(MTP::Album*)),
-          _albumModel, SLOT(invalidate()), Qt::BlockingQueuedConnection);
-
-*/
-
-  connect(_device, SIGNAL(CreatedAlbum(MTP::Album*)),
-          _albumModel->sourceModel(), SLOT(AddAlbum(MTP::Album*)),
-          Qt::BlockingQueuedConnection);
-
-  connect(_device, SIGNAL(AddedTrack(MTP::Track*)),
-          _albumModel->sourceModel(), SLOT(AddTrack(MTP::Track*)),
-          Qt::BlockingQueuedConnection);
-/*
-  connect(_device, SIGNAL(AddedTrackToAlbum(MTP::Track*)),
-          _albumModel, SLOT(invalidate()),
-          Qt::BlockingQueuedConnection);
-
-  connect(_device, SIGNAL(RemovedTrack(MTP::Track*)),
-          _albumModel, SLOT(invalidate()), Qt::BlockingQueuedConnection);
-  */
-
-  connect(_device, SIGNAL(RemovedTrack(MTP::Track*)),
-          _albumModel->sourceModel(), SLOT(RemoveTrack(MTP::Track*)),
-          Qt::BlockingQueuedConnection);
 
   connect(_device, SIGNAL(RemovedTrack(MTP::Track*)),
           this, SLOT( UpdateDeviceSpace()));
 
-  connect(_device, SIGNAL(RemovedAlbum(MTP::Album*)),
-          _albumModel->sourceModel(), SLOT(RemoveAlbum(MTP::Album*)),
-          Qt::BlockingQueuedConnection);
 
+
+  /** DirModel connections */
   connect(_device, SIGNAL(RemovedFolder(MTP::Folder*)),
           _dirModel->sourceModel(), SLOT(RemoveFolder(MTP::Folder*)),
           Qt::BlockingQueuedConnection);
@@ -355,9 +326,52 @@ void DeviceExplorer::setupConnections()
           _dirModel->sourceModel(), SLOT(AddFile(MTP::File*)),
           Qt::BlockingQueuedConnection);
 
+
+
+
+
+  /** AlbumModel connections */
+  connect(_device, SIGNAL(RemovedTrack(MTP::Track*)),
+          _albumModel->sourceModel(), SLOT(RemoveTrack(MTP::Track*)),
+          Qt::BlockingQueuedConnection);
+  
+  connect(_device, SIGNAL(RemovedAlbum(MTP::Album*)),
+          _albumModel->sourceModel(), SLOT(RemoveAlbum(MTP::Album*)),
+          Qt::BlockingQueuedConnection);
+
+  connect(_device, SIGNAL(AddedTrack(MTP::Track*)),
+          _albumModel->sourceModel(), SLOT(AddTrack(MTP::Track*)),
+          Qt::BlockingQueuedConnection);
+
+  connect(_device, SIGNAL(CreatedAlbum(MTP::Album*)),
+          _albumModel->sourceModel(), SLOT(AddAlbum(MTP::Album*)),
+          Qt::BlockingQueuedConnection);
+
+  connect(_device, SIGNAL(AddedTrack(MTP::Track*)),
+          _albumModel->sourceModel(), SLOT(AddTrack(MTP::Track*)),
+          Qt::BlockingQueuedConnection);
+
+
+
+
+
+  /** Playlist connections */
+  connect(_device, SIGNAL(AddedTrackToPlaylist(MTP::ShadowTrack*)),
+          _plModel->sourceModel(), SLOT(AddedTrack(MTP::ShadowTrack*)),
+          Qt::BlockingQueuedConnection);
+
   connect(_device, SIGNAL(RemovedTrackFromPlaylist(MTP::ShadowTrack*)),
           _plModel->sourceModel(), SLOT(RemoveTrack(MTP::ShadowTrack*)),
           Qt::BlockingQueuedConnection);
+
+  connect(_device, SIGNAL(CreatedPlaylist(MTP::Playlist*)),
+          _plModel->sourceModel(), SLOT(AddPlaylist(MTP::Playlist*)),
+          Qt::BlockingQueuedConnection);
+
+  connect(_device, SIGNAL(RemovedPlaylist(MTP::Playlist*)),
+          _plModel->sourceModel(), SLOT(RemovePlaylist(MTP::Playlist*)),
+          Qt::BlockingQueuedConnection);
+  
 
 }
 
@@ -683,15 +697,17 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
                                 const QAbstractItemModel* in_model)
 {
   qDebug() << "Called removeIndexDuplicates";
-  if (in_model == _albumModel)
+  count_t dup = 0;
+  QModelIndexList ret;
+
+  if (in_model == _albumModel || in_model == _plModel)
   {
     QModelIndexList ParentList;
-    QModelIndexList::iterator iter = in_list.begin();
-    for(iter = in_list.begin(); iter != in_list.end();)
+    for(QModelIndexList::iterator iter =in_list.begin(); iter != in_list.end();)
     {
       QModelIndex mapped = ((QSortFilterProxyModel*)in_model)->mapToSource(*iter);
       MTP::GenericObject* tempObj = (MTP::GenericObject*) mapped.internalPointer();
-      if(tempObj->Type() == MtpAlbum)
+      if(tempObj->Type() == MtpAlbum || tempObj->Type() == MtpPlaylist)
       {
         ParentList.push_back(mapped);
         iter = in_list.erase(iter);
@@ -701,7 +717,6 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
       iter++;
     }
 
-    QModelIndexList ret;
     QModelIndex temp;
     //Place albums on return list
     foreach(temp, ParentList)
@@ -709,38 +724,73 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
 
     //Find redundant tracks by iterating over each one and checking its parent
     //in the parent list
-    count_t dup = 0;
-    for (iter = in_list.begin(); iter != in_list.end(); iter++)
+    for (QModelIndexList::iterator iter = in_list.begin(); 
+                                                  iter != in_list.end(); iter++)
     {
-      QModelIndex mapped = _albumModel->mapToSource(*iter);
+      QModelIndex mapped = ((QSortFilterProxyModel*)in_model)->mapToSource(*iter);
       MTP::GenericObject* tempObj = (MTP::GenericObject*) mapped.internalPointer();
-      assert(tempObj->Type() == MtpTrack);
-      bool skip = false;
-      MTP::Track* tempTrack = (MTP::Track*) tempObj;
-      for (QModelIndexList::const_iterator piter = ParentList.begin(); 
-           piter != ParentList.end(); piter++)
+      if (in_model == _albumModel)
       {
-        MTP::Album* tempObj = (MTP::Album*) piter->internalPointer();
-        if (tempObj == tempTrack->ParentAlbum())
-         skip = true;
+        assert(tempObj->Type() == MtpTrack);
+        bool skip = false;
+        MTP::Track* tempTrack = (MTP::Track*) tempObj;
+        for (QModelIndexList::const_iterator piter = ParentList.begin(); 
+             piter != ParentList.end(); piter++)
+        {
+          MTP::Album* potentialParent = (MTP::Album*) piter->internalPointer();
+          if (potentialParent == tempTrack->ParentAlbum())
+           skip = true;
+        }
+        //if skip we increment dup, otherwise we place it on the removal queue
+        if (skip) 
+          dup++;
+        else 
+          ret.push_back(mapped);
       }
-      if (!skip)
-        ret.push_back(mapped);
-      else
-        dup++;
+      else if (in_model == _plModel)
+      {
+        assert(tempObj->Type() == MtpShadowTrack);
+        bool skip = false;
+        MTP::ShadowTrack* tempStrack = (MTP::ShadowTrack*) tempObj;
+        for (QModelIndexList::const_iterator piter = ParentList.begin(); 
+             piter != ParentList.end(); piter++)
+        {
+          MTP::Playlist* potentialParent = (MTP::Playlist*) 
+                                            piter->internalPointer();
+          if (potentialParent == tempStrack->ParentPlaylist())
+           skip = true;
+        }
+        //if skip we increment dup, otherwise we place it on the removal queue
+        if (skip) 
+          dup++; 
+        else
+          ret.push_back(mapped);
+      }
+     }
     }
     qDebug() << "__Selection order__ | dup count:" << dup;
     int i = 0;
+    QModelIndex temp;
     foreach(temp, ret)
     {
-//      QModelIndex temp2 = _albumModel->mapToSource(temp);
-      QString tempOut = (((AlbumModel*)_albumModel->sourceModel())->data(
-                                            temp, Qt::DisplayRole)).toString();
-      qDebug()<< i << ": " << tempOut;
+      if(in_model == _albumModel)
+      {
+        QString tempOut = _albumModel->sourceModel()->
+                              data(temp, Qt::DisplayRole).toString();
+        qDebug()<< i << ": " << tempOut;
+      }
+      else if (in_model == _plModel)
+      {
+        QString tempOut = _plModel->sourceModel()->
+                              data(temp, Qt::DisplayRole).toString();
+        qDebug()<< i << ": " << tempOut;
+      }
       i++;
     }
+    //Uncomment this to enable sorted deletions, this will delete items from the
+    //bottom of the containers list up
+    qSort(ret.begin(), ret.end(), modelLessThan);
     return ret;
-  }
 }
 /*
 {
@@ -798,7 +848,6 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
   }
   qDebug() << "Found :" << dupCount << " duplicates" << endl;
   qDebug() << "ret size:" <<ret.size();
-  qSort(ret.begin(), ret.end(), modelLessThan);
 #define ALBUMDEBUG
 #ifdef ALBUMDEBUG
 #endif

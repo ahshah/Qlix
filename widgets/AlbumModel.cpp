@@ -119,10 +119,10 @@ QModelIndex AlbumModel::parent(const QModelIndex& idx) const
 }
 
 /**
- * Returns the row count of the parent this should be the number of tracks 
+ * Returns the row count of the parent. This should be the number of tracks 
  * under an album or 0 if the parent happens to be a track
  * @param parent the parent item whos row counts we are trying to discover
- * @return the number of rows that occur under the given parameter: parent
+ * @return the number of rows that exist under the given parameter: parent
  */ 
 int AlbumModel::rowCount(const QModelIndex& parent) const 
 { 
@@ -187,7 +187,7 @@ QVariant AlbumModel::data(const QModelIndex& index, int role ) const
       MTP::Album* tempAlbum = (MTP::Album*)temp;
       LIBMTP_filesampledata_t sample = tempAlbum->SampleData();
       if (sample.size > 0 && sample.data )
-        /*&& 
+        /*&&  interesting bug on some devices
           (sample.filetype == LIBMTP_FILETYPE_JPEG ||
           sample.filetype == LIBMTP_FILETYPE_JPX ||
           sample.filetype == LIBMTP_FILETYPE_JP2))
@@ -195,18 +195,14 @@ QVariant AlbumModel::data(const QModelIndex& index, int role ) const
       {
         QPixmap ret;
         ret.loadFromData( (const uchar*)sample.data, sample.size);
-//        qDebug() << "album decoration found:" << sample.filetype  << " with size: " << sample.size;
+        //qDebug() << "album decoration found:" << sample.filetype  << " with size: " << sample.size;
 
-//TODO Find an intelligent way to do this now that the SIMULATE_TRANSFER 
-//directive has been deprecated
-//#ifdef SIMULATE_TRANSFERS
-//        qDebug()  << "Actual sample found in simulate mode!";
-//#endif
+        //TODO uncomment when CommandLineOpts is moved to singleton
+        //qDebug()  << "Actual sample found in simulate mode!";
         return ret.scaledToWidth(24, Qt::SmoothTransformation);
       }
       else 
       {
-//        qDebug() << "album decoration is not a jpeg:" << sample.filetype  << " with size: " << sample.size;
         QPixmap ret("pixmaps/miscAlbumCover.png");
         return ret.scaledToWidth(24, Qt::SmoothTransformation);
       }
@@ -292,9 +288,11 @@ void AlbumModel::RemoveAlbum(MTP::Album* in_album)
   QModelIndex parentIdx = QModelIndex();
 
   emit beginRemoveRows(parentIdx, in_album->GetRowIndex(),
-                      in_album->GetRowIndex());
-  for (unsigned int i =in_album->GetRowIndex()+1; i < _albumList.size(); i++)
+                                  in_album->GetRowIndex());
+
+  for (index_t i =in_album->GetRowIndex()+1; i < _albumList.size(); i++)
     _albumList[i]->SetRowIndex(i -1);
+
   MTP::Album* deleteThisAlbum = _albumList[in_album->GetRowIndex()];
   std::vector<MTP::Album*>::iterator iter= _albumList.begin() + in_album->GetRowIndex();
   _albumList.erase(iter);

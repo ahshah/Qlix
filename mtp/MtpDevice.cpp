@@ -1071,14 +1071,15 @@ bool MtpDevice::AddTrackToAlbum(MTP::Track* in_track, MTP::Album* in_album)
  * @param in_idx The track index to be removed 
  * @param in_pl The container playlist that will reflect the removal
  */
-bool MtpDevice::RemoveTrackFromPlaylist(MTP::Playlist* in_pl, count_t in_idx)
+bool MtpDevice::RemoveShadowTrack(MTP::ShadowTrack* in_track)
 { 
-  assert(in_pl->TrackCount() > in_idx);
-  in_pl->RemoveFromRawPlaylist(in_idx);
+  MTP::Playlist* pl = in_track->ParentPlaylist();
+  pl->RemoveFromRawPlaylist(in_track->RowIndex());
+
   if (_commandLineOpts.SimulateTransfers)
     return true;
 
-  int ret = LIBMTP_Update_Playlist(_device, in_pl->RawPlaylist());
+  int ret = LIBMTP_Update_Playlist(_device, pl->RawPlaylist());
   if (ret != 0)
   {
     processErrorStack();
@@ -1129,19 +1130,6 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
       emminentFailure = true;
     }
   }
-/*
-  if (parentPl)
-  {
-    ret = LIBMTP_Update_Playlist(_device, parentPl->RawPlaylist());
-    if (ret != 0)
-    {
-      processErrorStack();
-      return false;
-    }
-  }
-  */
-  // simulate transfers is kind of redundant here
-  // why?
   ret = removeObject(in_track->ID());
   if (ret != 0 )
   {
@@ -1159,9 +1147,23 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
 bool MtpDevice::RemoveAlbum(MTP::Album* in_album)
 {
   assert(in_album);
+  bool ret = removeObject(in_album->ID());
   UpdateSpaceInformation();
-  return removeObject(in_album->ID());
+  return ret;
 }
+
+/** 
+ * Removes a playlist from the device
+ * @param in_pl the playlist to remove
+ */
+bool MtpDevice::RemovePlaylist(MTP::Playlist* in_pl)
+{
+  assert(in_pl);
+  bool ret = removeObject(in_pl->ID());
+  UpdateSpaceInformation();
+  return ret;
+}
+
 
 /**
  * Removes a folder from the device

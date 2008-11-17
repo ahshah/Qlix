@@ -209,8 +209,6 @@ public:
   void SetRowIndex(count_t);
 
   void SetAssociation(File*);
-  File* Association();
-  
 
 private:
   bool _initialized;
@@ -246,7 +244,6 @@ public:
   const LIBMTP_playlist_t* RawPlaylist();
 
   void SetAssociation(File*);
-  File* Association();
 private:
   count_t _rowIndex;
   bool _initialized;

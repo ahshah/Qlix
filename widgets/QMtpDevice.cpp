@@ -201,7 +201,7 @@ void QMtpDevice::initializeDeviceStructures()
   new ModelTest(_albumModel);
   _dirModel = new DirModel(_device->RootFolder());
   new ModelTest(_dirModel);
-  _plModel = new PlaylistModel(_device);
+  _plModel = new PlaylistModel(_device->Playlists());
 
   _sortedAlbums = new QSortFilterProxyModel();
   _sortedPlaylists = new QSortFilterProxyModel();
@@ -881,7 +881,7 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
       MTP::ShadowTrack* deletedTrack = (MTP::ShadowTrack*) in_obj;
       MTP::Playlist* parent = deletedTrack->ParentPlaylist();
       bool ret;
-      ret = _device->RemoveTrackFromPlaylist(parent, deletedTrack->RowIndex());
+      ret = _device->RemoveShadowTrack(deletedTrack);
       if (ret)
         emit RemovedTrackFromPlaylist(deletedTrack);
       break;
@@ -896,13 +896,29 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
 
     case MtpAlbum:
     {
-      MTP::GenericFileObject* deletedObj = (MTP::GenericFileObject*) in_obj;
-      assert(deletedObj->Association()->Type() == MtpFile);
-      bool ret = _device->RemoveAlbum( (MTP::Album*)deletedObj);
-      MTP::File* association= (MTP::File*) deletedObj->Association();
+      assert(in_obj->Type() == MtpAlbum);
+      MTP::Album* deletedAlb = (MTP::Album*) in_obj;
+      assert(deletedAlb->Association()->Type() == MtpFile);
+
+      bool ret = false;
+      while(deletedAlb->TrackCount() > 0)
+      {
+        MTP::Track* deletedTrack = deletedAlb->ChildTrack(0);
+        assert(deletedTrack->Association()->Type() == MtpFile);
+
+        ret = _device->RemoveTrack(deletedTrack);
+        //TODO report error here ?
+        if (!ret)
+          return;
+        emit RemovedTrack( deletedTrack); 
+        emit RemovedFile( (MTP::File*)deletedTrack->Association());
+      }
+
+      ret = _device->RemoveAlbum( deletedAlb);
+      MTP::File* association= (MTP::File*) deletedAlb->Association();
       if (ret)
       {
-        emit RemovedAlbum( (MTP::Album*)deletedObj);
+        emit RemovedAlbum( deletedAlb);
         emit RemovedFile(association);
       }
       break;
@@ -910,8 +926,26 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
 
     case MtpPlaylist:
     {
-      qDebug() << "Requested playlist deletion";
-      break;
+      assert(in_obj->Type() == MtpPlaylist);
+      MTP::Playlist* deletedPl = (MTP::Playlist*) in_obj;
+      assert(deletedPl->Association()->Type() == MtpFile);
+      bool ret = false;
+      for (count_t i = 0; i < deletedPl->TrackCount(); i++)
+      while(deletedPl->TrackCount() > 0)
+      {
+        ret = _device->RemoveShadowTrack(deletedPl->ChildTrack(0));
+        if (!ret)
+          return;
+        emit RemovedTrackFromPlaylist( deletedPl->ChildTrack(0) );
+      }
+
+      ret = _device->RemovePlaylist(deletedPl);
+      MTP::File* association = (MTP::File*) deletedPl->Association();
+      if (ret)
+      {
+        emit RemovedPlaylist(deletedPl);
+        emit RemovedFile(association);
+      }
     }
    }
 }

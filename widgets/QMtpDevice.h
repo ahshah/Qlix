@@ -80,18 +80,27 @@ public:
 
 signals:
   void Initialized(QMtpDevice*);
-  void TrackTransferComplete(MTP::Track*);
-  void NotATrack(SendFileCmd*);
   void UpdateProgress(QString, count_t);
-  void CreatedAlbum(MTP::Album*);
-  void AddedTrack(MTP::Track*);
+  void NotATrack(SendFileCmd*);
+  void TrackTransferComplete(MTP::Track*);
+
   void AddedFile(MTP::File*);
-
-  void RemovedTrack(MTP::Track*);
   void RemovedFile(MTP::File*);
-  void RemovedAlbum(MTP::Album*);
-  void RemovedFolder(MTP::Folder*);
 
+  void CreatedAlbum(MTP::Album*);
+  void RemovedAlbum(MTP::Album*);
+
+  void AddedTrack(MTP::Track*);
+  void RemovedTrack(MTP::Track*);
+
+  void RemovedFolder(MTP::Folder*);
+  void AddedFolder(MTP::Folder*);
+
+
+  void CreatedPlaylist(MTP::Playlist*);
+  void RemovedPlaylist(MTP::Playlist*);
+
+  void AddedTrackToPlaylist(MTP::Playlist*);
   void RemovedTrackFromPlaylist(MTP::ShadowTrack*);
 protected:
   void run();

@@ -68,6 +68,5 @@ private:
 
   bool discoverCoverArt(const QString&, const QString&, QFileInfo*);
   MtpDevice* _device;
-  QMutex* _modelLock;
 };
 #endif

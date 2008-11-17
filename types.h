@@ -47,14 +47,12 @@ enum QlixProgressType
   TransferAmount
 };
 
-class CommandLineOptions
+struct CommandLineOptions
 {
-public:
   const bool AutoFixPlaylists;
   const bool AutoFixAlbums;
   const bool SimulateTransfers;
   const bool DebugOutput;
-private:
 
   CommandLineOptions(bool in_AutoFixPlaylists = false, bool in_AutoFixAlbums = false, 
               bool in_SimulateTransfers = false, bool in_DebugOutput = false) :

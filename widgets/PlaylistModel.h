@@ -34,7 +34,7 @@ class PlaylistModel : public QAbstractItemModel
 {
 Q_OBJECT
 public:
-  PlaylistModel(MtpDevice*, QObject* parent = NULL);
+  PlaylistModel(vector<MTP::Playlist*>, QObject* parent = NULL);
   QModelIndex index(int, int, const QModelIndex& parent= QModelIndex()) const;
   QModelIndex parent (const QModelIndex& index) const;
   int rowCount(const QModelIndex& parent= QModelIndex() ) const ;
@@ -42,7 +42,10 @@ public:
   QVariant data(const QModelIndex& , int role = Qt::DisplayRole ) const;
 public slots:
   void RemoveTrack(MTP::ShadowTrack*);
+  void RemovePlaylist(MTP::Playlist*);
+  void AddTrack(MTP::ShadowTrack*);
+  void AddPlaylist(MTP::Playlist*);
 private:
-  MtpDevice* _device;
+  std::vector<MTP::Playlist*> _plList;
 };
 #endif
