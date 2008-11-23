@@ -168,7 +168,6 @@ QVariant AlbumModel::data(const QModelIndex& index, int role ) const
     {
         MTP::Album* tempAlbum = (MTP::Album*)temp;
         QString first = QString::fromUtf8(tempAlbum->Name());
-//        QString second = QString('\n') + QString("    ") + QString::fromUtf8(tempAlbum->Artist());
         return QVariant(first);
     }
     else if (temp->Type() == MtpTrack && index.column() == 0)
@@ -207,6 +206,7 @@ QVariant AlbumModel::data(const QModelIndex& index, int role ) const
         return ret.scaledToWidth(24, Qt::SmoothTransformation);
       }
     }
+
     else if (temp->Type() == MtpTrack && index.column() == 0)
     {
         return QIcon(QPixmap (":/pixmaps/track.png"));

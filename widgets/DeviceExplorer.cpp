@@ -119,7 +119,7 @@ void DeviceExplorer::ShowAlbums()
     _deviceRightView->setModel(_albumModel);
     _deviceRightView->setSelectionMode(QAbstractItemView::ExtendedSelection);
   }
-    _deviceRightView->setStyleSheet("QTreeView::branch:!adjoins-item, QTreeView::branch:!has-children:open{ background: none} QTreeView::branch:has-children:closed{ image: url(:/pixmaps/TreeView/branch-closed.png)} QTreeView::branch:has-children:open{ image: url(:/pixmaps/TreeView/branch-open.png)}"); 
+//    _deviceRightView->setStyleSheet("QTreeView::branch:!adjoins-item, QTreeView::branch:!has-children:open{ background: none} QTreeView::branch:has-children:closed{ image: url(:/pixmaps/TreeView/branch-closed.png)} QTreeView::branch:has-children:open{ image: url(:/pixmaps/TreeView/branch-open.png)}"); 
 /*    //To be continued
  *    _deviceRightView->setStyleSheet("QTreeView::branch{ background: none} \
                                 QTreeView::branch:adjoins-item:!has-children{ image: url(:/pixmaps/TreeView/branch-end.png)} \
@@ -156,6 +156,7 @@ void DeviceExplorer::setupDeviceView()
   _deviceRightView->setAlternatingRowColors(true);
 
   _albumView = new QTreeView();
+  _albumView->setItemDelegate(new AlbumDelegate(_albumModel));
   _albumView->setModel(_albumModel);
   _albumView->setSelectionBehavior(QAbstractItemView::SelectRows);
   _albumView->setSelectionMode(QAbstractItemView::ExtendedSelection);

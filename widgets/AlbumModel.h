@@ -40,6 +40,9 @@
 #include "modeltest/modeltest.h"
 #include <vector>
 #include <map>
+#include "MtpObject.h"
+
+
 
 /**
  * @class This class wraps over the MTP::Album structures and provides a
@@ -69,4 +72,6 @@ private:
   bool discoverCoverArt(const QString&, const QString&, QFileInfo*);
   MtpDevice* _device;
 };
+
+using namespace MTP;
 #endif

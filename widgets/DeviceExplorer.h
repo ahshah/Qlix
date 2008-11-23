@@ -43,6 +43,7 @@
 #include <QSortFilterProxyModel>
 #include "widgets/QMtpDevice.h"
 #include "widgets/AlbumModel.h"
+#include "widgets/AlbumDelegate.h"
 #include "widgets/DirModel.h"
 #include "widgets/PlaylistModel.h"
 #include "mtp/MtpObject.h"

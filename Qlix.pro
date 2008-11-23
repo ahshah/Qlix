@@ -40,6 +40,8 @@ HEADERS += linuxsignals.h \
            widgets/DeviceButton.h \
            widgets/MtpWatchDog.h \ 
            widgets/QMtpDevice.h \ 
+           widgets/AlbumDelegate.h \
+           widgets/PlaylistDelegate.h \
            widgets/AlbumModel.h \
            widgets/DirModel.h \
            widgets/PlaylistModel.h \
@@ -55,6 +57,8 @@ SOURCES += main.cpp \
            widgets/DeviceButton.cpp \
            widgets/QMtpDevice.cpp \ 
            widgets/MtpWatchDog.cpp \
+           widgets/AlbumDelegate.cpp \
+           widgets/PlaylistDelegate.cpp \
            widgets/AlbumModel.cpp \
            widgets/DirModel.cpp \
            widgets/PlaylistModel.cpp \ 

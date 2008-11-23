@@ -44,6 +44,7 @@ void handler(int sig)
   sigaction(sig, &act, 0);
 
   sigprocmask(SIG_UNBLOCK, &previous_set, NULL);
+  exit(1);
 }
 
 void installSignalHandlers()
@@ -52,6 +53,7 @@ void installSignalHandlers()
     act.sa_handler = handler;
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
+    //Aparently these are terminal signals
     sigaction(SIGINT, &act, 0);
     sigaction(SIGFPE, &act, 0);
     sigaction(SIGQUIT, &act, 0);
