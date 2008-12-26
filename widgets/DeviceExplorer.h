@@ -39,6 +39,7 @@
 #include <QSplitter>
 #include <QDir>
 #include <QLabel>
+#include <QMap>
 #include "widgets/QlixPreferences.h"
 #include <QSortFilterProxyModel>
 #include "widgets/QMtpDevice.h"
@@ -57,6 +58,8 @@
  * functionality of Qlix into one main widget. It is the central widget 
  * that is set in QlixMainWindow
  */
+
+typedef QList<MTP::GenericObject*> QGenericObjectList;
 class DeviceExplorer : public QWidget
 {
 Q_OBJECT
@@ -120,9 +123,16 @@ private:
   bool confirmContainerDeletion(MTP::GenericObject*);
   static bool modelLessThan(const QModelIndex&, const QModelIndex&);
 
-//  QModelIndexList removeAlbumDuplicates(const QModelIndexList&);
-  QModelIndexList removeIndexDuplicates(QModelIndexList&,
-                                        const QAbstractItemModel*);
+  void removeIndexDuplicates(QModelIndexList&, QGenericObjectList&,
+                             const QSortFilterProxyModel*);
+
+  void removeFileIndexDuplicates(QModelIndexList&, 
+                                 QGenericObjectList&);
+
+  void removeTrackBasedIndexDuplicates(QModelIndexList&,
+                                       QGenericObjectList&,
+                                       const QAbstractItemModel*);
+
   QGridLayout* _layout; 
   ViewPort _view;
 

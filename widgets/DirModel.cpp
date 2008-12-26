@@ -300,3 +300,40 @@ void DirModel::RemoveFile(MTP::File* in_file)
   delete in_file;
   emit endRemoveRows();
 }
+
+/**
+ * not sure if these functions are a good idea
+MTP::Folder* DirModel::RawFolder(QModelIndex in_idx)
+{
+  if (!in_idx.isValid())
+    return NULL
+  else if (MtpType(in_idx) != MtpFolder)
+    return NULL;
+  else 
+    return (MTP::Folder*) in_idx.internalPointer();
+}
+
+MTP::File* DirModel::RawFile(QModelIndex in_idx)
+{
+  if (!in_idx.isValid())
+    return NULL;
+  else if (MtpType(in_idx) != MtpFile)
+    return NULL;
+  else 
+    return (MTP::File*) in_idx.internalPointer();
+}
+*/
+
+/**
+ * @param in_idx the index of the inquery
+ * @return the type of object pointed to by the index. This function returns
+ * MtpUnknown if the index is invalid
+MtpObjectType DirModel::MtpType(const QModelIndex& in_idx);
+{
+  if (!in_idx.isValid())
+    return MtpUnknown;
+
+  MTP::GenericObject* obj = (MTP::GenericObject*)in_idx.internalPointer();
+  return obj->type();
+}
+ */

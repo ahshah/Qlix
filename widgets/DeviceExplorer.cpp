@@ -368,13 +368,6 @@ void DeviceExplorer::setupConnections()
           _albumModel->sourceModel(), SLOT(AddAlbum(MTP::Album*)),
           Qt::BlockingQueuedConnection);
 
-  connect(_device, SIGNAL(AddedTrack(MTP::Track*)),
-          _albumModel->sourceModel(), SLOT(AddTrack(MTP::Track*)),
-          Qt::BlockingQueuedConnection);
-
-
-
-
 
   /** Playlist connections */
   connect(_device, SIGNAL(AddedTrackToPlaylist(MTP::ShadowTrack*)),
@@ -592,15 +585,18 @@ void DeviceExplorer::TransferFromDevice()
   QAbstractItemModel* theModel = _deviceRightView->model();
   assert(theModel == _albumModel || theModel == _plModel ||
          theModel == _dirModel);
-  idxList = removeIndexDuplicates(idxList, (QSortFilterProxyModel*)theModel);
+
+  //TODO pass the returned list by memory rather than copy it in/out
+  //TODO fix this part of the code for transfers from device
+  //removeIndexDuplicates(idxList, (QSortFilterProxyModel*)theModel);
 
   MTP::GenericObject* obj;
 
   QModelIndex temp;
   foreach(temp, idxList)
   {
-    obj = (MTP::GenericObject*) temp.internalPointer();
     assert(temp.isValid());
+    obj = (MTP::GenericObject*) temp.internalPointer();
     _device->TransferFrom(obj, transferPath);
   }
 }
@@ -624,12 +620,12 @@ void DeviceExplorer::DeleteFromDevice()
   assert(theModel == _albumModel || theModel == _plModel ||
          theModel == _dirModel || theModel == _unsortedAlbumModel);
 
-  idxList = removeIndexDuplicates(idxList, (QSortFilterProxyModel*)theModel);
+  QGenericObjectList objList;
+  removeIndexDuplicates(idxList, objList, (QSortFilterProxyModel*)theModel);
 
-  QModelIndex temp;
-  foreach(temp, idxList)
+  MTP::GenericObject* obj;
+  foreach(obj, objList)
   {
-    MTP::GenericObject* obj = (MTP::GenericObject*) temp.internalPointer();
 
     if (!confirmDeletion() )
       continue;
@@ -641,8 +637,6 @@ void DeviceExplorer::DeleteFromDevice()
       if (!confirmContainerDeletion(obj) )
         continue;
     }
-
-    assert(temp.isValid());
     _device->DeleteObject(obj);
   }
 }
@@ -706,6 +700,8 @@ QModelIndexList DeviceExplorer::removeAlbumDuplicates
  * widget and one or many of its children. The parent widget's selection 
  * implies all widgets under it are selected, thus it gets precedence when 
  * transfering and deleting files/tracks/folders.
+ * This function figures out which model should be used to remove index 
+ * duplicates from and calls the apporiete helper function to remove it.
  * @param in_list the list of indicies selected
  * @param in_model the model that in_list applies to
  */
@@ -713,13 +709,28 @@ QModelIndexList DeviceExplorer::removeAlbumDuplicates
 //TODO why does the return list contain indicies to the QSortModel rather than
 //     the underlying model?
 //TODO potential optimization using a map structure
-QModelIndexList DeviceExplorer::removeIndexDuplicates(
+void DeviceExplorer::removeIndexDuplicates(
                                 QModelIndexList& in_list, 
+                                QGenericObjectList& out_list, 
+                                const QSortFilterProxyModel* in_model)
+
+{
+  QAbstractItemModel* theModel = in_model->sourceModel();
+  if(in_model == _albumModel || in_model== _plModel)
+    return removeTrackBasedIndexDuplicates(in_list, out_list, theModel);
+  else if (theModel == _dirModel)
+    return removeFileIndexDuplicates(in_list, out_list);
+  else 
+    assert (false);
+}
+
+void DeviceExplorer::removeTrackBasedIndexDuplicates(
+                                QModelIndexList& in_list, 
+                                QGenericObjectList& out_list,
                                 const QAbstractItemModel* in_model)
 {
-  qDebug() << "Called removeIndexDuplicates";
+  qDebug() << "Called removeTrackBasedIndexDuplicates";
   count_t dup = 0;
-  QModelIndexList ret;
 
   if (in_model == _albumModel || in_model == _plModel)
   {
@@ -734,14 +745,14 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
         iter = in_list.erase(iter);
         continue;
       }
-      //we iterate here as QList::erase returns the next item inline
+      //we iterate here as QList::erase out_listurns the next item inline
       iter++;
     }
 
     QModelIndex temp;
-    //Place albums on return list
+    //Place albums on out_listurn list
     foreach(temp, ParentList)
-      ret.push_back(temp);
+      out_list.push_back((MTP::GenericObject*)temp.internalPointer());
 
     //Find redundant tracks by iterating over each one and checking its parent
     //in the parent list
@@ -766,7 +777,7 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
         if (skip) 
           dup++;
         else 
-          ret.push_back(mapped);
+          out_list.push_back((MTP::GenericObject*)mapped.internalPointer());
       }
       else if (in_model == _plModel)
       {
@@ -785,34 +796,156 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
         if (skip) 
           dup++; 
         else
-          ret.push_back(mapped);
+          out_list.push_back((MTP::GenericObject*)mapped.internalPointer());
       }
      }
     }
     qDebug() << "__Selection order__ | dup count:" << dup;
     int i = 0;
-    QModelIndex temp;
-    foreach(temp, ret)
+    MTP::GenericObject* temp;
+    foreach(temp, out_list)
     {
-      if(in_model == _albumModel)
-      {
-        QString tempOut = _albumModel->sourceModel()->
-                              data(temp, Qt::DisplayRole).toString();
+        QString tempOut = temp->Name(); 
         qDebug()<< i << ": " << tempOut;
-      }
-      else if (in_model == _plModel)
-      {
-        QString tempOut = _plModel->sourceModel()->
-                              data(temp, Qt::DisplayRole).toString();
-        qDebug()<< i << ": " << tempOut;
-      }
-      i++;
+        i++;
     }
     //Uncomment this to enable sorted deletions, this will delete items from the
     //bottom of the containers list up
-    qSort(ret.begin(), ret.end(), modelLessThan);
-    return ret;
+    //qSort(out_list.begin(), out_list.end(), modelLessThan);
+} 
+
+//TODO consider how we deal with shadow tracks during deletions
+//TODO consider passing a QList that contains the list of tobe deleted objects
+//TODO research how QMtpDevice handles deletions of complex types
+//TODO this function is also called to removeIndexDuplicates when retreiving
+//     files from the device, how should we handle that?
+void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
+                                              QGenericObjectList& out_list)
+{
+  return;
+  /*
+  QModelIndex idx;
+  QModelIndexList dirList;
+  QModelIndexList fileList;
+
+  foreach(idx, in_list)
+  {
+    MtpObjectType type = DirModel::MtpType(idx)
+    if (type ==  MtpFolder)
+      dirList.push_back(idx);
+    else if (type ==  MtpFile)
+      fileList.push_back(idx);
+    else
+      assert(false);
+  }
+
+  //retreive recursive implications
+  foreach(idx, dirList)
+  {
+    if (!idx.isValid())
+      continue;
+    QModelIndex curParent = idx;
+    count_t childCount = _dirModel.rowCount(idx);
+    for (count_t i = 0; i < childCount; i++)
+    {
+      QModelIndex childIdx = _dirModel.index(i, 0, curParent)
+      //should not happen
+      if (!childIdx.isValid())
+        assert(false);
+      if (DirModel::MtpType(childIdx) == MtpFolder)
+        dirList.push_back(childIdx);
+      else if (DirModel::MtpType(childIdx) == MtpFile)
+        fileList.push_back(childIdx);
+    }
+  }
+
+  QMap<uint32_t, QModelIndex> dirMap;
+  QMap<uint32_t, QModelIndex> fileMap;
+
+  //Build folder map
+  foreach(idx, dirList)
+  {
+    MTP::Dir* currentDir = (MTP::Dir*) idx.internalPointer();
+    if (dirMap.contains(currentDir->ID()))
+      continue;
+    dirMap[currentDir->ID()] = idx; 
+  }
+
+  //Build file map
+  foreach(idx, fileList)
+  {
+    MTP::File* currentFile = (MTP::File*) idx.internalPointer();
+    if (fileMap.contains(currentFile->ID()))
+      continue;
+    fileMap[currentFile->ID()] = idx; 
+  }
+
+  QMap<uint32_t, MTP::GenericFileObject*>::iterator iter;
+
+  //here we replace files by there associated type
+  //maybe we should call associated types "complex types"
+  for(iter = fileMap.begin(); iter != fileMap.end(); iter++)
+  {
+    if (iter->Association())
+      fileMap[iter->ID()] = iter->Association();
+  }
+   * build folder map- remove duplicates
+   * build file map, gather implied types (playlists, albums, tracks), 
+     remove duplicates
+   * sort folder list by depth
+   * merge sorted folders into file list; that is put folders after all the 
+     files to ensure that files get removed first
+   */
 }
+
+/**
+ * This function creates a popup and requests the user to confirm the deletion 
+ * of an object
+ */
+bool DeviceExplorer::confirmDeletion()
+{
+  return true;
+  /*
+  if (QMessageBox::question(this, "Confirm Deletion",
+                               "Pleaes confirm object deletion",
+                               "&Delete", "&Cancel",
+                               QString::null, 0, 1) == 0)
+    return true;
+  else
+    return false;
+    */
+}
+
+/**
+ * This function creates a popup and requests the user to confirm the deletion 
+ * of a container object
+ * @param in_obj the container object that is about to be deleted
+ */
+bool DeviceExplorer::confirmContainerDeletion(MTP::GenericObject* in_obj)
+{
+  return true;
+  /*
+  QString msg = QString("%1 is a container object, all contained\
+    objects will be deleted!").arg( QString::fromUtf8(in_obj->Name() ) );
+
+  if (QMessageBox::question(this, "Confirm Container Deletion",
+                               msg, "&Delete", "&Cancel",
+                               QString::null, 0, 1) == 0)
+    return true;
+  else
+    return false;
+    */
+}
+
+bool DeviceExplorer::modelLessThan(const QModelIndex& left, const QModelIndex& right)
+{
+  if (left.row() < right.row())
+    return false;
+  else
+    return true;
+}
+
+
 /*
 {
   qDebug() << "Called removeIndexDuplicates";
@@ -875,50 +1008,3 @@ QModelIndexList DeviceExplorer::removeIndexDuplicates(
   return ret;
 }
 */
-
-/**
- * This function creates a popup and requests the user to confirm the deletion 
- * of an object
- */
-bool DeviceExplorer::confirmDeletion()
-{
-  return true;
-  /*
-  if (QMessageBox::question(this, "Confirm Deletion",
-                               "Pleaes confirm object deletion",
-                               "&Delete", "&Cancel",
-                               QString::null, 0, 1) == 0)
-    return true;
-  else
-    return false;
-    */
-}
-
-/**
- * This function creates a popup and requests the user to confirm the deletion 
- * of a container object
- * @param in_obj the container object that is about to be deleted
- */
-bool DeviceExplorer::confirmContainerDeletion(MTP::GenericObject* in_obj)
-{
-  return true;
-  /*
-  QString msg = QString("%1 is a container object, all contained\
-    objects will be deleted!").arg( QString::fromUtf8(in_obj->Name() ) );
-
-  if (QMessageBox::question(this, "Confirm Container Deletion",
-                               msg, "&Delete", "&Cancel",
-                               QString::null, 0, 1) == 0)
-    return true;
-  else
-    return false;
-    */
-}
-bool DeviceExplorer::modelLessThan(const QModelIndex& left, const QModelIndex& right)
-{
-  if (left.row() < right.row())
-    return false;
-  else
-    return true;
-}
-

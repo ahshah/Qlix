@@ -94,6 +94,7 @@ void QMtpDevice::run()
     proccessJob(currentJob);
   }
 }
+
 void QMtpDevice::proccessJob(GenericCommand* currentJob)
 {
   CommandCode type = currentJob->GetCommand();
@@ -732,7 +733,8 @@ MTP::File* QMtpDevice::SetupFileTransfer(const char* in_filename,
   file->storage_id = SelectedStorage();
   file->parent_id = in_parentid;
   file->filetype = in_type;
-  return new MTP::File(file);
+  //For now we give it a fake parent ID
+  return new MTP::File(file, 0);
 }
 
 
@@ -889,7 +891,6 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
 
     case MtpFolder:
     {
-      qDebug() << "About to emit folder removal: thread id is: " << currentThread();
       emit RemovedFolder((MTP::Folder*) in_obj);
       break;
     }
