@@ -45,6 +45,12 @@ count_t GenericObject::ID() const { return _id; }
  */
 void GenericObject::SetID( count_t in_id) { _id = in_id; }
 
+/** 
+ * Returns the depth of the current object. Must be overriden by child classes
+ * to provide meaningful behaviour
+ */
+count_t GenericObject::Depth() const { return 0; }
+
 /**
  * Simple function to get the type of the current MTP object
  * @return returns the type of the GenericObject
@@ -276,11 +282,13 @@ const Track* ShadowTrack::GetTrack() const
 /**
  * Creates a new File object and and stores its representative data
  * @param in_file A pointer to the LIBMTP_file_to wrap over
+ * @param in_depth The depth of this file in the file system 
  * @param in_sample A pointer to the LIBMTP_filesampledata_t
  * @return a new File object
  */
-File::File(LIBMTP_file_t* in_file) : 
-           GenericFileObject(MtpFile, in_file->item_id)
+File::File(LIBMTP_file_t* in_file, count_t in_depth) : 
+           GenericFileObject(MtpFile, in_file->item_id),
+           _depth(in_depth)
 {
   _rawFile = in_file;
 }
@@ -342,16 +350,19 @@ LIBMTP_file_t* File::RawFile() const
 
 /** Creates a new Folder object
  * @param in_folder A pointer to the LIBMTP_folder_t wrap over
+ * @param in_depth The depth of this folder in the filesystem
  * @param in_parent A pointer to this folder's parent
  * @return a new Folder object
  */
-Folder::Folder(LIBMTP_folder_t* in_folder, Folder* in_parent) :
-               GenericObject (MtpFolder, in_folder->folder_id)
+Folder::Folder(LIBMTP_folder_t* in_folder, Folder* in_parent, 
+               count_t in_depth) :
+               GenericObject (MtpFolder, in_folder->folder_id),
+               _depth(in_depth),
+               _parent(in_parent)
 {
   assert(in_folder);
 //  cout << "Creating new folder " << in_folder->name << " with id:" << ID() << endl;
   _rawFolder = in_folder;
-  _parent = in_parent;
 }
 /**
  * Return's this folder's parent

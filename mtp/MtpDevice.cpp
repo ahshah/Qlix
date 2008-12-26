@@ -380,7 +380,7 @@ void MtpDevice::createObjectStructure()
   if (!_device)
     return;
   //create container structures first..
-  createFolderStructure(NULL, true);
+  createFolderStructure(NULL, 0);
   createFileStructure();
   createTrackBasedStructures();
 
@@ -413,16 +413,19 @@ void MtpDevice::AddAlbum(MTP::Album* in)
 /**
  * Recursively builds the folder structure
  * @param in_root the root folder on the device
- * @param firstRun whether to retreive a fresh list of folders from the device
+ * @param in_depth the current depth of folder creation. It is also the current
+ *        depth of recursion. If the current level of recursion is 0 we will
+ *        retrieve a fresh folder list
  */
-void MtpDevice::createFolderStructure(MTP::Folder* in_root, bool firstRun)
+void MtpDevice::createFolderStructure(MTP::Folder* in_root, count_t in_depth)
 {
   if (!_device)
     return;
   vector<MTP::Folder*> curLevelFolders;
   LIBMTP_folder_t* rootFolder;
-  if (!in_root && firstRun)
+  if (in_depth == 0)
   {
+     assert(!in_root);
      rootFolder= LIBMTP_Get_Folder_List(_device);
      LIBMTP_folder_t* fakeRoot = LIBMTP_new_folder_t();
      fakeRoot->folder_id = 0;
@@ -442,14 +445,14 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, bool firstRun)
     MTP::Folder* currentFolder;
     if(in_root)
     {
-      currentFolder =  new MTP::Folder(rootFolder, in_root);
+      currentFolder =  new MTP::Folder(rootFolder, in_root, in_depth);
       currentFolder->SetRowIndex(in_root->FolderCount());
       in_root->AddChildFolder(currentFolder);
     }
     else //else set the child's parent to NULL indicating its at the root
     {
-      assert(_rootFolder ==NULL);
-      currentFolder =  new MTP::Folder(rootFolder, NULL);
+      assert(_rootFolder ==NULL && in_depth == 0);
+      currentFolder =  new MTP::Folder(rootFolder, NULL, in_depth);
       //set the row index first as it is zero based
       currentFolder->SetRowIndex(0);
       //set the root folder
@@ -477,7 +480,7 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, bool firstRun)
     rootFolder = rootFolder->sibling;
   }
   for (count_t i =0; i < curLevelFolders.size(); i++)
-      createFolderStructure(curLevelFolders[i], false);
+      createFolderStructure(curLevelFolders[i], in_depth+1);
 }
 
 /**
@@ -530,7 +533,13 @@ void MtpDevice::createFileStructure()
   LIBMTP_file_t* fileRoot = LIBMTP_Get_Filelisting_With_Callback(_device, NULL, NULL);
   while (fileRoot)
   {
-    MTP::File* currentFile = new MTP::File(fileRoot);
+    MTP::Folder* const parentFolder =
+      (MTP::Folder*) find(fileRoot->parent_id, MtpFolder);
+
+    //Get the parent folder's depth
+    count_t fileDepth = (parentFolder ? parentFolder->Depth() + 1 : 0); 
+    MTP::File* currentFile = new MTP::File(fileRoot, fileDepth);
+
     if (_commandLineOpts.DebugOutput)
       cout << "Created file: " << currentFile << " with id: "<< currentFile->ID() << endl;
     //Sanity check: find previous instances for crosslinks
@@ -546,8 +555,6 @@ void MtpDevice::createFileStructure()
     }
     _fileMap[currentFile->ID()] = currentFile; 
 
-    MTP::Folder* const parentFolder=
-                       (MTP::Folder*) find(currentFile->ParentID(), MtpFolder);
     if(! parentFolder)
     {
       cerr << "Database corruption. Parent folder for file:" << currentFile->ID()
@@ -841,9 +848,8 @@ bool MtpDevice::TransferTrack(const char* in_path, MTP::Track* in_track)
     }
   }
 
-  //necessary due to stupid inheritence
-  // ^ does not make sense, did I mean to say due to "stupid composition" ?
-  //TODO fix this?
+  //necessary due to composition 
+  //TODO brainstorm portential fixes
   // ^ fix what precisely?
   in_track->SetID(in_track->RawTrack()->item_id);
   if (_commandLineOpts.DebugOutput)

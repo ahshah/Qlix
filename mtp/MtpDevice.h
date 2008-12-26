@@ -164,7 +164,7 @@ private:
 
   //Container structure functions
   void createObjectStructure();
-  void createFolderStructure(MTP::Folder*, bool);
+  void createFolderStructure(MTP::Folder*, count_t);
   void createFileStructure();
   void createTrackBasedStructures();
   void autoFixPlaylist(MTP::Playlist*);

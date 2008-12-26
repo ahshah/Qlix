@@ -50,12 +50,14 @@ public:
   virtual ~GenericObject();
   count_t ID() const;
   void SetID(count_t);
+  virtual count_t Depth() const;
   MtpObjectType Type() const;
   virtual const char* Name() const;
 
 private:
   MtpObjectType _type;
   count_t _id;
+  count_t _depth;
 };
 
 class GenericFileObject : public GenericObject
@@ -75,7 +77,7 @@ class GenericFileObject : public GenericObject
 class File : public GenericFileObject 
 {
 public:
-  File(LIBMTP_file_t*);
+  File(LIBMTP_file_t*, count_t);
   count_t ParentID() const;
   virtual const char * Name() const;
 
@@ -91,6 +93,7 @@ private:
   LIBMTP_filesampledata_t _sampleData;
   Folder* _parent;
   count_t _rowIndex;
+  count_t _depth;
 };
 
 /** 
@@ -99,7 +102,7 @@ private:
 class Folder : public GenericObject
 {
 public:
-  Folder(LIBMTP_folder_t*, Folder*);
+  Folder(LIBMTP_folder_t*, Folder*, count_t);
   count_t FileCount() const;
   count_t FolderCount() const;
   Folder* ParentFolder() const;
@@ -123,6 +126,7 @@ private:
   std::vector<Folder*> _childFolders;
   std::vector<File*> _childFiles;
   count_t _rowIndex;
+  count_t _depth;
 };
 
 /** 
@@ -163,6 +167,13 @@ private:
   count_t _rowIndex;
 };
 
+/**
+ * @class ShadowTrack is a class that provides an abstraction of the 
+ * relationship between tracks and playlists.
+ * Since this relationship can be one(track)-to-many(playlists) we must create
+ * a relationship for each one the associations.
+ * This object does not exist in LIBMTP
+*/
 class ShadowTrack : public GenericObject
 {
 public:
