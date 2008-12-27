@@ -5,8 +5,24 @@
 #ifndef QMTP_H_
 #define QMTP_H_
 #include <QModelIndex>
+#include "types.h"
+#include "mtp/MtpObject.h"
 namespace QMTP
 {
+
+/**
+ * @param in_idx the index of the inquired object
+ * @return the type of object pointed to by the index. This function returns
+ * MtpUnknown if the index is invalid
+ */
+static MtpObjectType MtpType(const QModelIndex& in_idx)
+{
+  if (!in_idx.isValid() )
+    return MtpInvalid;
+
+  MTP::GenericObject* obj = (MTP::GenericObject*)in_idx.internalPointer();
+  return obj->Type();
+}
 
 /**
  * @param in_idx the index of the inquired object
@@ -19,7 +35,7 @@ static MTP::GenericObject* RawGenericObject(QModelIndex in_idx)
 {
   if (!in_idx.isValid())
      return NULL;
-  MTP::MtpType theType = MtpType(in_idx);
+  MtpObjectType theType = MtpType(in_idx);
   if (theType != MtpFolder ||
       theType != MtpFile ||
       theType != MtpTrack ||
@@ -65,28 +81,14 @@ static MTP::File* RawFile(QModelIndex in_idx)
 }
 
 /**
- * @param in_idx the index of the inquired object
- * @return the type of object pointed to by the index. This function returns
- * MtpUnknown if the index is invalid
- */
-static MtpObjectType MtpType(const QModelIndex& in_idx)
-{
-  if (!in_idx.isValid() )
-    return MtpInvalid;
-
-  MTP::GenericObject* obj = (MTP::GenericObject*)in_idx.internalPointer();
-  return obj->type();
-}
-
-/**
  * @param left the left index
  * @param right the right index
  * @return true of the right index is deeper in the folder tree than the left index
  */
 static bool MtpFolderLessThan(const QModelIndex& left, const QModelIndex& right)
 {
-  assert( MtpObjectType(left) == MtpFolder);
-  assert( MtpObjectType(right) == MtpFolder);
+  assert( MtpType(left) == MtpFolder);
+  assert( MtpType(right) == MtpFolder);
   return (RawFolder(left)->Depth() < RawFolder(right)->Depth());
 }
 

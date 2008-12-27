@@ -880,32 +880,32 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
     if (!idx.isValid())
       continue;
     QModelIndex curParent = idx;
-    count_t childCount = _dirModel.rowCount(idx);
+    count_t childCount = _dirModel->rowCount(idx);
     for (count_t i = 0; i < childCount; i++)
     {
-      QModelIndex childIdx = _dirModel.index(i, 0, curParent);
+      QModelIndex childIdx = _dirModel->index(i, 0, curParent);
       //should not happen
       if (!childIdx.isValid())
         assert(false);
       //Potential source of bugs, does the foreach clause extend to dynamic
       //looping caused by the following statement:
-      if (QMtp::MtpType(childIdx) == MtpFolder)
+      if (QMTP::MtpType(childIdx) == MtpFolder)
         dirList.push_back(childIdx);
-      else if (QMtp::MtpType(childIdx) == MtpFile)
+      else if (QMTP::MtpType(childIdx) == MtpFile)
         fileList.push_back(childIdx);
     }
   }
 
-  QMap<uint32_t, QModelIndex> dirMap;
-  QMap<uint32_t, QModelIndex> fileMap;
+  QMap<uint32_t, MTP::Folder*> dirMap;
+  QMap<uint32_t, MTP::GenericFileObject*> fileMap;
 
   //Build folder map
   foreach(idx, dirList)
   {
-    MTP::Dir* currentDir = (MTP::Dir*) idx.internalPointer();
+    MTP::Folder* currentDir = (MTP::Folder*) idx.internalPointer();
     if (dirMap.contains(currentDir->ID()))
       continue;
-    dirMap[currentDir->ID()] = idx;
+    dirMap[currentDir->ID()] = currentDir;
   }
 
   //Build file map
@@ -914,7 +914,7 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
     MTP::File* currentFile = (MTP::File*) idx.internalPointer();
     if (fileMap.contains(currentFile->ID()))
       continue;
-    fileMap[currentFile->ID()] = idx;
+    fileMap[currentFile->ID()] = currentFile;
   }
 
 
@@ -928,23 +928,24 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
   QMap<uint32_t, MTP::GenericFileObject*>::iterator iter;
   for(iter = fileMap.begin(); iter != fileMap.end(); iter++)
   {
-    if (iter->Association())
-      fileMap[iter->ID()] = iter->Association();
+    if ((*iter)->Association())
+      fileMap[(*iter)->ID()] = (*iter)->Association();
   }
 
   dirList.clear();
   fileList.clear();
+  MTP::Folder* genericFolder;
+  MTP::GenericFileObject* genericFile;
 
-  foreach(idx, dirMap)
-    dirList.push_back(idx);
-  foreach(idx, fileMap)
-    fileList.push_back(idx);
+  QList<MTP::Folder*> retDirList;
+  foreach(genericFolder, dirMap)
+    retDirList.push_back(genericFolder);
+  qSort(retDirList.begin(), retDirList.end(), QMTP::MtpFolderLessThan);
 
-  qSort(dirMap.begin(), dirMap.end(), QMTP::MtpFolderLessThan);
-  foreach(idx, fileMap)
-    out_list.push_back(QMtp::RawGenericObject(idx));
-  foreach(idx, dirMap)
-    out_list.push_back(QMtp::RawGenericObject(idx));
+  foreach(genericFile, fileMap)
+    out_list.push_back(genericFile);
+  foreach(genericFolder, retDirList)
+    out_list.push_back(genericFolder);
 }
 
 /**
