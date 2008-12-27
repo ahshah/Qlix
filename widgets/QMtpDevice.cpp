@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,21 +21,21 @@
  *   TODO memory leaks
  *   TODO update model correctly
  *   TODO move model information out of this thread and back into the main thread
- *   Q. Should the model just use queuedConnections for removing and 
+ *   Q. Should the model just use queuedConnections for removing and
  *   adding tracks/files/objects
  *   A. Yes this seems to be the right thing to do..
  *
  */
 #include "widgets/QMtpDevice.h"
 
-QMtpDevice::QMtpDevice(MtpDevice* in_device, MtpWatchDog* in_watchDog, 
+QMtpDevice::QMtpDevice(MtpDevice* in_device, MtpWatchDog* in_watchDog,
                        QObject* parent):
                        QThread(parent),
                        _device(in_device),
                        _watchDog(in_watchDog),
                        _icon(QImage(":/pixmaps/miscDev.png")),
                        _iconBuf(NULL)
-{ 
+{
   _device->SetProgressFunction(progressWrapper, this);
 }
 
@@ -87,7 +87,7 @@ void QMtpDevice::run()
   {
     _jobLock.lock();
     while (_jobs.empty() )
-      _noJobsCondition.wait(&_jobLock); 
+      _noJobsCondition.wait(&_jobLock);
 
     GenericCommand* currentJob = _jobs.dequeue();
     _jobLock.unlock();
@@ -102,7 +102,7 @@ void QMtpDevice::proccessJob(GenericCommand* currentJob)
   {
     case Initialize:
     {
-      delete currentJob;  
+      delete currentJob;
       break;
     }
     case SendFile:
@@ -113,7 +113,7 @@ void QMtpDevice::proccessJob(GenericCommand* currentJob)
 
       TagLib::FileRef tagFile(fullpath.toUtf8().data(), true,
                         TagLib::AudioProperties::Accurate);
-      if (tagFile.isNull()) 
+      if (tagFile.isNull())
       {
         qDebug() << "Syncing to root folder..";
         syncFile(fullpath, 0);
@@ -151,7 +151,7 @@ void QMtpDevice::proccessJob(GenericCommand* currentJob)
         qDebug() << "Failed creating folder";
       delete createFolder;
       break;
-      //TODO update the model 
+      //TODO update the model
     }
     case Delete:
     {
@@ -193,7 +193,7 @@ void QMtpDevice::initializeDeviceStructures()
   if (!_device)
     return;
   _device->Initialize();
-  _name = QString::fromUtf8(_device->Name()); 
+  _name = QString::fromUtf8(_device->Name());
   _serial = QString::fromUtf8(_device->SerialNumber());
 #ifdef QLIX_DEBUG
 //  qDebug() << "Discovered name to be: " << _name;
@@ -229,7 +229,7 @@ void QMtpDevice::initializeDeviceStructures()
   _plModel->moveToThread(QApplication::instance()->thread());
   _albumModel->moveToThread(QApplication::instance()->thread());
   _dirModel->moveToThread(QApplication::instance()->thread());
-} 
+}
 
 /*
  * Iterates over all the devices files and tries to find devIcon.fil
@@ -239,7 +239,7 @@ void QMtpDevice::findAndRetrieveDeviceIcon()
   MTP::Folder* rootFolder = _device->RootFolder();
   count_t fileCount = rootFolder->FileCount();
 
-  QString iconPath = QString("/tmp/QlixDeviceIcon-%1").arg( (int) this); 
+  QString iconPath = QString("/tmp/QlixDeviceIcon-%1").arg( (int) this);
   MTP::File* iconFile= NULL;
   for (count_t i = 0; i < fileCount; i++)
   {
@@ -289,7 +289,7 @@ QSortFilterProxyModel* QMtpDevice::GetAlbumModel() const
   return _sortedAlbums;
 }
 /*
- * Returns the sorted DirModel 
+ * Returns the sorted DirModel
  */
 QSortFilterProxyModel* QMtpDevice::GetDirModel() const
 {
@@ -297,7 +297,7 @@ QSortFilterProxyModel* QMtpDevice::GetDirModel() const
 }
 
 /*
- * Returns the sorted PlaylistModel 
+ * Returns the sorted PlaylistModel
  */
 QSortFilterProxyModel* QMtpDevice::GetPlaylistModel() const
 {
@@ -307,7 +307,7 @@ QSortFilterProxyModel* QMtpDevice::GetPlaylistModel() const
  * Issues a command to initiate the transfer of a track
  * @param in_path the path to the track on the filesystem
  */
-void QMtpDevice::TransferTrack(QString inpath) 
+void QMtpDevice::TransferTrack(QString inpath)
 {
   QFileInfo file(inpath);
   if (file.isDir())
@@ -346,7 +346,7 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
       break;
     }
     case MtpAlbum:
-    { 
+    {
       MTP::Album* album = (MTP::Album*) in_obj;
       MTP::Track* currentTrack;
       for (count_t i = 0; i < album->TrackCount(); i++)
@@ -402,7 +402,7 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
 /**
  * Transfers an object from device the passed location
  * @param obj the object to transfer
- * @param filePath 
+ * @param filePath
 */
 void QMtpDevice::TransferFrom(MTP::GenericObject* obj, QString filePath)
 {
@@ -433,7 +433,7 @@ void QMtpDevice::TransferFrom(MTP::GenericObject* obj, QString filePath)
       break;
     }
     case MtpAlbum:
-    { 
+    {
       MTP::Album* album = (MTP::Album*) obj;
       MTP::Track* currentTrack;
 
@@ -487,14 +487,14 @@ void QMtpDevice::TransferFrom(MTP::GenericObject* obj, QString filePath)
 
       QString folderName = QString::fromUtf8(rootFolder->Name());
       CreateFSFolderCmd* newFolderCmd = new CreateFSFolderCmd
-                                            (filePath, folderName); 
+                                            (filePath, folderName);
       IssueCommand(newFolderCmd);
 
       QString subFolderPath = filePath + QDir::separator() + folderName;
       for (count_t i =0; i < rootFolder->FileCount(); i++)
       {
         currentFile = rootFolder->ChildFile(i);
-        QString subFilePath = subFolderPath + QDir::separator() + 
+        QString subFilePath = subFolderPath + QDir::separator() +
                               QString::fromUtf8(currentFile->Name());
         cmd = new GetObjCmd (currentFile->ID(), subFilePath);
         IssueCommand(cmd);
@@ -532,7 +532,7 @@ int QMtpDevice::progressWrapper(uint64_t const sent, uint64_t const total, const
  * @param out_total the total amount of space on the device
  * @param out_free the total amount of free space on the device
  */
-void QMtpDevice::FreeSpace(uint64_t* out_total , uint64_t* out_free) 
+void QMtpDevice::FreeSpace(uint64_t* out_total , uint64_t* out_free)
 {
   _device->FreeSpace(SelectedStorage(), out_total, out_free);
 }
@@ -557,7 +557,7 @@ unsigned int QMtpDevice::SelectedStorage()
   return _storageID;
 }
 
-/** 
+/**
  * @return the number of storage devices that exist on this MTP device
  */
 unsigned int QMtpDevice::StorageDeviceCount()
@@ -566,7 +566,7 @@ unsigned int QMtpDevice::StorageDeviceCount()
 }
 
 /**
- * @param in_idx the index of requested storage device if the index is out of 
+ * @param in_idx the index of requested storage device if the index is out of
  * bounds, this function returns NULL
  * @return the requested storage device by index
  */
@@ -617,7 +617,7 @@ void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)
     }
   }
   // if there is no trackAlbum then we have to create one
-  // We start by creating a new album, finding appropriete cover art  and 
+  // We start by creating a new album, finding appropriete cover art  and
   // finally we apply the cover art to the newly created album
   if (!trackAlbum)
   {
@@ -629,7 +629,7 @@ void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)
     }
     //Try and find some cover art
     QFileInfo cover;
-    bool ret = discoverCoverArt(filePath, 
+    bool ret = discoverCoverArt(filePath,
                                 QString::fromUtf8(trackAlbum->Name()),
                                 &cover);
     qDebug() << "Found cover art!";
@@ -670,7 +670,7 @@ void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)
     //if thats successful we can update the view with the new album
     emit CreatedAlbum(trackAlbum);
   }
-    
+
   //now add the track to the found album and update it on the device
   if (!_device->AddTrackToAlbum(newTrack, trackAlbum))
   {
@@ -702,8 +702,8 @@ void QMtpDevice::syncFile(const QString& in_path, uint32_t parent)
   qDebug() << "Syncing file of type: " << QString( MTP::TypeToString(type).c_str());
 
   MTP::File* newFile = SetupFileTransfer(filename, size, parent,
-                                                  type); 
-  if (! _device->TransferFile((const char*) in_path.toUtf8().data(), 
+                                                  type);
+  if (! _device->TransferFile((const char*) in_path.toUtf8().data(),
                                 newFile) )
   {
     qDebug() << "Failed to transfer file";
@@ -722,9 +722,9 @@ void QMtpDevice::syncFile(const QString& in_path, uint32_t parent)
  *        root level
  * @param in_type the LIBMTP_filetype_t of file
  */
-MTP::File* QMtpDevice::SetupFileTransfer(const char* in_filename, 
-                                         uint64_t in_sz, 
-                                         count_t in_parentid, 
+MTP::File* QMtpDevice::SetupFileTransfer(const char* in_filename,
+                                         uint64_t in_sz,
+                                         count_t in_parentid,
                                          LIBMTP_filetype_t in_type)
 {
   LIBMTP_file_t* file = LIBMTP_new_file_t();
@@ -741,7 +741,7 @@ MTP::File* QMtpDevice::SetupFileTransfer(const char* in_filename,
 MTP::Track* QMtpDevice::SetupTrackTransfer(TagLib::FileRef tagFile,
                                            const QString& in_filename,
                                            uint64_t in_size,
-                                           uint32_t in_parentID, 
+                                           uint32_t in_parentID,
                                            LIBMTP_filetype_t in_type)
 {
     TagLib::String unknownString = "Unknown";
@@ -827,7 +827,7 @@ bool QMtpDevice::discoverCoverArt(const QString& in_path,
     if (name == "cover.jpg" || name == "cover.jpeg" ||
         name == albumName.toLower() ||
         name == albumNameAlt.toLower() ||  name == "folder.jpg" ||
-        name == "folder.jpeg" || name == "album art.jpg" || 
+        name == "folder.jpeg" || name == "album art.jpg" ||
         name == "album art.jpeg" || name == "albumart.jpg" ||
         name == "albumart.jpeg")
     {
@@ -902,6 +902,8 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
       assert(deletedAlb->Association()->Type() == MtpFile);
 
       bool ret = false;
+      //TODO make this a configurable option-
+      //Delete tracks associated with albums on album deletions?
       while(deletedAlb->TrackCount() > 0)
       {
         MTP::Track* deletedTrack = deletedAlb->ChildTrack(0);
@@ -911,7 +913,7 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
         //TODO report error here ?
         if (!ret)
           return;
-        emit RemovedTrack( deletedTrack); 
+        emit RemovedTrack( deletedTrack);
         emit RemovedFile( (MTP::File*)deletedTrack->Association());
       }
 

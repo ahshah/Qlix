@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -25,38 +25,38 @@ DirModel::DirModel(MTP::Folder* in_rootFolder, QObject* parent) :
                                                       _rootFolder(in_rootFolder)
 { }
 
-QModelIndex DirModel::index(int row, int col, 
+QModelIndex DirModel::index(int row, int col,
                         const QModelIndex& parent) const
-{ 
+{
   if(col < 0 || row < 0)
     return QModelIndex();
   if(col >= columnCount(parent) || row >= rowCount(parent))
     return QModelIndex();
-  
+
   if(!parent.isValid() )
   {
     assert(row == 0 && col == 0);
     return createIndex(row, col, _rootFolder);
   }
-    
+
   MTP::GenericObject* temp = (MTP::GenericObject*)parent.internalPointer();
 
   if (temp->Type() != MtpFolder)
     assert(false);
-    
+
   MTP::Folder* folder = (MTP::Folder*)temp;
   int total = (int) folder->FolderCount() + folder->FileCount();
   if (row >= (int) total)
   {
     qDebug() << "Requested row is out of bounds- not enough children!";
-    return QModelIndex(); 
+    return QModelIndex();
   }
 
   if (row < (int) folder->FolderCount() )
   {
     MTP::Folder* ret = folder->ChildFolder(row);
     assert(ret);
-    return createIndex(row, col, ret); 
+    return createIndex(row, col, ret);
   }
   int idx = row - folder->FolderCount();
   assert(idx < (int)folder->FileCount() && idx >= 0);
@@ -76,16 +76,16 @@ QModelIndex DirModel::parent(const QModelIndex& idx) const
   if(obj->Type() == MtpFolder)
   {
     MTP::Folder* parent = ((MTP::Folder*)obj)->ParentFolder();
-    if (!parent) 
+    if (!parent)
       return QModelIndex();
 //   MTP::Folder* fobj = (MTP::Folder*) obj;
 //   qDebug() << "folder " << QString::fromUtf8(fobj->Name()) << " 's parent is: " << QString::fromUtf8(parent->Name());
-   return createIndex(parent->GetRowIndex(), 0, parent); 
+   return createIndex(parent->GetRowIndex(), 0, parent);
   }
   else if (obj->Type() == MtpFile)
   {
     MTP::Folder* parent = ((MTP::File*)obj)->ParentFolder();
-    if (!parent) 
+    if (!parent)
       return QModelIndex();
      MTP::File* fobj = (MTP::File*) obj;
 //    qDebug() << "file" << QString::fromUtf8(fobj->Name()) << " 's parent is: " << QString::fromUtf8(parent->Name());
@@ -100,11 +100,11 @@ QModelIndex DirModel::parent(const QModelIndex& idx) const
   return QModelIndex();
 }
 
-int DirModel::rowCount(const QModelIndex& parent) const 
-{ 
+int DirModel::rowCount(const QModelIndex& parent) const
+{
   //return the fake root's row count- which should be 1
   if (!parent.isValid() )
-    return 1; 
+    return 1;
 
   MTP::GenericObject* obj= (MTP::Album*)parent.internalPointer();
   if(obj->Type() == MtpFolder)
@@ -118,22 +118,22 @@ int DirModel::rowCount(const QModelIndex& parent) const
   else
   {
     qDebug() << "invalid reference of type: " << obj->Type();
-    qDebug() << "Requesting row: "<< parent.row() << "column: " 
+    qDebug() << "Requesting row: "<< parent.row() << "column: "
               << parent.column() << "of object " << (void*)obj;
     assert(false);
   }
 }
 
-int DirModel::columnCount(const QModelIndex& parent ) const 
-{ 
+int DirModel::columnCount(const QModelIndex& parent ) const
+{
     return 1;
 }
 
 QVariant DirModel::data(const QModelIndex& index, int role ) const
-{ 
+{
   if (!index.isValid())
     return QVariant();
-  if (index.internalPointer() == NULL) 
+  if (index.internalPointer() == NULL)
     return QVariant();
   if (role == Qt::DisplayRole)
   {
@@ -206,7 +206,7 @@ void DirModel::AddFile(MTP::File* in_file)
   QModelIndex parentIdx = createIndex(parentFolder->GetRowIndex(), 0, parentFolder);
   count_t sz = parentFolder->FileCount();
 
-  emit beginInsertRows(parentIdx, parentFolder->FileCount(), 
+  emit beginInsertRows(parentIdx, parentFolder->FileCount(),
                        parentFolder->FileCount());
   parentFolder->AddChildFile(in_file);
   emit endInsertRows();
@@ -218,8 +218,8 @@ void DirModel::AddFile(MTP::File* in_file)
 
 /**
  * Adds a folder to this model
- * @param in_folder the folder to add to the model, the parent folder is 
- * determined through in_folder's parent field. If it is NULL it is added to 
+ * @param in_folder the folder to add to the model, the parent folder is
+ * determined through in_folder's parent field. If it is NULL it is added to
  * the root folder
  */
 void DirModel::AddFolder(MTP::Folder* in_folder)
@@ -264,7 +264,7 @@ void DirModel::RemoveFolder(MTP::Folder* in_folder)
   MTP::Folder* deleteThisFolder =
                            parentFolder->ChildFolder(in_folder->GetRowIndex());
   parentFolder->RemoveChildFolder(deleteThisFolder);
-  
+
   delete deleteThisFolder;
   emit endRemoveRows();
 }
@@ -275,7 +275,7 @@ void DirModel::RemoveFile(MTP::File* in_file)
   MTP::Folder* parentFolder = in_file->ParentFolder();
   QModelIndex parentIdx = createIndex(parentFolder->GetRowIndex(), 0,
                                       parentFolder);
-  emit beginRemoveRows(parentIdx, in_file->GetRowIndex(), 
+  emit beginRemoveRows(parentIdx, in_file->GetRowIndex(),
                        in_file->GetRowIndex());
   for (count_t i =0; i < parentFolder->FileCount();
       i++)
@@ -300,40 +300,3 @@ void DirModel::RemoveFile(MTP::File* in_file)
   delete in_file;
   emit endRemoveRows();
 }
-
-/**
- * not sure if these functions are a good idea
-MTP::Folder* DirModel::RawFolder(QModelIndex in_idx)
-{
-  if (!in_idx.isValid())
-    return NULL
-  else if (MtpType(in_idx) != MtpFolder)
-    return NULL;
-  else 
-    return (MTP::Folder*) in_idx.internalPointer();
-}
-
-MTP::File* DirModel::RawFile(QModelIndex in_idx)
-{
-  if (!in_idx.isValid())
-    return NULL;
-  else if (MtpType(in_idx) != MtpFile)
-    return NULL;
-  else 
-    return (MTP::File*) in_idx.internalPointer();
-}
-*/
-
-/**
- * @param in_idx the index of the inquery
- * @return the type of object pointed to by the index. This function returns
- * MtpUnknown if the index is invalid
-MtpObjectType DirModel::MtpType(const QModelIndex& in_idx);
-{
-  if (!in_idx.isValid())
-    return MtpUnknown;
-
-  MTP::GenericObject* obj = (MTP::GenericObject*)in_idx.internalPointer();
-  return obj->type();
-}
- */

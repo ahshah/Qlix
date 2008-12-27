@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -42,6 +42,7 @@
 #include <QMap>
 #include "widgets/QlixPreferences.h"
 #include <QSortFilterProxyModel>
+#include "widgets/QMtp.h"
 #include "widgets/QMtpDevice.h"
 #include "widgets/AlbumModel.h"
 #include "widgets/AlbumDelegate.h"
@@ -54,8 +55,8 @@
  * @class The DeviceExplorer widget shows two panes one of which will expose
  * the local filesystem, the other will expose the device database. In specific
  * instances it will display the preferences widget
- * and the device management widget. Over all this widget ties all 
- * functionality of Qlix into one main widget. It is the central widget 
+ * and the device management widget. Over all this widget ties all
+ * functionality of Qlix into one main widget. It is the central widget
  * that is set in QlixMainWindow
  */
 
@@ -126,14 +127,14 @@ private:
   void removeIndexDuplicates(QModelIndexList&, QGenericObjectList&,
                              const QSortFilterProxyModel*);
 
-  void removeFileIndexDuplicates(QModelIndexList&, 
+  void removeFileIndexDuplicates(QModelIndexList&,
                                  QGenericObjectList&);
 
   void removeTrackBasedIndexDuplicates(QModelIndexList&,
                                        QGenericObjectList&,
                                        const QAbstractItemModel*);
 
-  QGridLayout* _layout; 
+  QGridLayout* _layout;
   ViewPort _view;
 
 //Filesystem representation
@@ -181,7 +182,7 @@ private:
   QAction* _deleteFromPlaylist;
   QVector <QAction*> _playlistActionList;
 
-  
+
   //Queue Actions
   QAction* _viewQueue;
   QAction* _hideQueue;

@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,6 +33,7 @@ typedef unsigned char ubyte;
 
 enum MtpObjectType
 {
+  MtpInvalid,
   MtpTrack,
   MtpShadowTrack,
   MtpFile,
@@ -54,7 +55,7 @@ struct CommandLineOptions
   const bool SimulateTransfers;
   const bool DebugOutput;
 
-  CommandLineOptions(bool in_AutoFixPlaylists = false, bool in_AutoFixAlbums = false, 
+  CommandLineOptions(bool in_AutoFixPlaylists = false, bool in_AutoFixAlbums = false,
               bool in_SimulateTransfers = false, bool in_DebugOutput = false) :
                                         AutoFixPlaylists(in_AutoFixPlaylists),
                                         AutoFixAlbums(in_AutoFixAlbums),
@@ -88,7 +89,7 @@ static LIBMTP_filetype_t StringToType(const std::string& in_type)
   if (in_type == "UNKNOWN")
       return  LIBMTP_FILETYPE_UNKNOWN;
 
-  if (in_type == "WAV") return LIBMTP_FILETYPE_WAV; 
+  if (in_type == "WAV") return LIBMTP_FILETYPE_WAV;
   if (in_type == "MP3")
       return LIBMTP_FILETYPE_MP3;
 

@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -43,7 +43,7 @@ DeviceExplorer::DeviceExplorer(QMtpDevice* in_device, QWidget* parent) :
 
   //Get the models
   _albumModel = _device->GetAlbumModel();
-  //Album mode connections        
+  //Album mode connections
   _unsortedAlbumModel = (AlbumModel*) _albumModel->sourceModel();
 
   _dirModel= _device->GetDirModel();
@@ -74,7 +74,7 @@ DeviceExplorer::DeviceExplorer(QMtpDevice* in_device, QWidget* parent) :
   _layout->addWidget(_deviceManagerWidget,1,2);
 
   _fsModel->setSorting( QDir::Name | QDir::DirsFirst);
-  _fsModel->setFilter( QDir::Files | QDir::Dirs | QDir::Hidden 
+  _fsModel->setFilter( QDir::Files | QDir::Dirs | QDir::Hidden
                       |QDir::Readable);
   _fsModel->setLazyChildCount(true);
 
@@ -96,8 +96,8 @@ DeviceExplorer::DeviceExplorer(QMtpDevice* in_device, QWidget* parent) :
 
 
 /**
- * Displays the AlbumModel and hides the preferences and devicemManager 
- * widgets 
+ * Displays the AlbumModel and hides the preferences and devicemManager
+ * widgets
  */
 void DeviceExplorer::ShowAlbums()
 {
@@ -119,12 +119,12 @@ void DeviceExplorer::ShowAlbums()
     _deviceRightView->setModel(_albumModel);
     _deviceRightView->setSelectionMode(QAbstractItemView::ExtendedSelection);
   }
-//    _deviceRightView->setStyleSheet("QTreeView::branch:!adjoins-item, QTreeView::branch:!has-children:open{ background: none} QTreeView::branch:has-children:closed{ image: url(:/pixmaps/TreeView/branch-closed.png)} QTreeView::branch:has-children:open{ image: url(:/pixmaps/TreeView/branch-open.png)}"); 
+//    _deviceRightView->setStyleSheet("QTreeView::branch:!adjoins-item, QTreeView::branch:!has-children:open{ background: none} QTreeView::branch:has-children:closed{ image: url(:/pixmaps/TreeView/branch-closed.png)} QTreeView::branch:has-children:open{ image: url(:/pixmaps/TreeView/branch-open.png)}");
 /*    //To be continued
  *    _deviceRightView->setStyleSheet("QTreeView::branch{ background: none} \
                                 QTreeView::branch:adjoins-item:!has-children{ image: url(:/pixmaps/TreeView/branch-end.png)} \
                                 QTreeView::branch:has-children:closed{ image: url(:/pixmaps/TreeView/branch-closed.png)} \
-                                QTreeView::branch:has-children:open{ image: url(:/pixmaps/TreeView/branch-open.png)}"); 
+                                QTreeView::branch:has-children:open{ image: url(:/pixmaps/TreeView/branch-open.png)}");
 */
 }
 
@@ -138,13 +138,13 @@ void DeviceExplorer::setupToolBars()
   _tools->setMovable(false);
   _tools->setContentsMargins(0,0,0,-3);
   _fsDeviceSplit->setContentsMargins(0,-1,0,1);
-// Incoroporates the progress bar as well 
+// Incoroporates the progress bar as well
 
   _layout->addWidget(_tools, 0,0);
   _tools->addActions(_commonDeviceActions->actions());
 }
 
-void DeviceExplorer::setupDeviceView() 
+void DeviceExplorer::setupDeviceView()
 {
   _deviceRightView = new QTreeView();
   _deviceRightView->setModel(_albumModel);
@@ -171,8 +171,8 @@ void DeviceExplorer::setupDeviceView()
 bool DeviceExplorer::QueueState() { return _queueShown;}
 
 /**
- * Displays the PlaylistModel and hides the preferences and devicemManager 
- * widgets 
+ * Displays the PlaylistModel and hides the preferences and devicemManager
+ * widgets
  */
 void DeviceExplorer::ShowPlaylists()
 {
@@ -198,8 +198,8 @@ void DeviceExplorer::ShowPlaylists()
 }
 
 /**
- * Displays the DirModel and hides the preferences and devicemManager 
- * widgets 
+ * Displays the DirModel and hides the preferences and devicemManager
+ * widgets
  */
 void DeviceExplorer::ShowFiles()
 {
@@ -313,7 +313,11 @@ void DeviceExplorer::ShowDeviceManager()
 
 void DeviceExplorer::setupConnections()
 {
-  /** Widget connections */
+  /**********************************
+   *
+   *  Widget connections
+   *
+   **********************************/
   connect(_fsView, SIGNAL( doubleClicked ( const QModelIndex& )),
           this, SLOT(SwitchFilesystemDir(const QModelIndex&)));
 
@@ -323,7 +327,7 @@ void DeviceExplorer::setupConnections()
   connect(_delete, SIGNAL(triggered(bool)),
           this, SLOT(DeleteFromDevice()));
 
-  connect(_device, SIGNAL(UpdateProgress(QString, count_t)), 
+  connect(_device, SIGNAL(UpdateProgress(QString, count_t)),
           this, SLOT(UpdateProgressBar(QString, count_t)));
 
   connect(_transferToDevice, SIGNAL(triggered(bool)),
@@ -333,8 +337,11 @@ void DeviceExplorer::setupConnections()
           this, SLOT( UpdateDeviceSpace()));
 
 
-
-  /** DirModel connections */
+  /**********************************
+   *
+   *  DirModel connections
+   *
+   **********************************/
   connect(_device, SIGNAL(RemovedFolder(MTP::Folder*)),
           _dirModel->sourceModel(), SLOT(RemoveFolder(MTP::Folder*)),
           Qt::BlockingQueuedConnection);
@@ -348,14 +355,15 @@ void DeviceExplorer::setupConnections()
           Qt::BlockingQueuedConnection);
 
 
-
-
-
-  /** AlbumModel connections */
+  /**********************************
+   *
+   * AlbumModel connections
+   *
+   **********************************/
   connect(_device, SIGNAL(RemovedTrack(MTP::Track*)),
           _albumModel->sourceModel(), SLOT(RemoveTrack(MTP::Track*)),
           Qt::BlockingQueuedConnection);
-  
+
   connect(_device, SIGNAL(RemovedAlbum(MTP::Album*)),
           _albumModel->sourceModel(), SLOT(RemoveAlbum(MTP::Album*)),
           Qt::BlockingQueuedConnection);
@@ -369,7 +377,11 @@ void DeviceExplorer::setupConnections()
           Qt::BlockingQueuedConnection);
 
 
-  /** Playlist connections */
+  /**********************************
+   *
+   * Playlist connections
+   *
+   **********************************/
   connect(_device, SIGNAL(AddedTrackToPlaylist(MTP::ShadowTrack*)),
           _plModel->sourceModel(), SLOT(AddedTrack(MTP::ShadowTrack*)),
           Qt::BlockingQueuedConnection);
@@ -385,7 +397,7 @@ void DeviceExplorer::setupConnections()
   connect(_device, SIGNAL(RemovedPlaylist(MTP::Playlist*)),
           _plModel->sourceModel(), SLOT(RemovePlaylist(MTP::Playlist*)),
           Qt::BlockingQueuedConnection);
-  
+
 
 }
 
@@ -416,17 +428,17 @@ void DeviceExplorer::UpdateDeviceSpace()
                                               QLatin1Char(' ' ));
   if (displayTotal_gb < 1)
   {
-      totalDisplaySize = QString("%1 MB").arg(displayTotal_mb, 0, 'f', 2, 
+      totalDisplaySize = QString("%1 MB").arg(displayTotal_mb, 0, 'f', 2,
                                          QLatin1Char( ' ' ));
   }
   else if (displayTotal_mb < 1)
   {
-      totalDisplaySize = QString("%1 KB").arg(displayTotal_kb, 0, 'f', 2, 
+      totalDisplaySize = QString("%1 KB").arg(displayTotal_kb, 0, 'f', 2,
                                           QLatin1Char( ' ' ));
   }
-  else if (displayTotal_mb < 1 && displayTotal_gb < 1) 
+  else if (displayTotal_mb < 1 && displayTotal_gb < 1)
   {
-    totalDisplaySize = QString("%1 B").arg(total, 0, 'f', 2, 
+    totalDisplaySize = QString("%1 B").arg(total, 0, 'f', 2,
                                       QLatin1Char( ' ' ));
   }
 
@@ -434,11 +446,11 @@ void DeviceExplorer::UpdateDeviceSpace()
   double displayUsed_mb = displayUsed_kb/1024;
   double displayUsed_gb = displayUsed_mb/1024;
 
-  QString usedDisplaySize = QString("%1 GB").arg(displayUsed_gb, 0, 'f', 2, 
+  QString usedDisplaySize = QString("%1 GB").arg(displayUsed_gb, 0, 'f', 2,
                                              QLatin1Char( ' ' ));
   if (displayUsed_gb < 1)
   {
-      usedDisplaySize = QString("%1 MB").arg(displayUsed_mb, 0, 'f', 2, 
+      usedDisplaySize = QString("%1 MB").arg(displayUsed_mb, 0, 'f', 2,
                                          QLatin1Char( ' ' ));
   }
   else if (displayUsed_mb < 1)
@@ -448,7 +460,7 @@ void DeviceExplorer::UpdateDeviceSpace()
   }
   else if (displayUsed_mb <1 && displayUsed_gb < 1)
   {
-      usedDisplaySize = QString("%1 B").arg(used, 0, 'f', 2, 
+      usedDisplaySize = QString("%1 B").arg(used, 0, 'f', 2,
                                         QLatin1Char( ' ' ));
   }
   QString label =  usedDisplaySize + " of " + totalDisplaySize ;
@@ -463,21 +475,21 @@ void DeviceExplorer::setupCommonTools()
 {
   _commonDeviceActions = new QActionGroup(this);
   _commonFSActions = new QActionGroup(this);
-  _transferFromDevice = new QAction( 
-    QIcon(":/pixmaps/ActionBar/TransferFromDevice.png"), 
-    QString("Transfer From Device"), NULL); 
+  _transferFromDevice = new QAction(
+    QIcon(":/pixmaps/ActionBar/TransferFromDevice.png"),
+    QString("Transfer From Device"), NULL);
 
   _commonDeviceActions->addAction(_transferFromDevice);
 
-  _addToQueue= new QAction( 
-    QIcon(":/pixmaps/ActionBar/AddToQueue.png"), 
-    QString("Add to queue"), NULL); 
+  _addToQueue= new QAction(
+    QIcon(":/pixmaps/ActionBar/AddToQueue.png"),
+    QString("Add to queue"), NULL);
 
   _commonDeviceActions->addAction(_addToQueue);
 
-  _sync = new QAction( 
-    QIcon(":/pixmaps/ActionBar/SyncQueue.png"), 
-    QString("Sync"), NULL); 
+  _sync = new QAction(
+    QIcon(":/pixmaps/ActionBar/SyncQueue.png"),
+    QString("Sync"), NULL);
 
   _commonDeviceActions->addAction(_sync);
 
@@ -485,14 +497,14 @@ void DeviceExplorer::setupCommonTools()
   _deleteSeperator->setSeparator(true);
   _commonDeviceActions->addAction(_deleteSeperator);
 
-  _delete = new QAction( 
-    QIcon(":/pixmaps/ActionBar/DeleteFile.png"), 
-    QString("Delete"), NULL); 
+  _delete = new QAction(
+    QIcon(":/pixmaps/ActionBar/DeleteFile.png"),
+    QString("Delete"), NULL);
   _commonDeviceActions->addAction(_delete);
 
   _newFolder = new QAction(
-    QIcon(":/pixmaps/ActionBar/NewFolder.png"), 
-    QString("New Folder"), NULL); 
+    QIcon(":/pixmaps/ActionBar/NewFolder.png"),
+    QString("New Folder"), NULL);
 
   _commonDeviceActions->addAction(_newFolder);
 
@@ -565,7 +577,7 @@ void DeviceExplorer::TransferFromDevice()
     return;
   }
 
-  QFileInfo info = _fsModel->fileInfo(idx); 
+  QFileInfo info = _fsModel->fileInfo(idx);
   assert(info.isDir());
   if (!info.isWritable())
   {
@@ -601,10 +613,10 @@ void DeviceExplorer::TransferFromDevice()
   }
 }
 
-/** 
- * This function retrieves the current selection from the UI and proceedes 
- * to first confirm the deletion of each object selected and then issues an 
- * asynchornous delete command to MtpDevice 
+/**
+ * This function retrieves the current selection from the UI and proceedes
+ * to first confirm the deletion of each object selected and then issues an
+ * asynchornous delete command to MtpDevice
 */
 void DeviceExplorer::DeleteFromDevice()
 {
@@ -696,22 +708,22 @@ QModelIndexList DeviceExplorer::removeAlbumDuplicates
 */
 
 /**
- * This function removes duplicate selection implied by selecting a parent 
- * widget and one or many of its children. The parent widget's selection 
- * implies all widgets under it are selected, thus it gets precedence when 
- * transfering and deleting files/tracks/folders.
- * This function figures out which model should be used to remove index 
- * duplicates from and calls the apporiete helper function to remove it.
- * @param in_list the list of indicies selected
+ * This function removes duplicate selection implied by selecting a parent
+ * widget and one or many of its children. The parent widget's selection
+ * implies all widgets under it are selected, thus it gets precedence when
+ * Transferring and deleting files/tracks/folders.
+ * This function figures out which model should be used to remove index
+ * duplicates from and calls the appropriate helper function to remove it.
+ * @param in_list the list of indices selected
  * @param in_model the model that in_list applies to
  */
 //TODO why is in_model a QAbstractItemModel instead of a QSortFilterProxy model?
-//TODO why does the return list contain indicies to the QSortModel rather than
+//TODO why does the return list contain indices to the QSortModel rather than
 //     the underlying model?
 //TODO potential optimization using a map structure
 void DeviceExplorer::removeIndexDuplicates(
-                                QModelIndexList& in_list, 
-                                QGenericObjectList& out_list, 
+                                QModelIndexList& in_list,
+                                QGenericObjectList& out_list,
                                 const QSortFilterProxyModel* in_model)
 
 {
@@ -720,12 +732,12 @@ void DeviceExplorer::removeIndexDuplicates(
     return removeTrackBasedIndexDuplicates(in_list, out_list, theModel);
   else if (theModel == _dirModel)
     return removeFileIndexDuplicates(in_list, out_list);
-  else 
+  else
     assert (false);
 }
 
 void DeviceExplorer::removeTrackBasedIndexDuplicates(
-                                QModelIndexList& in_list, 
+                                QModelIndexList& in_list,
                                 QGenericObjectList& out_list,
                                 const QAbstractItemModel* in_model)
 {
@@ -756,7 +768,7 @@ void DeviceExplorer::removeTrackBasedIndexDuplicates(
 
     //Find redundant tracks by iterating over each one and checking its parent
     //in the parent list
-    for (QModelIndexList::iterator iter = in_list.begin(); 
+    for (QModelIndexList::iterator iter = in_list.begin();
                                                   iter != in_list.end(); iter++)
     {
       QModelIndex mapped = ((QSortFilterProxyModel*)in_model)->mapToSource(*iter);
@@ -766,7 +778,7 @@ void DeviceExplorer::removeTrackBasedIndexDuplicates(
         assert(tempObj->Type() == MtpTrack);
         bool skip = false;
         MTP::Track* tempTrack = (MTP::Track*) tempObj;
-        for (QModelIndexList::const_iterator piter = ParentList.begin(); 
+        for (QModelIndexList::const_iterator piter = ParentList.begin();
              piter != ParentList.end(); piter++)
         {
           MTP::Album* potentialParent = (MTP::Album*) piter->internalPointer();
@@ -774,9 +786,9 @@ void DeviceExplorer::removeTrackBasedIndexDuplicates(
            skip = true;
         }
         //if skip we increment dup, otherwise we place it on the removal queue
-        if (skip) 
+        if (skip)
           dup++;
-        else 
+        else
           out_list.push_back((MTP::GenericObject*)mapped.internalPointer());
       }
       else if (in_model == _plModel)
@@ -784,17 +796,17 @@ void DeviceExplorer::removeTrackBasedIndexDuplicates(
         assert(tempObj->Type() == MtpShadowTrack);
         bool skip = false;
         MTP::ShadowTrack* tempStrack = (MTP::ShadowTrack*) tempObj;
-        for (QModelIndexList::const_iterator piter = ParentList.begin(); 
+        for (QModelIndexList::const_iterator piter = ParentList.begin();
              piter != ParentList.end(); piter++)
         {
-          MTP::Playlist* potentialParent = (MTP::Playlist*) 
+          MTP::Playlist* potentialParent = (MTP::Playlist*)
                                             piter->internalPointer();
           if (potentialParent == tempStrack->ParentPlaylist())
            skip = true;
         }
         //if skip we increment dup, otherwise we place it on the removal queue
-        if (skip) 
-          dup++; 
+        if (skip)
+          dup++;
         else
           out_list.push_back((MTP::GenericObject*)mapped.internalPointer());
       }
@@ -805,32 +817,55 @@ void DeviceExplorer::removeTrackBasedIndexDuplicates(
     MTP::GenericObject* temp;
     foreach(temp, out_list)
     {
-        QString tempOut = temp->Name(); 
+        QString tempOut = temp->Name();
         qDebug()<< i << ": " << tempOut;
         i++;
     }
     //Uncomment this to enable sorted deletions, this will delete items from the
     //bottom of the containers list up
     //qSort(out_list.begin(), out_list.end(), modelLessThan);
-} 
+}
 
-//TODO consider how we deal with shadow tracks during deletions
-//TODO consider passing a QList that contains the list of tobe deleted objects
-//TODO research how QMtpDevice handles deletions of complex types
-//TODO this function is also called to removeIndexDuplicates when retreiving
-//     files from the device, how should we handle that?
+/*
+ * TODO consider how we deal with shadow tracks during deletions
+ * [done] shadow tracks are dealt with in QMtpDevice upon playlist deletions
+ *
+ * TODO consider passing a QList that contains the list of tobe deleted objects
+ * [ignored] we just convert the QModelIndicies to GenericObjects for deletion
+ * keeping inline with the current way of doing things.
+ *
+ * TODO research how QMtpDevice handles deletions of complex containers
+ * [done] QMtpDevice deletes complex containers by deleting the child contents
+ * before deleting the container itself
+ *
+ * TODO this function is also called to removeIndexDuplicates when retrieving
+ * files from the device, how should we handle that?
+ * [Still valid] hrm..
+ */
+
+/**
+ * This function removes index duplicates from the Directory view of Qlix.
+ * Complex types are not expanded. That is if a file is selected that is
+ * associated with a playlist, we replace the file's selection with the
+ * playlist object, however we do not iterate over the playlist's children
+ * shadow tracks as they are iterated over in QMtpDevice upon deletion.
+ * This function separates files and folders. It then breadth first searches
+ * its folders. It then iterates over all children files and replaces any
+ * complex files with their associated type.
+ * Finally it sorts the folders by depth and then joins the file and folder
+ * lists in the output list provided.
+ */
 void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
                                               QGenericObjectList& out_list)
 {
-  return;
-  /*
   QModelIndex idx;
   QModelIndexList dirList;
   QModelIndexList fileList;
 
+  //create a list of files and directories for deletion
   foreach(idx, in_list)
   {
-    MtpObjectType type = DirModel::MtpType(idx)
+    MtpObjectType type = QMTP::MtpType(idx);
     if (type ==  MtpFolder)
       dirList.push_back(idx);
     else if (type ==  MtpFile)
@@ -839,7 +874,7 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
       assert(false);
   }
 
-  //retreive recursive implications
+  //retrieve recursive implications
   foreach(idx, dirList)
   {
     if (!idx.isValid())
@@ -848,13 +883,15 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
     count_t childCount = _dirModel.rowCount(idx);
     for (count_t i = 0; i < childCount; i++)
     {
-      QModelIndex childIdx = _dirModel.index(i, 0, curParent)
+      QModelIndex childIdx = _dirModel.index(i, 0, curParent);
       //should not happen
       if (!childIdx.isValid())
         assert(false);
-      if (DirModel::MtpType(childIdx) == MtpFolder)
+      //Potential source of bugs, does the foreach clause extend to dynamic
+      //looping caused by the following statement:
+      if (QMtp::MtpType(childIdx) == MtpFolder)
         dirList.push_back(childIdx);
-      else if (DirModel::MtpType(childIdx) == MtpFile)
+      else if (QMtp::MtpType(childIdx) == MtpFile)
         fileList.push_back(childIdx);
     }
   }
@@ -868,7 +905,7 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
     MTP::Dir* currentDir = (MTP::Dir*) idx.internalPointer();
     if (dirMap.contains(currentDir->ID()))
       continue;
-    dirMap[currentDir->ID()] = idx; 
+    dirMap[currentDir->ID()] = idx;
   }
 
   //Build file map
@@ -877,29 +914,41 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
     MTP::File* currentFile = (MTP::File*) idx.internalPointer();
     if (fileMap.contains(currentFile->ID()))
       continue;
-    fileMap[currentFile->ID()] = idx; 
+    fileMap[currentFile->ID()] = idx;
   }
 
-  QMap<uint32_t, MTP::GenericFileObject*>::iterator iter;
 
-  //here we replace files by there associated type
-  //maybe we should call associated types "complex types"
+  /*
+   * Here we replace files by there associated type
+   * maybe we should call associated types "complex types"
+   * We do not expand complex types any further than their association.
+   * That is, should we find a MtpPlaylist, we do not add its ShadowTrack
+   * children as they are automatically deleted in QMtpDevice
+   */
+  QMap<uint32_t, MTP::GenericFileObject*>::iterator iter;
   for(iter = fileMap.begin(); iter != fileMap.end(); iter++)
   {
     if (iter->Association())
       fileMap[iter->ID()] = iter->Association();
   }
-   * build folder map- remove duplicates
-   * build file map, gather implied types (playlists, albums, tracks), 
-     remove duplicates
-   * sort folder list by depth
-   * merge sorted folders into file list; that is put folders after all the 
-     files to ensure that files get removed first
-   */
+
+  dirList.clear();
+  fileList.clear();
+
+  foreach(idx, dirMap)
+    dirList.push_back(idx);
+  foreach(idx, fileMap)
+    fileList.push_back(idx);
+
+  qSort(dirMap.begin(), dirMap.end(), QMTP::MtpFolderLessThan);
+  foreach(idx, fileMap)
+    out_list.push_back(QMtp::RawGenericObject(idx));
+  foreach(idx, dirMap)
+    out_list.push_back(QMtp::RawGenericObject(idx));
 }
 
 /**
- * This function creates a popup and requests the user to confirm the deletion 
+ * This function creates a popup and requests the user to confirm the deletion
  * of an object
  */
 bool DeviceExplorer::confirmDeletion()
@@ -917,7 +966,7 @@ bool DeviceExplorer::confirmDeletion()
 }
 
 /**
- * This function creates a popup and requests the user to confirm the deletion 
+ * This function creates a popup and requests the user to confirm the deletion
  * of a container object
  * @param in_obj the container object that is about to be deleted
  */
@@ -992,7 +1041,7 @@ bool DeviceExplorer::modelLessThan(const QModelIndex& left, const QModelIndex& r
         ret.push_back(mapped);
         MTP::GenericObject* tempObj = (MTP::GenericObject*) mapped.internalPointer();
         assert(tempObj->Type() == MtpTrack ||  tempObj->Type() == MtpFile ||
-               tempObj->Type() == MtpAlbum || tempObj->Type() == MtpFolder || 
+               tempObj->Type() == MtpAlbum || tempObj->Type() == MtpFolder ||
                tempObj->Type() == MtpPlaylist ||
                tempObj->Type() == MtpShadowTrack);
       }
