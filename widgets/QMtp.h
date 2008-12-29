@@ -85,11 +85,11 @@ static MTP::File* RawFile(QModelIndex in_idx)
  * @param right the right index
  * @return true of the right index is deeper in the folder tree than the left index
  */
-static bool MtpFolderLessThan(const QModelIndex& left, const QModelIndex& right)
+static bool MtpFolderLessThan(const MTP::Folder* left, const MTP::Folder* right)
 {
-  assert( MtpType(left) == MtpFolder);
-  assert( MtpType(right) == MtpFolder);
-  return (RawFolder(left)->Depth() < RawFolder(right)->Depth());
+  assert( left->Type() == MtpFolder);
+  assert( right->Type() == MtpFolder);
+  return (left->Depth() < right->Depth());
 }
 
 }
