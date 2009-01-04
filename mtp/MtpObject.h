@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -40,7 +40,7 @@ namespace MTP
   class Playlist;
   class ShadowTrack;
 
-/** 
+/**
  * @class Generic base class for other MTP object types
 */
 class GenericObject
@@ -71,10 +71,10 @@ class GenericFileObject : public GenericObject
   GenericFileObject* _association;
 };
 
-/** 
+/**
  * @class File is a class that wraps around LIBMTP_file_t
 */
-class File : public GenericFileObject 
+class File : public GenericFileObject
 {
 public:
   File(LIBMTP_file_t*, count_t);
@@ -96,7 +96,7 @@ private:
   count_t _depth;
 };
 
-/** 
+/**
  * @class Folder is a class that wraps around LIBMTP_folder_t
 */
 class Folder : public GenericObject
@@ -105,6 +105,7 @@ public:
   Folder(LIBMTP_folder_t*, Folder*, count_t);
   count_t FileCount() const;
   count_t FolderCount() const;
+  virtual count_t Depth() const;
   Folder* ParentFolder() const;
 
   virtual char const * Name() const;
@@ -129,7 +130,7 @@ private:
   count_t _depth;
 };
 
-/** 
+/**
  * @class Track is a class that wraps around LIBMTP_track_t
 */
 class Track : public GenericFileObject
@@ -168,7 +169,7 @@ private:
 };
 
 /**
- * @class ShadowTrack is a class that provides an abstraction of the 
+ * @class ShadowTrack is a class that provides an abstraction of the
  * relationship between tracks and playlists.
  * Since this relationship can be one(track)-to-many(playlists) we must create
  * a relationship for each one the associations.
@@ -190,7 +191,7 @@ private:
   count_t _trackAssociationIndex;
 };
 
-/** 
+/**
  * @class Album is a class that wraps around LIBMTP_album_t
 */
 class Album : public GenericFileObject
@@ -242,7 +243,7 @@ public:
   virtual const char* Name() const;
 
   void AddTrack(Track* );
-  ShadowTrack* ChildTrack(count_t idx) const; 
+  ShadowTrack* ChildTrack(count_t idx) const;
   uint32_t ChildTrackID(count_t idx) const;
   void SetInitialized();
 

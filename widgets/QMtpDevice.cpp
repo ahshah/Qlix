@@ -376,6 +376,7 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
     case MtpFolder:
     {
       MTP::Folder* rootFolder = (MTP::Folder*)in_obj;
+      /*
       MTP::File* subFile;
       MTP::Folder* subFolder;
 
@@ -392,6 +393,8 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
         DeleteObject(subFolder);
       }
       //delete the rootfolder
+       *
+       */
       cmd = new DeleteObjCmd(rootFolder);
       IssueCommand(cmd);
       break;

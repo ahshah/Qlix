@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License along
  *   with this program; if not, write to the Free Software Foundation, Inc.,
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
+
 TODO error checkking when returning char* ?
 TODO use multimap for track/file distinction
 */
@@ -33,22 +33,24 @@ GenericObject::GenericObject(MtpObjectType in_type, uint32_t id) :
                              _id(id)
 { }
 
-GenericObject::~GenericObject() {} 
+GenericObject::~GenericObject() {}
 
-/** 
+/**
  * @return the ID of this object
  */
 count_t GenericObject::ID() const { return _id; }
 
-/** 
+/**
  * Sets the ID of this object
  */
 void GenericObject::SetID( count_t in_id) { _id = in_id; }
 
-/** 
+/**
  * Returns the depth of the current object. Must be overriden by child classes
  * to provide meaningful behaviour
  */
+//TODO why doesn't every object just have a depth field
+//Potential answer: because we don't really need to know every object's depth.. yet
 count_t GenericObject::Depth() const { return 0; }
 
 /**
@@ -58,12 +60,12 @@ count_t GenericObject::Depth() const { return 0; }
 MtpObjectType GenericObject::Type() const { return _type; }
 
 
-/** 
+/**
  * @return the name of this object
  */
 const char* GenericObject::Name() const { return ""; }
 
-/** 
+/**
  * Creates a new GenericFileObject, a generic base class for File MTP objects
  * That are crosslinked with each other
  * @param in_type the MTP type of the new GenericObject to be created
@@ -76,10 +78,10 @@ GenericFileObject::GenericFileObject(MtpObjectType in_type, uint32_t in_id) :
 
 /**
  * Sets the objects file association, a file cannot be associated with another
- * file. 
+ * file.
  * This is used to associate container structures to their underlying file
- * counter parts since LIBMTP makes a distinction between a container's 
- * specific structure (eg. folder, playlist, album) and its underlying 
+ * counter parts since LIBMTP makes a distinction between a container's
+ * specific structure (eg. folder, playlist, album) and its underlying
  * file/object representation.
  * Thus for each playlist there is a file associated with it as well.
  * The same goes for albums, but not for folders (they are a special type of
@@ -88,26 +90,26 @@ GenericFileObject::GenericFileObject(MtpObjectType in_type, uint32_t in_id) :
  * file/object reference since it is not guaranteed that it will be deleted.
  * @param in_obj the object to associate this object with
  */
-void GenericFileObject::Associate(GenericFileObject* in_obj) 
+void GenericFileObject::Associate(GenericFileObject* in_obj)
 {
   if (Type() == MtpFile)
    assert(in_obj->Type() != MtpFile);
 
   //assert that we don't call this function twice on the same object
   assert(!_association);
-   _association = in_obj; 
+   _association = in_obj;
 }
 
 /**
  * Retreives the file associated with this album
  */
-GenericFileObject* GenericFileObject::Association() const 
+GenericFileObject* GenericFileObject::Association() const
 {
   return _association;
 }
 
 
-/** 
+/**
  * Creates a new Track object
  * @param in_track A pointer to the LIBMTP_track_t to wrap over
  * @return a new Track object
@@ -121,28 +123,28 @@ Track::Track(LIBMTP_track_t* in_track) :
   _rawTrack = in_track;
 }
 
-/** 
- * @return the visual row index for this track 
+/**
+ * @return the visual row index for this track
  * */
 count_t Track::GetRowIndex() const { return _rowIndex; }
 
 /**
- * Sets the visual row index for this track 
+ * Sets the visual row index for this track
  **/
 void Track::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
 
-/** 
+/**
  * Retreives the name of the wrapped Track
- * @return the tracks's UTF8 name 
+ * @return the tracks's UTF8 name
  */
 char const * Track::Name() const
 {
   return _rawTrack->title;
 }
 
-/** 
+/**
  * Retreives the name of the wrapped Album
- * @return the album's UTF8 name 
+ * @return the album's UTF8 name
  */
 char const * Track::AlbumName() const
 {
@@ -160,7 +162,7 @@ LIBMTP_track_t* Track::RawTrack() const
 
 /**
  * Retreives the file name of the wrapped Track
- * @return the tracks's UTF8 name 
+ * @return the tracks's UTF8 name
  */
 char const * Track::FileName() const
 {
@@ -169,7 +171,7 @@ char const * Track::FileName() const
 
 /**
  * Retreives the Artist name of the wrapped Track
- * @return the tracks's UTF8 name 
+ * @return the tracks's UTF8 name
  */
 char const * Track::ArtistName() const
 {
@@ -178,7 +180,7 @@ char const * Track::ArtistName() const
 
 /**
  * Retreives the genre of the wrapped Track
- * @return the tracks's UTF8 name 
+ * @return the tracks's UTF8 name
  */
 char const * Track::Genre() const
 {
@@ -186,7 +188,7 @@ char const * Track::Genre() const
 }
 
 /**
- * Associates a shadow track to this track- this helps us keep track of 
+ * Associates a shadow track to this track- this helps us keep track of
  * playlist membership when a track is deleted
  * @returns the association index of the track
  */
@@ -198,7 +200,7 @@ count_t Track::AssociateShadowTrack(ShadowTrack* in_track)
 }
 
 /**
- * Disassociates a shadow track to this track- we do this when a track is 
+ * Disassociates a shadow track to this track- we do this when a track is
  * removed from a playlist.
  **/
 void Track::DisassociateShadowTrack(count_t in_idx)
@@ -219,7 +221,7 @@ count_t Track::ShadowAssociationCount()
 
 /**
  * Returns the ShadowTrack by index of association.
- * @param in_index the index of the associated track. 
+ * @param in_index the index of the associated track.
  * @returns the track at the given index or NULL if the track was removed
  **/
 ShadowTrack* Track::ShadowAssociation(count_t in_index)
@@ -239,18 +241,18 @@ count_t Track::ParentFolderID() const { return _rawTrack->parent_id; }
  */
 void Track::SetParentAlbum(Album* in_album) {_parentAlbum = in_album; }
 
-/** 
+/**
  * Returns the parent Album of this track
  * @return the parent Album of this track
  */
 Album* Track::ParentAlbum() const { return _parentAlbum; }
 
-ShadowTrack::ShadowTrack(Track* in_track, Playlist* in_pl, count_t in_idx) : 
+ShadowTrack::ShadowTrack(Track* in_track, Playlist* in_pl, count_t in_idx) :
                          GenericObject(MtpShadowTrack, 0),
                          _track(in_track),
                          _parentPlaylist(in_pl),
                          _rowIndex(in_idx)
-{ 
+{
   _trackAssociationIndex = _track->AssociateShadowTrack(this);
 }
 
@@ -282,11 +284,11 @@ const Track* ShadowTrack::GetTrack() const
 /**
  * Creates a new File object and and stores its representative data
  * @param in_file A pointer to the LIBMTP_file_to wrap over
- * @param in_depth The depth of this file in the file system 
+ * @param in_depth The depth of this file in the file system
  * @param in_sample A pointer to the LIBMTP_filesampledata_t
  * @return a new File object
  */
-File::File(LIBMTP_file_t* in_file, count_t in_depth) : 
+File::File(LIBMTP_file_t* in_file, count_t in_depth) :
            GenericFileObject(MtpFile, in_file->item_id),
            _depth(in_depth)
 {
@@ -295,7 +297,7 @@ File::File(LIBMTP_file_t* in_file, count_t in_depth) :
 
 /**
  * Retreives the file's parent ID
- * @return the file's parent ID it is zero if its in the root folder 
+ * @return the file's parent ID it is zero if its in the root folder
  */
 count_t File::ParentID() const { return _rawFile->parent_id; }
 
@@ -308,8 +310,8 @@ Folder* File::ParentFolder() const { return _parent; }
 /**
  * Sets the file's parent Folder
  */
-void File::SetParentFolder(Folder* in_parent) 
-{ 
+void File::SetParentFolder(Folder* in_parent)
+{
   _parent = in_parent;
 }
 
@@ -354,7 +356,7 @@ LIBMTP_file_t* File::RawFile() const
  * @param in_parent A pointer to this folder's parent
  * @return a new Folder object
  */
-Folder::Folder(LIBMTP_folder_t* in_folder, Folder* in_parent, 
+Folder::Folder(LIBMTP_folder_t* in_folder, Folder* in_parent,
                count_t in_depth) :
                GenericObject (MtpFolder, in_folder->folder_id),
                _depth(in_depth),
@@ -463,7 +465,7 @@ void Folder::RemoveChildFolder(Folder* in_folder)
   }
   if (i != in_folder->GetRowIndex())
   {
-    cerr << "Deletion error: in_folder row index:" << in_folder->GetRowIndex() 
+    cerr << "Deletion error: in_folder row index:" << in_folder->GetRowIndex()
          << " child folder count: " << _childFolders.size() << endl;
     assert(false);
   }
@@ -471,8 +473,11 @@ void Folder::RemoveChildFolder(Folder* in_folder)
   _childFolders.erase(iter);
   return;
 }
-
-/** 
+/**
+ * @return The depth of this folder in the folder tree
+ * */
+count_t Folder::Depth() const { return _depth; }
+/**
  * Remove a direct child file from the folder's list of child files.
  * @param in_file The file to remove.
  * */
@@ -486,7 +491,7 @@ void Folder::RemoveChildFile(File* in_file)
   }
   if (i != in_file->GetRowIndex())
   {
-    cerr << "Deletion error: in_file row index:" << in_file->GetRowIndex() 
+    cerr << "Deletion error: in_file row index:" << in_file->GetRowIndex()
          << " child file count: " << _childFiles.size() << endl;
     assert(false);
   }
@@ -495,13 +500,13 @@ void Folder::RemoveChildFile(File* in_file)
   return;
 }
 
-/** 
+/**
  * @return the visual row index for this folder
  * */
 count_t Folder::GetRowIndex() const { return _rowIndex; }
 
 /**
- * Sets the visual row index for this folder 
+ * Sets the visual row index for this folder
  * @param in_row the new row of this folder
  * */
 void Folder::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
@@ -510,8 +515,8 @@ void Folder::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
  * @param in_album A pointer to the LIBMTP_album_t wrap over
  * @return a new Album object
  */
-Album::Album(LIBMTP_album_t* in_album, 
-             const LIBMTP_filesampledata_t & in_sample) : 
+Album::Album(LIBMTP_album_t* in_album,
+             const LIBMTP_filesampledata_t & in_sample) :
              GenericFileObject(MtpAlbum, in_album->album_id),
              _sample(in_sample)
 {
@@ -520,9 +525,9 @@ Album::Album(LIBMTP_album_t* in_album,
   _initialized = false;
 }
 /**
- * This function sets the representative sample of the album to the passed 
+ * This function sets the representative sample of the album to the passed
  * param
- * @param in_sample the sample that will be set for this album 
+ * @param in_sample the sample that will be set for this album
  */
 void Album::SetCover(LIBMTP_filesampledata_t const * in_sample)
 {
@@ -530,7 +535,7 @@ void Album::SetCover(LIBMTP_filesampledata_t const * in_sample)
 }
 
 /** Returns the sample data for the album
- * @return a reference to the LIBMTP_sampledata_t that was pulled from 
+ * @return a reference to the LIBMTP_sampledata_t that was pulled from
  * the device
  */
 const LIBMTP_filesampledata_t& Album::SampleData() const
@@ -545,7 +550,7 @@ const LIBMTP_filesampledata_t& Album::SampleData() const
  *  folder before adding it to the wrapper
  * @param in_track the track to add as a subtrack to this folder
  */
-void Album::AddTrack(Track* in_track) 
+void Album::AddTrack(Track* in_track)
 {
   in_track->SetParentAlbum(this);
   //row index is not _childTracks.size() +1 as it is zero based..
@@ -574,7 +579,7 @@ void Album::AddTrackToRawAlbum(Track* in_track)
 }
 
 /* @return the RawAlbum that this object wraps over*/
-LIBMTP_album_t const* Album::RawAlbum() 
+LIBMTP_album_t const* Album::RawAlbum()
 {
   return _rawAlbum;
 }
@@ -595,10 +600,10 @@ void Album::RemoveTrack(count_t in_index)
   vector<Track*>::iterator iter = _childTracks.begin();
   vector<Track*>::iterator backup_iter;
   int i =0;
-  while (*iter !=  deletedTrack) 
-  { 
+  while (*iter !=  deletedTrack)
+  {
     i++;
-    iter++; 
+    iter++;
     assert(iter != _childTracks.end());
   }
 //  cout << "Iterator found index at: " << i << " vs " << in_index << endl;
@@ -613,13 +618,13 @@ void Album::RemoveTrack(count_t in_index)
     currentTrack->SetRowIndex( currentTrack->GetRowIndex() -1);
     backup_iter++;
   }
-  assert(*iter == deletedTrack); 
+  assert(*iter == deletedTrack);
   _childTracks.erase(iter);
   delete deletedTrack;
 //  cout << "after removal album size: " << TrackCount() << endl;
 }
 
-/** 
+/**
  * Removes the track at the given index of the album's internal structure.
  * @param in_index the track index to remove
  */
@@ -663,7 +668,7 @@ void Album::RemoveFromRawAlbum(count_t in_index)
 
 /**
  * Retreives the name of the wrapped Album
- * @return the album's UTF8 name 
+ * @return the album's UTF8 name
  */
 char const * Album::Name() const
 {
@@ -681,26 +686,26 @@ char const * Album::ArtistName() const
 }
 
 /**
- * Albums are container objects that hold a list of tracks that 
+ * Albums are container objects that hold a list of tracks that
  * reside underneath them
  * If the object is not initialized then we return the track count from the raw
  * container representation
  * Otherwise return the vector size
  * @return the track count under this album
- */ 
-count_t Album::TrackCount() const 
+ */
+count_t Album::TrackCount() const
 {
   if (!_initialized)
-   return _rawAlbum->no_tracks; 
+   return _rawAlbum->no_tracks;
   else
     return _childTracks.size();
 }
 
 /**
- * Albums are container objects that hold a list of track IDs 
+ * Albums are container objects that hold a list of track IDs
  * @param idx the index of the requested track
  * @return the uint32_t track ID specified at the given index
- */ 
+ */
 uint32_t Album::ChildTrackID(count_t idx) const
 {
   assert(idx < TrackCount());
@@ -709,31 +714,31 @@ uint32_t Album::ChildTrackID(count_t idx) const
 
 
 /**
- * Albums are also container objects that hold a list of tracks that 
+ * Albums are also container objects that hold a list of tracks that
  * reside underneath them
  * @param idx the index of the requested track
  * @return the Track* specified at the given index
- */ 
+ */
 Track* Album::ChildTrack(count_t idx) const
 {
   assert(idx < _childTracks.size());
   return _childTracks[idx];
 }
 
-/** 
- * The Initialized state tells us when to stop using the underlying 
+/**
+ * The Initialized state tells us when to stop using the underlying
  * LIBMTP data structure as it might become stale.
  */
 void Album::SetInitialized() { _initialized = true; }
 bool Album::Initialized() { return _initialized; }
 
-/** 
+/**
  * @return the visual row index for this album
  * */
 count_t Album::GetRowIndex() const { return _rowIndex; }
 
 /**
- * Sets the visual row index for this album 
+ * Sets the visual row index for this album
  * @param in_row the new row of this album
  * */
 void Album::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
@@ -743,7 +748,7 @@ void Album::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
  * @param in_pl t pointer to the LIBMTP_playlist_t wrap over
  * @return a new Playlist object
  */
-Playlist::Playlist(LIBMTP_playlist_t* in_pl) : 
+Playlist::Playlist(LIBMTP_playlist_t* in_pl) :
                   GenericFileObject(MtpPlaylist, in_pl->playlist_id)
 {
   _initialized = false;
@@ -759,12 +764,12 @@ char const * Playlist::Name() const
   return _rawPlaylist->name;
 }
 
-/** 
+/**
  * Adds a track to the list of child tracks. This function also sets the child
  * tracks rowIndex
  * @param in_track the pointer to the child track to add
  */
-void Playlist::AddTrack(Track* in_track) 
+void Playlist::AddTrack(Track* in_track)
 {
   ShadowTrack* strack = new ShadowTrack(in_track, this, _childTracks.size());
   _childTracks.push_back(strack);
@@ -791,14 +796,14 @@ ShadowTrack* Playlist::ChildTrack(count_t idx) const
 }
 
 /**
- * Playlists are also container objects that hold a list of tracks that 
+ * Playlists are also container objects that hold a list of tracks that
  * reside underneath them
- * @return the number of tracks underneath this playlist 
- */ 
-count_t Playlist::TrackCount() const 
+ * @return the number of tracks underneath this playlist
+ */
+count_t Playlist::TrackCount() const
 {
   if (!_initialized)
-   return _rawPlaylist->no_tracks; 
+   return _rawPlaylist->no_tracks;
   else
   {
     return _childTracks.size();
@@ -806,10 +811,10 @@ count_t Playlist::TrackCount() const
 }
 
 /**
- * Playlists are container objects that hold a list of track IDs 
+ * Playlists are container objects that hold a list of track IDs
  * @param idx the index of the requested track id
  * @return the uint32_t track ID specified at the given index
- */ 
+ */
 //FIXME there is a serious bug here if the trackcount is off from the underlying obj
 uint32_t Playlist::ChildTrackID(count_t idx) const
 {
@@ -820,19 +825,19 @@ uint32_t Playlist::ChildTrackID(count_t idx) const
     return _childTracks[idx]->GetTrack()->ID();
 }
 
-/** 
- * The Initialized state tells us when to stop using the underlying 
+/**
+ * The Initialized state tells us when to stop using the underlying
  * LIBMTP data structure as it might become stale.
  */
 void Playlist::SetInitialized() { _initialized = true; }
 
-/** 
+/**
  * @return the visual row index for this playlist
  * */
 count_t Playlist::GetRowIndex() const { return _rowIndex; }
 
 /**
- * Sets the visual row index for this playlist 
+ * Sets the visual row index for this playlist
  * @param in_row the new row of this playlist
  * */
 void Playlist::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
@@ -851,10 +856,10 @@ void Playlist::RemoveTrack(count_t in_index)
   vector<ShadowTrack*>::iterator iter = _childTracks.begin();
   vector<ShadowTrack*>::iterator backup_iter;
   int i =0;
-  while (*iter !=  deletedTrack) 
-  { 
+  while (*iter !=  deletedTrack)
+  {
     i++;
-    iter++; 
+    iter++;
     assert(iter != _childTracks.end());
   }
   //cout << "Iterator found index at: " << i << " vs " << in_index << endl;
@@ -869,7 +874,7 @@ void Playlist::RemoveTrack(count_t in_index)
     (*backup_iter)->SetRowIndex( (*backup_iter)->RowIndex() -1);
     backup_iter++;
   }
-  assert(*iter == deletedTrack); 
+  assert(*iter == deletedTrack);
   _childTracks.erase(iter);
   delete deletedTrack;
   //cout << "after removal album size: " << TrackCount() << endl;

@@ -17,7 +17,7 @@
  *   with this program; if not, write to the Free Software Foundation, Inc.,
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- *   TODO context/selection sensative context menus..
+ *   TODO context/selection sensitive context menus..
  *   TODO serious bug in removeIndexDuplicates
  */
 
@@ -220,7 +220,7 @@ void DeviceExplorer::ShowFiles()
     _albumView->hide();
     _fsView->show();
     _deviceRightView->setModel(_dirModel);
-    _deviceRightView->setSelectionMode(QAbstractItemView::SingleSelection);
+    _deviceRightView->setSelectionMode(QAbstractItemView::ExtendedSelection);
   }
   _deviceRightView->setStyleSheet("");
 }
@@ -603,7 +603,7 @@ void DeviceExplorer::TransferFromDevice()
   //removeIndexDuplicates(idxList, (QSortFilterProxyModel*)theModel);
 
   MTP::GenericObject* obj;
-
+  //TODO fix this
   QModelIndex temp;
   foreach(temp, idxList)
   {
@@ -636,13 +636,13 @@ void DeviceExplorer::DeleteFromDevice()
   removeIndexDuplicates(idxList, objList, (QSortFilterProxyModel*)theModel);
 
   MTP::GenericObject* obj;
+  qDebug() << "Deleting: " << objList.size() << " objects";
   foreach(obj, objList)
   {
-
     if (!confirmDeletion() )
       continue;
     qDebug() << "Deleting object";
-
+    assert(obj->Type() != MtpInvalid);
     if (obj->Type() != MtpFile && obj->Type() != MtpTrack &&
         obj->Type() != MtpShadowTrack)
     {
@@ -730,7 +730,8 @@ void DeviceExplorer::removeIndexDuplicates(
   QAbstractItemModel* theModel = in_model->sourceModel();
   if(in_model == _albumModel || in_model== _plModel)
     return removeTrackBasedIndexDuplicates(in_list, out_list, theModel);
-  else if (theModel == _dirModel)
+  //TODO fix dirmodel is not a proxymodel?
+  else if (in_model == _dirModel)
     return removeFileIndexDuplicates(in_list, out_list);
   else
     assert (false);
@@ -847,10 +848,11 @@ void DeviceExplorer::removeTrackBasedIndexDuplicates(
  * This function removes index duplicates from the Directory view of Qlix.
  * Complex types are not expanded. That is if a file is selected that is
  * associated with a playlist, we replace the file's selection with the
- * playlist object, however we do not iterate over the playlist's children
- * shadow tracks as they are iterated over in QMtpDevice upon deletion.
+ * playlist object, however we do not iterate over the playlist's child
+ * ShadowTracks as they are iterated over in QMtpDevice upon deletion.
+ *
  * This function separates files and folders. It then breadth first searches
- * its folders. It then iterates over all children files and replaces any
+ * its folders, iterating over all child files and replaces any
  * complex files with their associated type.
  * Finally it sorts the folders by depth and then joins the file and folder
  * lists in the output list provided.
@@ -859,42 +861,71 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
                                               QGenericObjectList& out_list)
 {
   QModelIndex idx;
-  QModelIndexList dirList;
-  QModelIndexList fileList;
+  QLinkedList<QModelIndex>dirList;
+  QLinkedList<QModelIndex>albumList;
+  QLinkedList<QModelIndex>fileList;
 
   //create a list of files and directories for deletion
   foreach(idx, in_list)
   {
+    idx = _dirModel->mapToSource(idx);
+    MTP::GenericObject* tempObj = (MTP::GenericObject*) idx.internalPointer();
     MtpObjectType type = QMTP::MtpType(idx);
     if (type ==  MtpFolder)
       dirList.push_back(idx);
     else if (type ==  MtpFile)
-      fileList.push_back(idx);
+    {
+      MTP::GenericFileObject* association;
+      association = ((MTP::GenericFileObject*)idx.internalPointer())->Association();
+      if (!association || association->Type() == MtpPlaylist)
+        fileList.push_back(idx);
+      else if (association->Type() == MtpAlbum)
+        albumList.push_back(idx);
+    }
     else
       assert(false);
   }
+  int discoveredChildFiles = 0;
+  int discoveredChildFolders= 0;
 
   //retrieve recursive implications
-  foreach(idx, dirList)
+  QLinkedList<QModelIndex>::iterator iter;
+  for(iter = dirList.begin(); iter != dirList.end(); iter++)
   {
+    QModelIndex idx = *iter;
     if (!idx.isValid())
       continue;
     QModelIndex curParent = idx;
-    count_t childCount = _dirModel->rowCount(idx);
+    count_t childCount = _dirModel->sourceModel()->rowCount(idx);
     for (count_t i = 0; i < childCount; i++)
     {
-      QModelIndex childIdx = _dirModel->index(i, 0, curParent);
+      QModelIndex childIdx = _dirModel->sourceModel()->index(i, 0, curParent);
       //should not happen
       if (!childIdx.isValid())
         assert(false);
-      //Potential source of bugs, does the foreach clause extend to dynamic
-      //looping caused by the following statement:
+      //Potential source of bugs,
+      //Not sure if QLinkedList guarantees that the foreach clause extend to
+      //dynamic looping caused by the following statement:
       if (QMTP::MtpType(childIdx) == MtpFolder)
+      {
         dirList.push_back(childIdx);
+        discoveredChildFolders++;
+      }
       else if (QMTP::MtpType(childIdx) == MtpFile)
-        fileList.push_back(childIdx);
+      {
+        MTP::GenericFileObject* association;
+        association = ((MTP::GenericFileObject*)childIdx.internalPointer())->Association();
+        if (!association || association->Type() == MtpPlaylist ||
+            association->Type() == MtpTrack)
+          fileList.push_back(childIdx);
+        else if (association->Type() == MtpAlbum)
+          albumList.push_back(childIdx);
+       discoveredChildFiles++;
+      }
     }
   }
+  qDebug() << "Discovered child files: " << discoveredChildFiles;
+  qDebug() << "Discovered child folders: " << discoveredChildFolders;
 
   QMap<uint32_t, MTP::Folder*> dirMap;
   QMap<uint32_t, MTP::GenericFileObject*> fileMap;
@@ -908,29 +939,68 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
     dirMap[currentDir->ID()] = currentDir;
   }
 
-  //Build file map
-  foreach(idx, fileList)
+  //Build file map- first add all the albums, as they are containers and their
+  //children might be selected
+
+  foreach(idx, albumList)
   {
     MTP::File* currentFile = (MTP::File*) idx.internalPointer();
+    assert(currentFile->Association()->Type() == MtpAlbum);
+
+    //just to be safe..this should not be possible
     if (fileMap.contains(currentFile->ID()))
-      continue;
+      assert(false);
     fileMap[currentFile->ID()] = currentFile;
   }
-
 
   /*
    * Here we replace files by there associated type
    * maybe we should call associated types "complex types"
    * We do not expand complex types any further than their association.
    * That is, should we find a MtpPlaylist, we do not add its ShadowTrack
-   * children as they are automatically deleted in QMtpDevice
+   * children as they are automatically expanded in QMtpDevice
    */
+  foreach(idx, fileList)
+  {
+    MTP::File* currentFile = (MTP::File*) idx.internalPointer();
+    if (fileMap.contains(currentFile->ID()))
+      continue;
+
+    /*
+     * If you are a file that is a complex type then we check to make sure you
+     * are a playlist or a track. If you are a track then we make sure your
+     * parent album is not already selected. If it is, we do not add the track
+     * Otherwise we add the complex type to the map instead of the generic file
+     */
+    if (currentFile->Association())
+    {
+      MTP::GenericFileObject* currentObj = currentFile->Association();
+      assert(currentObj->Type() == MtpPlaylist || currentObj->Type() == MtpTrack);
+      if (currentObj->Type() == MtpTrack)
+      {
+          MTP::Album* parentAlbum = ((MTP::Track*) currentObj)->ParentAlbum();
+          if (parentAlbum && fileMap.contains(parentAlbum->ID()))
+            continue;
+      }
+      fileMap[currentObj->ID()] = currentObj;
+    }
+    else
+    {
+      assert(currentFile->Type() == MtpFile);
+      fileMap[currentFile->ID()] = currentFile;
+      continue;
+    }
+  }
+
+
+/* no longer necessary
   QMap<uint32_t, MTP::GenericFileObject*>::iterator iter;
   for(iter = fileMap.begin(); iter != fileMap.end(); iter++)
   {
     if ((*iter)->Association())
       fileMap[(*iter)->ID()] = (*iter)->Association();
   }
+*/
 
   dirList.clear();
   fileList.clear();
@@ -940,12 +1010,22 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
   QList<MTP::Folder*> retDirList;
   foreach(genericFolder, dirMap)
     retDirList.push_back(genericFolder);
+
+  MTP::Folder* tempstart = retDirList.front();
   qSort(retDirList.begin(), retDirList.end(), QMTP::MtpFolderLessThan);
+  tempstart = retDirList.front();
 
   foreach(genericFile, fileMap)
+  {
     out_list.push_back(genericFile);
+    assert(genericFile->Type() != MtpInvalid);
+  }
   foreach(genericFolder, retDirList)
+  {
     out_list.push_back(genericFolder);
+    assert(genericFolder->Type() != MtpInvalid);
+    qDebug() << "Pushed folder: " << genericFolder->Name();
+  }
 }
 
 /**

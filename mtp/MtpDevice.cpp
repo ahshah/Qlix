@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,10 +19,10 @@
 
 TODO Improve error handling / Reporting (once theres an error console)
 TODO Deleting tracks does not update the free space reported.
-TODO Remove ifdefs for SIMULATE_TRANSFERS and make it an option we can pass 
+TODO Remove ifdefs for SIMULATE_TRANSFERS and make it an option we can pass
      qlix
 
-TODO Add InsanePlaylist, InsaneAlbums flags that allows us to avoid the 
+TODO Add InsanePlaylist, InsaneAlbums flags that allows us to avoid the
      assertions made WRT necessary MTP file associations with all other types
 TODO Add autocleanup of broken playlists and albums
 TODO Autocleanup of broken playlists and albums should attempt to find the raw
@@ -30,10 +30,10 @@ TODO Autocleanup of broken playlists and albums should attempt to find the raw
      this might be tedious since you have to read tag information and this can
      only be done if you transfer the file over to the computer
 
-TODO What should we do if playlist items are located on another storage? 
+TODO What should we do if playlist items are located on another storage?
      Does the find function behave correctly in this case?
 
-TODO Q. Should raw object references returns be of const types? 
+TODO Q. Should raw object references returns be of const types?
      A. No this is a bad idea as sending files updates the file id we discover
 
 TODO Storage IDs are not correctly handled- recheck this- it should be fixed
@@ -44,7 +44,7 @@ TODO ReWrite dbgPrintFolders to account for the fake root folder we create
 TODO Implement NewFolder and RemoveFolder
 TODO When a file transfer is complete the libmtp struct may have new information
      this information needs to get propogated up the c++ structs
-     This is especially the case when some devices do not support utf8 
+     This is especially the case when some devices do not support utf8
      characters- libmtp modifies these names before sending it over the wire
 */
 
@@ -68,7 +68,7 @@ MtpDevice::MtpDevice(LIBMTP_mtpdevice_t* in_device, CommandLineOptions in_opts) 
 /**
  * Deletes allocated objects
  */
-MtpDevice::~MtpDevice() 
+MtpDevice::~MtpDevice()
 {
   if (_name)
   {
@@ -123,10 +123,10 @@ void MtpDevice::Initialize()
 
   uint8_t max;
   uint8_t cur;
-  int ret = LIBMTP_Get_Batterylevel(_device, &max, &cur); 
+  int ret = LIBMTP_Get_Batterylevel(_device, &max, &cur);
 
   if (ret != 0)
-    _batteryLevelSupport = false; 
+    _batteryLevelSupport = false;
 
   _maxBatteryLevel     = max;
   _currentBatteryLevel = cur;
@@ -193,7 +193,7 @@ vector<MTP::Playlist*> MtpDevice::Playlists() const { return _playlists; }
  * @return the Folder at the given index or NULL if it is out of bounds
  */
 MTP::Folder* MtpDevice::RootFolder(count_t idx) const
-{ 
+{
   if (idx > _rootFolders.size() )
     return NULL;
   return _rootFolders[idx];
@@ -215,7 +215,7 @@ count_t MtpDevice::PlaylistCount() const
  * @return the Album at the given index or NULL if it is out of bounds
  */
 MTP::Album* MtpDevice::Album(count_t idx) const
-{ 
+{
   if (idx > _albums.size() )
     return NULL;
   return _albums[idx];
@@ -225,7 +225,7 @@ MTP::Album* MtpDevice::Album(count_t idx) const
  * @return the Playlist at the given index or NULL if it is out of bounds
  */
 MTP::Playlist* MtpDevice::Playlist(count_t idx) const
-{ 
+{
   if (idx > _playlists.size() )
     return NULL;
   return _playlists[idx];
@@ -243,14 +243,14 @@ bool MtpDevice::Fetch(uint32_t in_id, char const * const path)
     return false;
 //TODO get error log
 //What does get error log mean?
-  int ret= LIBMTP_Get_File_To_File(_device, in_id, path, 
+  int ret= LIBMTP_Get_File_To_File(_device, in_id, path,
                                    _progressFunc, _progressData);
   if (ret != 0)
   {
     processErrorStack();
     return false;
   }
-  return true; 
+  return true;
 }
 
 /**
@@ -305,7 +305,7 @@ bool MtpDevice::BatteryLevelSupport() const
 /**
  * @return the percentage of charge the battery holds
  */
-float MtpDevice::BatteryLevel() const 
+float MtpDevice::BatteryLevel() const
 {
   float ret = (float) ((float)_maxBatteryLevel / (float)_currentBatteryLevel);
   return ret;
@@ -339,7 +339,7 @@ MtpStorage* MtpDevice::StorageDevice(unsigned int in_idx) const
 }
 
 /**
- * Gets the device's error stack and runs over each error to store its text 
+ * Gets the device's error stack and runs over each error to store its text
  * internally and then clears the device's error stack
  */
 void MtpDevice::processErrorStack()
@@ -361,7 +361,7 @@ void MtpDevice::processErrorStack()
 /**
  * Sets the callback progress function for operations with the MTP device
  * @param in_func the callback function to invoke during MTP operations
- * @param in_data a pointer to an object that will be used to update the 
+ * @param in_data a pointer to an object that will be used to update the
  *        of the GUI
  */
 void MtpDevice::SetProgressFunction(LIBMTP_progressfunc_t in_func,
@@ -401,7 +401,7 @@ LIBMTP_mtpdevice_t* MtpDevice::RawDevice() const
 }
 /**
  * This function adds an album to the virtual album list
- * It is mostly supposed to be used by async calls from the GUI when it is 
+ * It is mostly supposed to be used by async calls from the GUI when it is
  * ready for such a fundamental change to occur in the structure.
  */
 void MtpDevice::AddAlbum(MTP::Album* in)
@@ -440,7 +440,7 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, count_t in_depth)
 
   while (rootFolder)
   {
-    //if there is a parent, set the new folder's parent. And add to the 
+    //if there is a parent, set the new folder's parent. And add to the
     //parent's childlist
     MTP::Folder* currentFolder;
     if(in_root)
@@ -461,9 +461,9 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, count_t in_depth)
 
     //add this folder to the list of folders at this level
     curLevelFolders.push_back(currentFolder);
-    
+
     //find
-    MTP::Folder* const previous = (MTP::Folder*) (find(currentFolder->ID(), 
+    MTP::Folder* const previous = (MTP::Folder*) (find(currentFolder->ID(),
                                                      MtpFolder));
     if(previous)
     {
@@ -475,7 +475,7 @@ void MtpDevice::createFolderStructure(MTP::Folder* in_root, count_t in_depth)
 
     }
 
-    _folderMap[currentFolder->ID()] = currentFolder; 
+    _folderMap[currentFolder->ID()] = currentFolder;
 
     rootFolder = rootFolder->sibling;
   }
@@ -518,7 +518,7 @@ void MtpDevice::dbgPrintFolders(MTP::Folder* root, count_t level)
   {
     for (count_t j = 0; j < level; j++)
       cout << "  ";
-    MTP::Folder* temp = root->ChildFolder(i); 
+    MTP::Folder* temp = root->ChildFolder(i);
     cout << temp->Name() << endl;
     dbgPrintFolders(temp, level+1);
   }
@@ -537,13 +537,13 @@ void MtpDevice::createFileStructure()
       (MTP::Folder*) find(fileRoot->parent_id, MtpFolder);
 
     //Get the parent folder's depth
-    count_t fileDepth = (parentFolder ? parentFolder->Depth() + 1 : 0); 
+    count_t fileDepth = (parentFolder ? parentFolder->Depth() + 1 : 0);
     MTP::File* currentFile = new MTP::File(fileRoot, fileDepth);
 
     if (_commandLineOpts.DebugOutput)
       cout << "Created file: " << currentFile << " with id: "<< currentFile->ID() << endl;
     //Sanity check: find previous instances for crosslinks
-    MTP::File* prev_file = (MTP::File*) find(currentFile->ID(), MtpFile); 
+    MTP::File* prev_file = (MTP::File*) find(currentFile->ID(), MtpFile);
     //crosslink check
     if(prev_file)
     {
@@ -553,12 +553,12 @@ void MtpDevice::createFileStructure()
       cerr << " New file's name: " << currentFile->Name() << endl;
       assert(false);
     }
-    _fileMap[currentFile->ID()] = currentFile; 
+    _fileMap[currentFile->ID()] = currentFile;
 
     if(! parentFolder)
     {
       cerr << "Database corruption. Parent folder for file:" << currentFile->ID()
-           << " which has ID: " << currentFile->ParentID() 
+           << " which has ID: " << currentFile->ParentID()
            << " was not discovered" << endl;
       assert(false);
     }
@@ -578,7 +578,7 @@ void MtpDevice::createFileStructure()
 
 /**
  * Retreives the album and track list then Iterates over all the Albums and
- * their tracks. Each track is looked up in the object map and added to the 
+ * their tracks. Each track is looked up in the object map and added to the
  * Album's list of child tracks
  */
 void MtpDevice::createTrackBasedStructures()
@@ -597,13 +597,13 @@ void MtpDevice::createTrackBasedStructures()
       cout << "Inserting track with ID: " << currentTrack->ID() << endl;
     }
 
-    MTP::Track * prev_track = 
+    MTP::Track * prev_track =
                              (MTP::Track*) find(currentTrack->ID(), MtpTrack);
 
-    MTP::File * previousFile =  
+    MTP::File * previousFile =
                                 (MTP::File*) find(currentTrack->ID(), MtpFile);
 
-    //ensure that there exists a file association                                
+    //ensure that there exists a file association
     if(!previousFile || previousFile->ID() != currentTrack->ID())
     {
       cerr << "Qlix internal database corruption! please report this to: " <<
@@ -611,10 +611,10 @@ void MtpDevice::createTrackBasedStructures()
       assert(false);
     }
 
-    //crosslink check with previous tracks 
+    //crosslink check with previous tracks
     if (prev_track)
     {
-      cerr << "Track crosslinked with another track! Please report this to" 
+      cerr << "Track crosslinked with another track! Please report this to"
            << "caffein@gmail.com" << endl;
       cerr << "Previous tracks's name: " << prev_track->Name() << endl;
       cerr << "New track's name: " << currentTrack->Name() << endl;
@@ -633,7 +633,7 @@ void MtpDevice::createTrackBasedStructures()
     MTP::GenericObject* previousTrack = _trackMap[currentTrack->ID()];
     if (previousTrack)
     {
-      cerr << "Track crosslinked with another track! please report this to " 
+      cerr << "Track crosslinked with another track! please report this to "
            <<" caffein@gmail.com"<< endl;
       assert(false);
     }
@@ -641,14 +641,14 @@ void MtpDevice::createTrackBasedStructures()
     trackRoot = trackRoot->next;
   }
 
-  //create the wrapper albums and add its child tracks 
+  //create the wrapper albums and add its child tracks
   while (albumRoot)
   {
     LIBMTP_filesampledata_t temp;
-    LIBMTP_Get_Representative_Sample(_device, albumRoot->album_id, &temp); 
+    LIBMTP_Get_Representative_Sample(_device, albumRoot->album_id, &temp);
     if (_commandLineOpts.DebugOutput)
     {
-      cout << "Discovered a sample of type: " << temp.filetype 
+      cout << "Discovered a sample of type: " << temp.filetype
            << " with height: " << temp.height << " and width: "
            << temp.width << " with size: " << temp.size << endl;
     }
@@ -657,7 +657,7 @@ void MtpDevice::createTrackBasedStructures()
     currentAlbum->SetRowIndex( _albums.size());
     _albums.push_back(currentAlbum);
 
-    MTP::Album * const prev_album = 
+    MTP::Album * const prev_album =
                              (MTP::Album*) find(currentAlbum->ID(), MtpAlbum);
     MTP::File * const file_association =
                                (MTP::File*) find(currentAlbum->ID(), MtpFile);
@@ -665,7 +665,7 @@ void MtpDevice::createTrackBasedStructures()
     //crosslink check with file database
     if(!file_association)
     {
-      cerr << "Album not crosslinked with file as expected!" << 
+      cerr << "Album not crosslinked with file as expected!" <<
                " Please report this to caffein@gmail.com" << endl;
       cerr << "New album's name: " << currentAlbum->Name() << endl;
       assert(false);
@@ -674,18 +674,18 @@ void MtpDevice::createTrackBasedStructures()
     //crosslink check with albums
     if (prev_album)
     {
-      cerr << "Album crosslinked with another album! Please report this to" 
+      cerr << "Album crosslinked with another album! Please report this to"
            << "caffein@gmail.com" << endl;
       cerr << "Previous album's name: " << prev_album->Name() << endl;
       cerr << "New album's name: " << currentAlbum->Name() << endl;
       assert(false);
     }
 
-    //now crossreference the album with the file and the file with the album 
+    //now crossreference the album with the file and the file with the album
     file_association->Associate(currentAlbum);
     currentAlbum->Associate(file_association);
 
-    _albumMap[currentAlbum->ID()] = currentAlbum; 
+    _albumMap[currentAlbum->ID()] = currentAlbum;
 
 
     //now iterate over the albums's children..
@@ -697,15 +697,15 @@ void MtpDevice::createTrackBasedStructures()
       MTP::Track * const track = (MTP::Track*) find(track_id, MtpTrack);
       if(!track)
       {
-        
+
         cerr << "Current track: " << track_id << " is associated with an album"
-        << " but it does not exist on the device." << endl 
+        << " but it does not exist on the device." << endl
         << " This usually happens when faulty MTP programs delete files" << endl
         << " from the device without deleting the associated track object"<< endl
         << " or a file was created and added to a playlist without" << endl
         << " creating a track association." << endl
         << "Please report this to caffein@gmail.com" << endl << endl
-        << "Please backup your music and run Qlix with the" 
+        << "Please backup your music and run Qlix with the"
         << " --FixBadAlbums option." << endl << endl;
         if (!_commandLineOpts.AutoFixAlbums)
           assert(false);
@@ -748,11 +748,11 @@ void MtpDevice::createTrackBasedStructures()
 
     MTP::Playlist* prev_playlist= (MTP::Playlist*) find(currentPlaylist->ID(), MtpPlaylist);
     MTP::File* file_association= (MTP::File*) find(currentPlaylist->ID(), MtpFile);
-    
+
     //crosslink check with file database
     if (!file_association)
     {
-       cerr << "Playlist not crosslinked with file as expected!" << 
+       cerr << "Playlist not crosslinked with file as expected!" <<
                " Please report this to caffein@gmail.com" << endl;
        assert(false);
     }
@@ -771,11 +771,11 @@ void MtpDevice::createTrackBasedStructures()
     }
 
     //now crossreference the playlist with the file
-    //and crossreference the file with the playlist 
+    //and crossreference the file with the playlist
     currentPlaylist->Associate(file_association);
     file_association->Associate(currentPlaylist);
 
-    _playlistMap[currentPlaylist->ID()] = currentPlaylist; 
+    _playlistMap[currentPlaylist->ID()] = currentPlaylist;
 
     //now iterate over the playlist's children..
     for (count_t j = 0; j < currentPlaylist->TrackCount(); j++)
@@ -787,20 +787,20 @@ void MtpDevice::createTrackBasedStructures()
       if (!track)
       {
         cerr << "Current track: " << track_id << " belongs to a playlist but"
-             << " does not exist on the device." << endl 
+             << " does not exist on the device." << endl
              << " This usually happens when faulty MTP programs delete files" << endl
              << " from the device without deleting the associated track object"<< endl
              << " or a file was created and added to a playlist without" << endl
              << " creating a track association." << endl
              << "Please report this to caffein@gmail.com" << endl << endl
-             << "Please backup your music and run Qlix with the" 
+             << "Please backup your music and run Qlix with the"
              << " --FixBadPlaylists option." << endl << endl;
         if (!_commandLineOpts.AutoFixPlaylists)
           assert(false);
         else
         {
-          cout << "Playlist: " << currentPlaylist->Name()  << " " 
-          << currentPlaylist->ID() << " has non-existant track. Autofixing.." 
+          cout << "Playlist: " << currentPlaylist->Name()  << " "
+          << currentPlaylist->ID() << " has non-existant track. Autofixing.."
           << endl;
 
           currentPlaylist->RemoveFromRawPlaylist(j);
@@ -838,7 +838,7 @@ bool MtpDevice::TransferTrack(const char* in_path, MTP::Track* in_track)
     cout << "Track's storage id: " << in_track->RawTrack()->storage_id << endl;
   if (! _commandLineOpts.SimulateTransfers)
   {
-    int ret = LIBMTP_Send_Track_From_File(_device, in_path, 
+    int ret = LIBMTP_Send_Track_From_File(_device, in_path,
                                           in_track->RawTrack(),
                                           _progressFunc, _progressData);
     if (ret != 0)
@@ -848,7 +848,7 @@ bool MtpDevice::TransferTrack(const char* in_path, MTP::Track* in_track)
     }
   }
 
-  //necessary due to composition 
+  //necessary due to composition
   //TODO brainstorm portential fixes
   // ^ fix what precisely?
   in_track->SetID(in_track->RawTrack()->item_id);
@@ -879,7 +879,7 @@ bool MtpDevice::TransferFile(const char* in_path, MTP::File* in_file)
 
 /**
  * This function updates the space usage information, it should be called at
- * every function call that could potentially change the space usage of the 
+ * every function call that could potentially change the space usage of the
  * device
  * @return true if successfully retreived, false otherwise
  */
@@ -902,7 +902,7 @@ bool MtpDevice::UpdateSpaceInformation()
   LIBMTP_devicestorage_t* storage_dev = _device->storage;
   while (storage_dev)
   {
-    MtpStorage* new_storage = new MtpStorage(storage_dev); 
+    MtpStorage* new_storage = new MtpStorage(storage_dev);
     _storageDeviceList.push_back(new_storage);
     storage_dev = storage_dev->next;
   }
@@ -911,8 +911,8 @@ bool MtpDevice::UpdateSpaceInformation()
 
 /**
  * This function creates a new album on the device, using the information from
- * the track that is passed as a param. This function assumes that this 
- * album's name is unique on the device. 
+ * the track that is passed as a param. This function assumes that this
+ * album's name is unique on the device.
  * The new album will be added to the album's list, be sure to notify any
  * models before hand
  *
@@ -923,7 +923,7 @@ bool MtpDevice::UpdateSpaceInformation()
  *        this value is NULL
  * @return true if successfull false otherwise
  */
-bool MtpDevice::NewAlbum(MTP::Track* in_track, int in_storageID, 
+bool MtpDevice::NewAlbum(MTP::Track* in_track, int in_storageID,
                          MTP::Album** out_album)
 {
   LIBMTP_album_t* newAlbum = LIBMTP_new_album_t();
@@ -965,12 +965,12 @@ bool MtpDevice::NewAlbum(MTP::Track* in_track, int in_storageID,
 }
 
 /**
- * This function updates the representative sample of album on the device 
+ * This function updates the representative sample of album on the device
  * @param in_album the album whose art should be updated
  * @param in_sample the album art encased in a LIBMTP_filesampledata_t* struct
  * @return true if the operation succeeded, false otherwise
  */
-bool MtpDevice::UpdateAlbumArt(MTP::Album* in_album, 
+bool MtpDevice::UpdateAlbumArt(MTP::Album* in_album,
                                LIBMTP_filesampledata_t* in_sample)
 {
   int ret = LIBMTP_Send_Representative_Sample(_device,
@@ -996,11 +996,11 @@ LIBMTP_filesampledata_t* MtpDevice::DefaultJPEGSample()
   if (!_device)
     return NULL;
   LIBMTP_filesampledata_t* sample;
-  int ret = LIBMTP_Get_Representative_Sample_Format(_device, 
+  int ret = LIBMTP_Get_Representative_Sample_Format(_device,
                                                     LIBMTP_FILETYPE_JPEG,
                                                     &sample);
   if (ret != 0)
-  { 
+  {
     processErrorStack();
     return NULL;
   }
@@ -1008,13 +1008,13 @@ LIBMTP_filesampledata_t* MtpDevice::DefaultJPEGSample()
   //device does not support JPEG samples..
   if (ret == 0 && sample == NULL)
   {
-    cerr << "Device does not support JPEG (proper) file type, checking for" 
+    cerr << "Device does not support JPEG (proper) file type, checking for"
     <<" JPEG 2000 regular" << endl;
-    ret = LIBMTP_Get_Representative_Sample_Format(_device, 
+    ret = LIBMTP_Get_Representative_Sample_Format(_device,
                                                          LIBMTP_FILETYPE_JP2,
                                                          &sample);
     if (ret != 0)
-    { 
+    {
       processErrorStack();
       return NULL;
     }
@@ -1023,13 +1023,13 @@ LIBMTP_filesampledata_t* MtpDevice::DefaultJPEGSample()
   //device does not support JPEG 2000 samples..
   if (ret == 0 && sample == NULL)
   {
-    cerr << "Device does not support JPEG 2000 regular file type, checking" 
+    cerr << "Device does not support JPEG 2000 regular file type, checking"
     " for JPEG 2000 extended" << endl;
-    ret = LIBMTP_Get_Representative_Sample_Format(_device, 
+    ret = LIBMTP_Get_Representative_Sample_Format(_device,
                                                          LIBMTP_FILETYPE_JPX,
                                                          &sample);
     if (ret != 0)
-    { 
+    {
       processErrorStack();
       return NULL;
     }
@@ -1049,9 +1049,9 @@ LIBMTP_filesampledata_t* MtpDevice::DefaultJPEGSample()
 /**
  * This function adds the passed track to the album on the device by first
  * adding it to the raw track, syncing to the device and then adds the track
- * to the wrapper track. 
+ * to the wrapper track.
  * @param in_track the track that is to be added to the parent album
- * @param in_album the parent album for this track 
+ * @param in_album the parent album for this track
  * @return true if successfull false otherwise
  */
 bool MtpDevice::AddTrackToAlbum(MTP::Track* in_track, MTP::Album* in_album)
@@ -1074,11 +1074,11 @@ bool MtpDevice::AddTrackToAlbum(MTP::Track* in_track, MTP::Album* in_album)
 
 /**
  * Removes a track from an associated playlist
- * @param in_idx The track index to be removed 
+ * @param in_idx The track index to be removed
  * @param in_pl The container playlist that will reflect the removal
  */
 bool MtpDevice::RemoveShadowTrack(MTP::ShadowTrack* in_track)
-{ 
+{
   MTP::Playlist* pl = in_track->ParentPlaylist();
   pl->RemoveFromRawPlaylist(in_track->RowIndex());
 
@@ -1106,12 +1106,15 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
   //Q. Why do we do this?
   //A. Quick answer because if the album is not initialized we goto the
   //   raw MTP object for information.
-  parentAlbum->SetInitialized();
-  parentAlbum->RemoveFromRawAlbum(in_track->GetRowIndex());
+  if (parentAlbum)
+  {
+	  parentAlbum->SetInitialized();
+	  parentAlbum->RemoveFromRawAlbum(in_track->GetRowIndex());
+  }
 
  // if(parentPl)
  //   parentPl->RemoveFromRawPlaylist(in_track->GetPlaylistRowIndex());
-  
+
   if (_commandLineOpts.SimulateTransfers)
     return true;
 
@@ -1146,7 +1149,7 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
   return emminentFailure;
 }
 
-/** 
+/**
  * Removes an album from the device
  * @param in_album the album to remove
  */
@@ -1158,7 +1161,7 @@ bool MtpDevice::RemoveAlbum(MTP::Album* in_album)
   return ret;
 }
 
-/** 
+/**
  * Removes a playlist from the device
  * @param in_pl the playlist to remove
  */
@@ -1187,7 +1190,7 @@ bool MtpDevice::RemoveFolder(MTP::Folder* in_folder)
  * Since MTP defines a protocol that crosslinks files with tracks, playlists, albums.
  * @param in_id the id of the requested crosslinked object
  * @param in_type the type of the requested crosslinked object
- * @return the requested associated object, or NULL for invalid types or 
+ * @return the requested associated object, or NULL for invalid types or
  * inconclusive searches
  */
 MTP::GenericObject * MtpDevice::find(count_t in_id, MtpObjectType in_type) const
@@ -1251,7 +1254,7 @@ MTP::GenericObject * MtpDevice::find(count_t in_id, MtpObjectType in_type) const
  */
 bool MtpDevice::NewFolder(MTP::Folder* in_folder)
 {
-  cout << "New Folder stub!" << endl; 
+  cout << "New Folder stub!" << endl;
   return true;
 }
 
@@ -1264,7 +1267,7 @@ bool MtpDevice::removeObject(count_t in_id)
   if (_commandLineOpts.SimulateTransfers)
     return true;
 
-  bool ret = LIBMTP_Delete_Object(_device, in_id); 
+  bool ret = LIBMTP_Delete_Object(_device, in_id);
   if (ret != 0)
   {
     processErrorStack();

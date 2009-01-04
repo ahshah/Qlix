@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,8 +18,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  *   TODO Check duplicate enteries when adding files to an album
- *   TODO Find an intelligent way to check if we find an actual sample now 
- *        that the SIMULATE_TRANSFER has been deprecated 
+ *   TODO Find an intelligent way to check if we find an actual sample now
+ *        that the SIMULATE_TRANSFER has been deprecated
  *   TODO replace functions such as GetRowIndex() with RowIndex()
  */
 
@@ -44,7 +44,7 @@ AlbumModel::~AlbumModel()
 }
 
 /**
- * Return the Album or track at the given index and parent 
+ * Return the Album or track at the given index and parent
  * row and col are realtive to parent
  * The parent's internal pointer should only be of types MtpTrack and MtpAlbum
  * @param row the row coordinate of the item to display
@@ -53,9 +53,9 @@ AlbumModel::~AlbumModel()
  * @return an index constructed of the item to display or an invalid index if
  * the request coordinates are out of bounds
  */
-QModelIndex AlbumModel::index(int row, int col, 
+QModelIndex AlbumModel::index(int row, int col,
                         const QModelIndex& parent) const
-{ 
+{
   if(col < 0 || row < 0)
     return QModelIndex();
 
@@ -86,7 +86,7 @@ QModelIndex AlbumModel::index(int row, int col,
   return createIndex(row, col, track);
 }
 
-/** 
+/**
  * Returns the parent of the given index
  * @param idx the index of whose parent we must create
  * @return an index constructured of parent the passed paramameter idx or an
@@ -119,13 +119,13 @@ QModelIndex AlbumModel::parent(const QModelIndex& idx) const
 }
 
 /**
- * Returns the row count of the parent. This should be the number of tracks 
+ * Returns the row count of the parent. This should be the number of tracks
  * under an album or 0 if the parent happens to be a track
  * @param parent the parent item whos row counts we are trying to discover
  * @return the number of rows that exist under the given parameter: parent
- */ 
-int AlbumModel::rowCount(const QModelIndex& parent) const 
-{ 
+ */
+int AlbumModel::rowCount(const QModelIndex& parent) const
+{
   if (!parent.isValid() )
     return _albumList.size();
   MTP::GenericObject* obj= (MTP::Album*)parent.internalPointer();
@@ -140,13 +140,13 @@ int AlbumModel::rowCount(const QModelIndex& parent) const
     assert(false);
   }
 }
-/** Return the column count at the given parent index, 2 seemed reasonable 
+/** Return the column count at the given parent index, 2 seemed reasonable
  * at the current time
  * @param parent the index whos column count we are trying to discover
  * @return the number of colums that occur beside the given parent
  */
-int AlbumModel::columnCount(const QModelIndex& parent ) const 
-{ 
+int AlbumModel::columnCount(const QModelIndex& parent ) const
+{
 //  MTP::GenericObject* obj = (MTP::GenericObject*)parent.internalPointer();
 //  if (obj && obj->Type() == MtpAlbum)
 //    return 2;
@@ -158,7 +158,7 @@ int AlbumModel::columnCount(const QModelIndex& parent ) const
  * @param role the role this data will be used for
  */
 QVariant AlbumModel::data(const QModelIndex& index, int role ) const
-{ 
+{
   if (!index.isValid())
     return QVariant();
   if (role == Qt::DisplayRole)
@@ -200,7 +200,7 @@ QVariant AlbumModel::data(const QModelIndex& index, int role ) const
         //qDebug()  << "Actual sample found in simulate mode!";
         return ret.scaledToWidth(24, Qt::SmoothTransformation);
       }
-      else 
+      else
       {
         QPixmap ret("pixmaps/miscAlbumCover.png");
         return ret.scaledToWidth(24, Qt::SmoothTransformation);
@@ -266,7 +266,7 @@ void AlbumModel::AddTrack(MTP::Track* in_track)
   QModelIndex parentIdx = createIndex(parentAlbum->GetRowIndex(), 0, parentAlbum);
   unsigned int sz = parentAlbum->TrackCount();
 
-  emit beginInsertRows(parentIdx, parentAlbum->TrackCount(), 
+  emit beginInsertRows(parentIdx, parentAlbum->TrackCount(),
                        parentAlbum->TrackCount());
   parentAlbum->AddTrack(in_track);
   emit endInsertRows();
@@ -276,7 +276,7 @@ void AlbumModel::AddTrack(MTP::Track* in_track)
 }
 
 /**
- * Removes an album from the model 
+ * Removes an album from the model
  * @param in_album the album to remove
  */
 void AlbumModel::RemoveAlbum(MTP::Album* in_album)
@@ -300,17 +300,22 @@ void AlbumModel::RemoveAlbum(MTP::Album* in_album)
 }
 
 /**
- * Removes a track from the model 
+ * Removes a track from the model
  * @param in_album the album to remove
  */
 void AlbumModel::RemoveTrack(MTP::Track* in_track)
 {
   MTP::Album* parentAlbum = in_track->ParentAlbum();
-  assert(parentAlbum);
+  /*
+   * We cannot assert the existence of a parentAlbum since some tracks such as
+   * recordings do not have a parent album!
+   */
+  if(!parentAlbum);
+    return;
 
   QModelIndex parentIdx = createIndex(parentAlbum->GetRowIndex(), 0,
                                       parentAlbum);
-  emit beginRemoveRows(parentIdx, in_track->GetRowIndex(), 
+  emit beginRemoveRows(parentIdx, in_track->GetRowIndex(),
                        in_track->GetRowIndex());
   parentAlbum->RemoveTrack(in_track->GetRowIndex());
   emit endRemoveRows();

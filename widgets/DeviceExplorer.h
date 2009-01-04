@@ -33,6 +33,7 @@
 #include <QDirModel>
 #include <QTreeView>
 #include <QListView>
+#include <QLinkedList>
 #include <QLineEdit>
 #include <QTableView>
 #include <QHeaderView>
