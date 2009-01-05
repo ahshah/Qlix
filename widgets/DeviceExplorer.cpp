@@ -930,27 +930,41 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
   QMap<uint32_t, MTP::Folder*> dirMap;
   QMap<uint32_t, MTP::GenericFileObject*> fileMap;
 
+  int duplicateFileCount =0;
+  int duplicateAlbumCount =0;
+  int duplicateFolderCount= 0;
   //Build folder map
   foreach(idx, dirList)
   {
     MTP::Folder* currentDir = (MTP::Folder*) idx.internalPointer();
     if (dirMap.contains(currentDir->ID()))
+    {
+      duplicateFolderCount++;
       continue;
+    }
     dirMap[currentDir->ID()] = currentDir;
   }
 
-  //Build file map- first add all the albums, as they are containers and their
-  //children might be selected
+  /*
+   * Build file map- first add all the albums, as they are containers and their
+  * children might be selected
+   */
 
   foreach(idx, albumList)
   {
     MTP::File* currentFile = (MTP::File*) idx.internalPointer();
     assert(currentFile->Association()->Type() == MtpAlbum);
 
-    //just to be safe..this should not be possible
+  /*
+   * This is possible as folder can select an album's associated file which has
+   * the same ID
+   */
     if (fileMap.contains(currentFile->ID()))
-      assert(false);
-    fileMap[currentFile->ID()] = currentFile;
+    {
+      duplicateAlbumCount++;
+      continue;
+    }
+    fileMap[currentFile->ID()] = currentFile->Association();
   }
 
   /*
@@ -964,7 +978,10 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
   {
     MTP::File* currentFile = (MTP::File*) idx.internalPointer();
     if (fileMap.contains(currentFile->ID()))
+    {
+      duplicateFileCount++;
       continue;
+    }
 
     /*
      * If you are a file that is a complex type then we check to make sure you
@@ -980,7 +997,10 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
       {
           MTP::Album* parentAlbum = ((MTP::Track*) currentObj)->ParentAlbum();
           if (parentAlbum && fileMap.contains(parentAlbum->ID()))
+          {
+            duplicateFileCount++;
             continue;
+          }
       }
       fileMap[currentObj->ID()] = currentObj;
     }
@@ -1011,21 +1031,25 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
   foreach(genericFolder, dirMap)
     retDirList.push_back(genericFolder);
 
-  MTP::Folder* tempstart = retDirList.front();
   qSort(retDirList.begin(), retDirList.end(), QMTP::MtpFolderLessThan);
-  tempstart = retDirList.front();
 
   foreach(genericFile, fileMap)
   {
     out_list.push_back(genericFile);
     assert(genericFile->Type() != MtpInvalid);
+    qDebug() << "Pushed file : " << genericFile->Name();
   }
+
   foreach(genericFolder, retDirList)
   {
     out_list.push_back(genericFolder);
     assert(genericFolder->Type() != MtpInvalid);
     qDebug() << "Pushed folder: " << genericFolder->Name();
   }
+  qDebug() << "Duplicate folders: " << duplicateFolderCount;
+  qDebug() << "Duplicate albums: " << duplicateAlbumCount;
+  qDebug() << "Duplicate files: " << duplicateFileCount;
+
 }
 
 /**

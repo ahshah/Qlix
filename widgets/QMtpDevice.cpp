@@ -21,6 +21,7 @@
  *   TODO memory leaks
  *   TODO update model correctly
  *   TODO move model information out of this thread and back into the main thread
+ *   TODO create signals to report errors
  *   Q. Should the model just use queuedConnections for removing and
  *   adding tracks/files/objects
  *   A. Yes this seems to be the right thing to do..
@@ -857,14 +858,21 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
   {
     case MtpFile:
     {
+      MTP::File* deletedObj = (MTP::File*) in_obj;
+      assert(!deletedObj->Association());
+      bool ret = _device->RemoveFile( deletedObj);
+      if (ret)
+      {
+        emit RemovedFile(deletedObj);
+      }
       break;
     }
 
     case MtpTrack:
     {
-      MTP::GenericFileObject* deletedObj = (MTP::GenericFileObject*) in_obj;
+      MTP::Track* deletedObj = (MTP::Track*) in_obj;
       assert(deletedObj->Association()->Type() == MtpFile);
-      bool ret = _device->RemoveTrack( (MTP::Track*)deletedObj);
+      bool ret = _device->RemoveTrack( deletedObj);
       if (ret)
       {
         MTP::File* association= (MTP::File*) deletedObj->Association();
@@ -900,6 +908,7 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
 
     case MtpAlbum:
     {
+      qDebug() << "Deleting album";
       assert(in_obj->Type() == MtpAlbum);
       MTP::Album* deletedAlb = (MTP::Album*) in_obj;
       assert(deletedAlb->Association()->Type() == MtpFile);

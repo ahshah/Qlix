@@ -15,8 +15,12 @@
  *   with this program; if not, write to the Free Software Foundation, Inc.,
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-TODO error checkking when returning char* ?
+TODO error checking when returning char* ?
 TODO use multimap for track/file distinction
+  RESOLVED by Association() parameter (I think)
+TODO Figure out if we need to actually implement removeFromRawPlaylist/album/folder etc
+  RESOLVED: Yes we do- we removeFromRawPlaylist() then update the device by reuploading
+  the raw container
 */
 #include "mtp/MtpObject.h"
 using namespace MTP;
@@ -498,6 +502,100 @@ void Folder::RemoveChildFile(File* in_file)
 
   _childFiles.erase(iter);
   return;
+}
+
+/**
+ * Removes the file at the given index of the playlist's internal structure.
+ * This is useful when sending updates to the device. In order to do this we
+ * Update the raw container, and then send the updated raw container.
+ * @param in_index the track index to remove
+ */
+void Folder::RemoveFileFromRawFolder(count_t in_index)
+{
+  //STUB Change  algorithm to suit Folders
+  /*
+  cout << "Remove pl index: " << in_index<< endl;
+  count_t trackCount = _rawPlaylist->no_tracks;
+  assert(trackcount != 0);
+  assert(in_index < trackcount);
+
+  count_t* tracks = null;
+  if (trackcount > 1)
+  {
+    tracks = new count_t[trackcount-1];
+    for (count_t i =0; i < in_index; i++)
+    {
+      tracks[i] = _rawPlaylist->tracks[i];
+    }
+    for (count_t i = in_index+1; i < trackCount; i++)
+    {
+      tracks[i-1] = _rawPlaylist->tracks[i];
+    }
+
+    _rawPlaylist->no_tracks = trackCount -1;
+    delete [] _rawPlaylist->tracks;
+    _rawPlaylist->tracks = tracks;
+  }
+  else if (trackCount == 1)
+  {
+    //LIBMTP does not know that its the tracks association has been removed
+    //TODO will this cause problems in LIBMTP's caching system?
+    _rawplaylist->no_tracks = 0;
+    delete [] _rawplaylist->tracks;
+    _rawplaylist->tracks = null;
+  }
+  else if (trackcount == 0)
+  {
+    _rawplaylist->tracks = null;
+  }
+
+  cout << "RemoveFromRawPlaylists end: " << _rawPlaylist->no_tracks<< endl;
+  cout << "RemoveFromRawPlaylists end2: " << tracks << endl;
+  */
+}
+
+void Folder::RemoveFolderFromRawFolder(count_t)
+{
+  //STUB Change  algorithm to suit Folders
+  /*
+  cout << "Remove pl index: " << in_index<< endl;
+  count_t trackCount = _rawPlaylist->no_tracks;
+  assert(trackcount != 0);
+  assert(in_index < trackcount);
+
+  count_t* tracks = null;
+  if (trackcount > 1)
+  {
+    tracks = new count_t[trackcount-1];
+    for (count_t i =0; i < in_index; i++)
+    {
+      tracks[i] = _rawPlaylist->tracks[i];
+    }
+    for (count_t i = in_index+1; i < trackCount; i++)
+    {
+      tracks[i-1] = _rawPlaylist->tracks[i];
+    }
+
+    _rawPlaylist->no_tracks = trackCount -1;
+    delete [] _rawPlaylist->tracks;
+    _rawPlaylist->tracks = tracks;
+  }
+  else if (trackCount == 1)
+  {
+    //LIBMTP does not know that its the tracks association has been removed
+    //TODO will this cause problems in LIBMTP's caching system?
+    _rawplaylist->no_tracks = 0;
+    delete [] _rawplaylist->tracks;
+    _rawplaylist->tracks = null;
+  }
+  else if (trackcount == 0)
+  {
+    _rawplaylist->tracks = null;
+  }
+
+  cout << "RemoveFromRawPlaylists end: " << _rawPlaylist->no_tracks<< endl;
+  cout << "RemoveFromRawPlaylists end2: " << tracks << endl;
+  */
 }
 
 /**

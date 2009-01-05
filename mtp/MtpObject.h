@@ -118,6 +118,9 @@ public:
   void RemoveChildFolder(Folder*);
   void RemoveChildFile(File*);
 
+  void RemoveFileFromRawFolder(count_t);
+  void RemoveFolderFromRawFolder(count_t);
+
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);
 

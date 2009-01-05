@@ -1094,8 +1094,46 @@ bool MtpDevice::RemoveShadowTrack(MTP::ShadowTrack* in_track)
   return true;
 }
 
+
 /**
- * Removes a track from the device
+ * Removes a file from the device by first removing the file from the raw
+ * parent structure. This structure is then sent to the device as an update
+ * The parent structure is assumed to exist (all files must be contained by a
+ * folder)
+ * @param in_file the file to remove
+ */
+bool MtpDevice::RemoveFile(MTP::File* in_file)
+{
+  cout << "MtpDevice.cpp::RemoveFile Stub!";
+  return true;
+  assert(in_file);
+  MTP::Folder* parentFolder = in_file->ParentFolder();
+  //RemoveFromRawFolder
+
+  if (_commandLineOpts.SimulateTransfers)
+    return true;
+}
+
+/**
+ * Removes a folder from the device by first removing the folder from the
+ * raw parent structure. This sturcture is then sent to the device as an update
+ * if ther parent structure doesn't exist then we ignore the request as we
+ * cannot delete the root folder
+ * @param in_track the track to remove
+ */
+bool MtpDevice::RemoveFolder(MTP::Folder* in_folder)
+{
+  cout << "MtpDevice.cpp::RemoveFolder Stub!";
+  return true;
+  assert(in_folder);
+  MTP::Folder* parentFolder = in_folder->ParentFolder();
+  //RemoveFromRawFolder
+
+  if (_commandLineOpts.SimulateTransfers)
+    return true;
+}
+/**
+ * Removes a track from the device and the raw album object that is its parent
  * @param in_track the track to remove
  */
 bool MtpDevice::RemoveTrack(MTP::Track* in_track)
@@ -1106,18 +1144,23 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
   //Q. Why do we do this?
   //A. Quick answer because if the album is not initialized we goto the
   //   raw MTP object for information.
+  //Added assertion to see if the initialization check really is necessary
+  //preliminary research shows that its not necessary as folders don't seem
+  //to need it but this could be an oversight on my part
+  //TODO resolve this
   if (parentAlbum)
   {
+    if (!parentAlbum->Initialized())
+      assert(false);
 	  parentAlbum->SetInitialized();
+	  //End of testing check the following is necessary
 	  parentAlbum->RemoveFromRawAlbum(in_track->GetRowIndex());
   }
-
- // if(parentPl)
- //   parentPl->RemoveFromRawPlaylist(in_track->GetPlaylistRowIndex());
 
   if (_commandLineOpts.SimulateTransfers)
     return true;
 
+  // we report overall failure for any MTP transaction
   bool emminentFailure = false;
   int ret = LIBMTP_Update_Album(_device, parentAlbum->RawAlbum());
   if (ret != 0)
@@ -1139,6 +1182,7 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
       emminentFailure = true;
     }
   }
+
   ret = removeObject(in_track->ID());
   if (ret != 0 )
   {
@@ -1173,17 +1217,6 @@ bool MtpDevice::RemovePlaylist(MTP::Playlist* in_pl)
   return ret;
 }
 
-
-/**
- * Removes a folder from the device
- * @param in_folder the folder to remove
- */
-bool MtpDevice::RemoveFolder(MTP::Folder* in_folder)
-{
-  assert(in_folder);
-  UpdateSpaceInformation();
-  return removeObject(in_folder->ID());
-}
 
 /**
  * Private function that performs a search on a specific object mapping

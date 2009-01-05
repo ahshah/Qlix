@@ -249,7 +249,13 @@ void DirModel::RemoveFolder(MTP::Folder* in_folder)
   if(!parentFolder)
     parentFolder = _rootFolder;
 
-  assert(in_folder->GetRowIndex() < parentFolder->FolderCount());
+  //If the input folder's parent is itself then we are deleting the root
+  if (in_folder == parentFolder)
+  {
+    assert(parentFolder->FolderCount() == 0);
+    return;
+  }
+    assert(in_folder->GetRowIndex() < parentFolder->FolderCount());
 
   QModelIndex parentIdx = createIndex(parentFolder->GetRowIndex(), 0, parentFolder);
   count_t subFolderCount = parentFolder->FolderCount();
