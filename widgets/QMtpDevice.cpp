@@ -588,8 +588,9 @@ MtpStorage* QMtpDevice::StorageDevice(unsigned int in_idx)
  */
 void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)
 {
-  QString filePath = tagFile.file()->name();
+  QString filePath = QFile::decodeName(QByteArray(tagFile.file()->name()));
   QFileInfo file(filePath);
+
   QString suffixStr = file.suffix().toUpper();
   char* suffix = strdup(suffixStr.toUtf8().data());
   QString filename = file.fileName();
@@ -699,6 +700,7 @@ void QMtpDevice::syncFile(const QString& in_path, uint32_t parent)
   QString suffixStr = file.suffix().toUpper();
 
   char* suffix = suffixStr.toUtf8().data();
+  //TODO is this the right way to convert to an  8bit string?
   char* filename = file.completeBaseName().toLocal8Bit().data();
   uint64_t size = (uint64_t) file.size();
   LIBMTP_filetype_t type = MTP::StringToType(suffix);
