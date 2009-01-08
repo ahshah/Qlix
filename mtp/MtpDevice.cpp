@@ -1097,39 +1097,64 @@ bool MtpDevice::RemoveShadowTrack(MTP::ShadowTrack* in_track)
 
 /**
  * Removes a file from the device by first removing the file from the raw
- * parent structure. This structure is then sent to the device as an update
+ * parent structure. This structure is *not* sent to the device as an update
+ * as files are handled differently than playlists and albums.
  * The parent structure is assumed to exist (all files must be contained by a
  * folder)
  * @param in_file the file to remove
  */
 bool MtpDevice::RemoveFile(MTP::File* in_file)
 {
-  cout << "MtpDevice.cpp::RemoveFile Stub!";
-  return true;
   assert(in_file);
+  assert(in_file->ParentFolder());
   MTP::Folder* parentFolder = in_file->ParentFolder();
-  //RemoveFromRawFolder
 
   if (_commandLineOpts.SimulateTransfers)
+    return true;
+  parentFolder->RemoveFileFromRawFolder(in_file->GetRowIndex());
+  int ret = removeObject(in_file->ID());
+  if (ret != 0)
+    return false;
+  else
     return true;
 }
 
 /**
  * Removes a folder from the device by first removing the folder from the
- * raw parent structure. This sturcture is then sent to the device as an update
- * if ther parent structure doesn't exist then we ignore the request as we
+ * raw parent structure. This sturcture is *not* sent to the device as an update
+ * as folders are handled in similar fashion to files and as such differ from
+ * other containers such as albums and playlists.
+ * If the parent structure doesn't exist then we ignore the request as we
  * cannot delete the root folder
  * @param in_track the track to remove
  */
 bool MtpDevice::RemoveFolder(MTP::Folder* in_folder)
 {
-  cout << "MtpDevice.cpp::RemoveFolder Stub!";
-  return true;
   assert(in_folder);
+  //Lets make sure that this folder is empty
+  assert(in_folder->FileCount() == 0);
+  assert(in_folder->FolderCount() == 0);
+  //for some reason I think that the root folder is its own parent..
+  if(in_folder == in_folder->ParentFolder())
+  {
+    cout << "Debug this immediately! "<< endl;
+    assert(false);
+  }
   MTP::Folder* parentFolder = in_folder->ParentFolder();
-  //RemoveFromRawFolder
 
   if (_commandLineOpts.SimulateTransfers)
+    return true;
+ /**
+  * We do this to be consistent with all other implementations of deletions
+  * Even though there is no metadata to update on the device.
+  */
+  if (parentFolder != NULL)
+    parentFolder->RemoveFolderFromRawFolder(in_folder->GetRowIndex());
+
+  int ret = removeObject(in_folder->ID());
+  if (ret != 0)
+    return false;
+  else
     return true;
 }
 /**
@@ -1189,7 +1214,6 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
       processErrorStack();
       emminentFailure = true;
   }
-  UpdateSpaceInformation();
   return emminentFailure;
 }
 
@@ -1201,7 +1225,6 @@ bool MtpDevice::RemoveAlbum(MTP::Album* in_album)
 {
   assert(in_album);
   bool ret = removeObject(in_album->ID());
-  UpdateSpaceInformation();
   return ret;
 }
 
@@ -1213,7 +1236,6 @@ bool MtpDevice::RemovePlaylist(MTP::Playlist* in_pl)
 {
   assert(in_pl);
   bool ret = removeObject(in_pl->ID());
-  UpdateSpaceInformation();
   return ret;
 }
 

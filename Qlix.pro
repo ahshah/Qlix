@@ -76,6 +76,7 @@ unix {
 
   LIBS += $$TAGLIB_LIBS
   LIBS += "-lmtp"
+  LIBS += "-lusb"
 
   CONFIG += qdbus
   TARGET = "qlix"

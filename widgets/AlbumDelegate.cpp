@@ -4,7 +4,7 @@ AlbumDelegate::AlbumDelegate(QSortFilterProxyModel* in_proxy, QWidget* parent ) 
                              QItemDelegate(parent),
                              _proxy(in_proxy)
 
-{ 
+{
   //_albumCoverButton = new ImageButton();
 }
 
@@ -17,13 +17,13 @@ void AlbumDelegate::paint (QPainter* painter, const QStyleOptionViewItem& opt,
     return QItemDelegate::paint(painter, opt, idx);
   if (opt.state & QStyle::State_Selected)
       painter->fillRect(opt.rect, opt.palette.highlight());
- 
+
   MTP::Album* alb = (MTP::Album*) obj;
   QSize szHint = sizeHint(opt, in_idx);
 
   QString albumTitle = idx.data().toString();
-  albumTitle = albumTitle; 
-  QString artistTitle = alb->ArtistName(); 
+  albumTitle = albumTitle;
+  QString artistTitle = alb->ArtistName();
 //  artistTitle = "\n" + artistTitle;
 
   QPen theAlbumPen("black");
@@ -38,7 +38,7 @@ void AlbumDelegate::paint (QPainter* painter, const QStyleOptionViewItem& opt,
 
   painter->setFont(albumFont);
   painter->save();
-   
+
   QRect rect = opt.rect;
   QRect coverRect(rect.x(), rect.y(), 24, 24);
   coverRect= coverRect.adjusted(0, (szHint.height()-24) /2, 0, (szHint.height()-24)/2 );
@@ -58,10 +58,9 @@ void AlbumDelegate::paint (QPainter* painter, const QStyleOptionViewItem& opt,
 
 }
 
-QSize AlbumDelegate::sizeHint(const QStyleOptionViewItem& opt, 
+QSize AlbumDelegate::sizeHint(const QStyleOptionViewItem& opt,
                               const QModelIndex& in_idx) const
 {
-
   QModelIndex idx = _proxy->mapToSource(in_idx);
   MTP::GenericObject* obj=  (MTP::GenericObject*)idx.internalPointer();
 
@@ -96,7 +95,7 @@ QSize AlbumDelegate::sizeHint(const QStyleOptionViewItem& opt,
   int width = albumFontSize.width() > artistFontSize.width() ?
               albumFontSize.width() : artistFontSize.width();
 
-  QSize ret(width, albumFontSize.height() + artistFontSize.height()); 
+  QSize ret(width, albumFontSize.height() + artistFontSize.height());
 
   qDebug() << "size: " << ret;
   return ret;
