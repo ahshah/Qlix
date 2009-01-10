@@ -314,9 +314,9 @@ Folder* File::ParentFolder() const { return _parent; }
 /**
  * Sets the file's parent Folder
  */
-void File::SetParentFolder(Folder* in_parent)
+void File::SetParentFolder(Folder const * in_parent)
 {
-  _parent = in_parent;
+  _parent = const_cast <Folder*>  (in_parent);
 }
 
 /*

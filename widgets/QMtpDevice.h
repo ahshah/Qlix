@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -50,7 +50,7 @@ using namespace MTPCMD;
 
 class MtpWatchDog;
 /*
- * A threaded version of MtpDevice representing device attributes using QT 
+ * A threaded version of MtpDevice representing device attributes using QT
  * objects and models
  */
 class QMtpDevice : public QThread
@@ -63,7 +63,7 @@ public:
   QString Serial();
   QImage IconImage();
 
-  void TransferTrack(QString filepath);
+  void TransferTrack(const QString& , MTP::Folder*);
   void TransferFrom(MTP::GenericObject*, QString );
   void DeleteObject(MTP::GenericObject*);
 
@@ -112,15 +112,15 @@ private:
 
   void proccessJob(GenericCommand*);
 
-  MTP::Track* SetupTrackTransfer(TagLib::FileRef tagFile, const QString&, 
+  MTP::Track* SetupTrackTransfer(TagLib::FileRef tagFile, const QString&,
                                  uint64_t, uint32_t,  LIBMTP_filetype_t);
 
-  MTP::File* SetupFileTransfer(const char*,  uint64_t,  count_t, 
+  MTP::File* SetupFileTransfer(const char*,  uint64_t,  count_t,
                                LIBMTP_filetype_t);
 
-  void syncTrack(TagLib::FileRef, uint32_t parent); 
+  void syncTrack(const TagLib::FileRef&, MTP::Folder const* );
   void deleteObject(MTP::GenericObject*);
-  void syncFile(const QString& path, uint32_t parent);
+  void syncFile(const QString& path, MTP::Folder const* );
 
   void lockusb();
   void unlockusb();
@@ -147,7 +147,7 @@ private:
   DirModel* _dirModel;
   PlaylistModel* _plModel;
 
-  static int progressWrapper(uint64_t const sent, uint64_t const total, 
+  static int progressWrapper(uint64_t const sent, uint64_t const total,
                              const void* const data);
   /**
    * A private class to manage sorting of the Directory model
@@ -165,7 +165,7 @@ private:
       {
         MTP::Folder* leftFolder = (MTP::Folder*) leftobj;
         MTP::Folder* rightFolder = (MTP::Folder*) rightobj;
-        return ( QString::fromUtf8(leftFolder->Name()  ) < 
+        return ( QString::fromUtf8(leftFolder->Name()  ) <
                  QString::fromUtf8(rightFolder->Name() ) );
       }
       else if (leftobj->Type() == MtpFolder && rightobj->Type() == MtpFile)
@@ -176,7 +176,7 @@ private:
       {
         MTP::File* leftFile = (MTP::File*) leftobj;
         MTP::File* rightFile = (MTP::File*) rightobj;
-        return ( QString::fromUtf8(leftFile->Name()  ) < 
+        return ( QString::fromUtf8(leftFile->Name()  ) <
                  QString::fromUtf8(rightFile->Name() ) );
        }
        assert(false);

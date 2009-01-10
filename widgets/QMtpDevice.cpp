@@ -112,18 +112,17 @@ void QMtpDevice::proccessJob(GenericCommand* currentJob)
       SendFileCmd* sendCmd = (SendFileCmd*)currentJob;
       QString fullpath = sendCmd->Path;
 
+      qDebug() << "Syncing file with path: " << fullpath;
       TagLib::FileRef tagFile(fullpath.toUtf8().data(), true,
                         TagLib::AudioProperties::Accurate);
       if (tagFile.isNull())
       {
-        qDebug() << "Syncing to root folder..";
-        syncFile(fullpath, 0);
+        syncFile(fullpath, sendCmd->ParentFolder);
         delete sendCmd;
         break;
       }
 
-      qDebug() << "Syncing track with path: " << fullpath;
-      syncTrack(tagFile, sendCmd->ParentID);
+      syncTrack(tagFile, sendCmd->ParentFolder);
       delete sendCmd;
       break;
     }
@@ -307,14 +306,15 @@ QSortFilterProxyModel* QMtpDevice::GetPlaylistModel() const
 /**
  * Issues a command to initiate the transfer of a track
  * @param in_path the path to the track on the filesystem
+ * @param in_parent the parent folder of the transfered file/track
  */
-void QMtpDevice::TransferTrack(QString inpath)
+void QMtpDevice::TransferTrack(const QString& inpath, MTP::Folder* parentFolder)
 {
   QFileInfo file(inpath);
   if (file.isDir())
     return;
 
-  SendFileCmd* cmd= new SendFileCmd(inpath, 0, true);
+  SendFileCmd* cmd= new SendFileCmd(inpath, parentFolder, true);
   IssueCommand(cmd);
   qDebug() << "Attempting to transfer file: " << inpath;
 }
@@ -557,7 +557,6 @@ void QMtpDevice::SetSelectedStorage(count_t in_storageID)
  */
 unsigned int QMtpDevice::SelectedStorage()
 {
-  qDebug() << "Selected storage: " << _storageID;
   return _storageID;
 }
 
@@ -586,7 +585,7 @@ MtpStorage* QMtpDevice::StorageDevice(unsigned int in_idx)
  * @param parent the parent id of this track, this should be the id of a
  *               folder where this track will reside in
  */
-void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)
+void QMtpDevice::syncTrack(const TagLib::FileRef& tagFile, MTP::Folder const * parent)
 {
   QString filePath = QFile::decodeName(QByteArray(tagFile.file()->name()));
   QFileInfo file(filePath);
@@ -600,7 +599,7 @@ void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)
 
   MTP::Track* newTrack;
   newTrack = SetupTrackTransfer(tagFile, filename, size,
-                                         parent, type);
+                                         parent->ID(), type);
   assert(newTrack);
 
   if (! _device->TransferTrack(filePath.toUtf8().data(), newTrack) )
@@ -694,28 +693,49 @@ void QMtpDevice::syncTrack(TagLib::FileRef tagFile, uint32_t parent)
  * @param parent the parent id of this file, this should be the id of a
  *               folder
  */
-void QMtpDevice::syncFile(const QString& in_path, uint32_t parent)
+void QMtpDevice::syncFile(const QString& in_path, MTP::Folder const * in_parent)
 {
   QFileInfo file(in_path);
-  QString suffixStr = file.suffix().toUpper();
 
-  char* suffix = suffixStr.toUtf8().data();
-  //TODO is this the right way to convert to an  8bit string?
-  char* filename = file.completeBaseName().toLocal8Bit().data();
+  char* suffix= NULL;
+  char* filename = NULL;
+
+  QByteArray convertedFilename;
+  QByteArray convertedSuffix;
+  //if we have a file named ".filename"
+  if (file.completeBaseName().length() == 0 && file.suffix().length() > 0)
+  {
+    QString blankSuffix;
+	  convertedFilename = QFile::encodeName(file.fileName()).data();
+	  convertedSuffix = QFile::encodeName(blankSuffix).data();
+  }
+  else
+  {
+	  convertedFilename = QFile::encodeName(file.completeBaseName()).data();
+    QString suffixStr = file.suffix().toUpper();
+	  convertedSuffix = QFile::encodeName(suffixStr).data();
+  }
+  filename = convertedFilename.data();
+  suffix = convertedSuffix.data();
+
+  std::cout << "COUT Local8 FileName: " << file.completeBaseName().toLocal8Bit().data() << std::endl;
+  std::cout << "COUT FileName: " << filename << std::endl;
+  std::cout << "COUT Suffix: " << suffix << std::endl;
   uint64_t size = (uint64_t) file.size();
   LIBMTP_filetype_t type = MTP::StringToType(suffix);
 
   qDebug() << "Syncing file of type: " << QString( MTP::TypeToString(type).c_str());
 
-  MTP::File* newFile = SetupFileTransfer(filename, size, parent,
+  MTP::File* newFile = SetupFileTransfer(filename, size, in_parent->ID(),
                                                   type);
+  newFile->SetParentFolder(in_parent);
   if (! _device->TransferFile((const char*) in_path.toUtf8().data(),
                                 newFile) )
   {
     qDebug() << "Failed to transfer file";
     return;
   }
-  qDebug() << "About to emit AddedFileToAlbum thread id is: " << currentThread();
+  qDebug() << "About to emit AddedFile thread id is: " << currentThread();
   emit AddedFile(newFile);
   return;
 }
@@ -858,6 +878,11 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
 
   switch (in_obj->Type())
   {
+    case MtpInvalid:
+    {
+      assert(false);
+      break;
+    }
     case MtpFile:
     {
       MTP::File* deletedObj = (MTP::File*) in_obj;

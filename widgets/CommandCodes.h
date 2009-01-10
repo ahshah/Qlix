@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -50,13 +50,13 @@ enum CommandCode
     TransferDeviceFolder,
     TransferSystemFolder
     */
-}; 
+};
 
-struct GenericCommand 
+struct GenericCommand
 {
   CommandCode ComCode;
   GenericCommand (CommandCode in_code) : ComCode(in_code)
-  { } 
+  { }
 
   CommandCode GetCommand()  { return ComCode; }
 };
@@ -65,12 +65,12 @@ struct SendFileCmd : GenericCommand
 {
     QString Path;
     bool IsTrack;
-    uint32_t ParentID;
-    SendFileCmd (QString in_path, uint32_t in_parent, 
+    MTP::Folder* ParentFolder;
+    SendFileCmd (QString in_path, MTP::Folder* in_parent,
                         bool in_isTrack = false) : GenericCommand(SendFile)
     {
         Path = in_path;
-        ParentID = in_parent;
+        ParentFolder = in_parent;
         IsTrack = in_isTrack;
     }
 };
@@ -184,13 +184,13 @@ struct NewDirectory : GenericCommand
     QString Name;
     NewDirectory(const QString& in_name, uint32_t in_parent_id)
     {
-        ComCode = CreateDirectory; 
+        ComCode = CreateDirectory;
         ParentID = in_parent_id;
         Name = in_name;
     }
 };
 
- Not used: DirNode 
+ Not used: DirNode
 struct TransferSystemFolder : GenericCommand
 {
     QFileInfoList Files;
@@ -209,7 +209,7 @@ struct MtpUpdateDelete : MtpUpdate
 {
     uint32_t FolderID;
     int Depth;
-    MtpUpdateDelete (bool in_success, uint32_t in_Folderid, int in_depth) 
+    MtpUpdateDelete (bool in_success, uint32_t in_Folderid, int in_depth)
     {
         Success = in_success;
         FolderID = in_Folderid;

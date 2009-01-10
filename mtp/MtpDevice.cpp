@@ -1116,11 +1116,8 @@ bool MtpDevice::RemoveFile(MTP::File* in_file)
   *   the device.
   * parentFolder->RemoveFileFromRawFolder(in_file->GetRowIndex());
   */
-  int ret = removeObject(in_file->ID());
-  if (ret != 0)
-    return false;
-  else
-    return true;
+  bool ret = removeObject(in_file->ID());
+  return ret;
 }
 
 /**
@@ -1155,11 +1152,8 @@ bool MtpDevice::RemoveFolder(MTP::Folder* in_folder)
     parentFolder->RemoveFolderFromRawFolder(in_folder->GetRowIndex());
   */
 
-  int ret = removeObject(in_folder->ID());
-  if (ret != 0)
-    return false;
-  else
-    return true;
+  bool ret = removeObject(in_folder->ID());
+  return ret;
 }
 /**
  * Removes a track from the device and the raw album object that is its parent

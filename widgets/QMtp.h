@@ -36,11 +36,14 @@ static MTP::GenericObject* RawGenericObject(QModelIndex in_idx)
   if (!in_idx.isValid())
      return NULL;
   MtpObjectType theType = MtpType(in_idx);
-  if (theType != MtpFolder ||
-      theType != MtpFile ||
-      theType != MtpTrack ||
-      theType != MtpPlaylist ||
-      theType != MtpAlbum ||
+  if (theType == MtpFolder)
+    cout << "its a folder" << endl;
+
+  if (theType != MtpFolder &&
+      theType != MtpFile &&
+      theType != MtpTrack &&
+      theType != MtpPlaylist &&
+      theType != MtpAlbum &&
       theType != MtpTrack)
     {
       assert(false);

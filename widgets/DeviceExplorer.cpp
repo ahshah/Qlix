@@ -552,16 +552,41 @@ void DeviceExplorer::TransferToDevice()
   {
     QString fpath = _fsModel->filePath(idxList.front());
     qDebug() << "Fpath is: " << fpath;
-    fileList.push_back(fpath);
+    fileList.push_back( fpath);
     idxList.pop_front();
   }
-/*
-    selctedModel = _deviceRightView->selectionModel();
-    idxList = selectedModel->selectedRows();
-*/
+    QAbstractItemModel* rightModel = _deviceRightView->model();
+
+    MTP::Folder* syncParent = NULL;
+    assert(rightModel);
+    if (rightModel == _plModel || rightModel == _albumModel)
+    {
+      QModelIndex tmpIdx= _dirModel->sourceModel()->index(0,0, QModelIndex());
+      syncParent = QMTP::RawFolder(tmpIdx);
+    }
+    else
+    {
+      QItemSelectionModel* selectedDevFolders = _deviceRightView->selectionModel();
+      QModelIndexList selectedDirs = selectedDevFolders->selectedRows();
+      if (!selectedDirs.empty())
+      {
+	      QModelIndex firstFolder = selectedDirs.front();
+	      MTP::GenericObject* tmpObj;
+	      tmpObj = QMTP::RawGenericObject( _dirModel->mapToSource(firstFolder));
+	      if (firstFolder.isValid() && tmpObj && tmpObj->Type() == MtpFolder)
+	      {
+	          syncParent = QMTP::RawFolder(_dirModel->mapToSource(firstFolder));
+	      }
+      }
+      else
+        syncParent =QMTP::RawFolder(_dirModel->sourceModel()->index(0,0, QModelIndex()));
+
+    }
+    assert(syncParent);
+
     while (!fileList.empty())
     {
-      _device->TransferTrack(fileList.front());
+      _device->TransferTrack(fileList.front(), syncParent);
       fileList.pop_front();
     }
 }
@@ -869,7 +894,6 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
   foreach(idx, in_list)
   {
     idx = _dirModel->mapToSource(idx);
-    MTP::GenericObject* tempObj = (MTP::GenericObject*) idx.internalPointer();
     MtpObjectType type = QMTP::MtpType(idx);
     if (type ==  MtpFolder)
       dirList.push_back(idx);

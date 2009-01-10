@@ -81,7 +81,7 @@ public:
   count_t ParentID() const;
   virtual const char * Name() const;
 
-  void SetParentFolder(Folder*);
+  void SetParentFolder(Folder const* );
   Folder* ParentFolder() const;
 
   count_t GetRowIndex() const;
