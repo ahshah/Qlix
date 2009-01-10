@@ -118,19 +118,16 @@ public:
   void RemoveChildFolder(Folder*);
   void RemoveChildFile(File*);
 
-  void RemoveFileFromRawFolder(count_t);
-  void RemoveFolderFromRawFolder(count_t);
-
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);
 
 private:
   LIBMTP_folder_t* _rawFolder;
+  count_t _depth;
   Folder* _parent;
   std::vector<Folder*> _childFolders;
   std::vector<File*> _childFiles;
   count_t _rowIndex;
-  count_t _depth;
 };
 
 /**

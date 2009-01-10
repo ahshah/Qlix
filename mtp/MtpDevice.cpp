@@ -1111,7 +1111,11 @@ bool MtpDevice::RemoveFile(MTP::File* in_file)
 
   if (_commandLineOpts.SimulateTransfers)
     return true;
-  parentFolder->RemoveFileFromRawFolder(in_file->GetRowIndex());
+  /**
+  *  There should be no need to do this since there is no metadata to update on
+  *   the device.
+  * parentFolder->RemoveFileFromRawFolder(in_file->GetRowIndex());
+  */
   int ret = removeObject(in_file->ID());
   if (ret != 0)
     return false;
@@ -1145,11 +1149,11 @@ bool MtpDevice::RemoveFolder(MTP::Folder* in_folder)
   if (_commandLineOpts.SimulateTransfers)
     return true;
  /**
-  * We do this to be consistent with all other implementations of deletions
-  * Even though there is no metadata to update on the device.
-  */
+  *  There should be no need to do this since there is no metadata to update on
+  *   the device.
   if (parentFolder != NULL)
     parentFolder->RemoveFolderFromRawFolder(in_folder->GetRowIndex());
+  */
 
   int ret = removeObject(in_folder->ID());
   if (ret != 0)
