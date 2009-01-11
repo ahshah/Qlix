@@ -406,7 +406,6 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
       break;
     }
     }
-  }
 }
 
 /**
