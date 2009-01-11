@@ -29,6 +29,7 @@
  * Construct a new AlbumModel
  */
 AlbumModel::AlbumModel(vector<MTP::Album*> in_albums, QObject* parent) :
+                                              QAbstractItemModel(parent),
                                               _albumList(in_albums)
 {  }
 
@@ -142,10 +143,9 @@ int AlbumModel::rowCount(const QModelIndex& parent) const
 }
 /** Return the column count at the given parent index, 2 seemed reasonable
  * at the current time
- * @param parent the index whos column count we are trying to discover
  * @return the number of colums that occur beside the given parent
  */
-int AlbumModel::columnCount(const QModelIndex& parent ) const
+int AlbumModel::columnCount(const QModelIndex& ) const
 {
 //  MTP::GenericObject* obj = (MTP::GenericObject*)parent.internalPointer();
 //  if (obj && obj->Type() == MtpAlbum)

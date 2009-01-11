@@ -4,7 +4,7 @@ PlaylistDelegate::PlaylistDelegate(QSortFilterProxyModel* in_proxy, QWidget* par
                              QItemDelegate(parent),
                              _proxy(in_proxy)
 
-{ 
+{
   qDebug() << "Stub";
 }
 
@@ -14,7 +14,7 @@ void PlaylistDelegate::paint (QPainter* painter, const QStyleOptionViewItem& opt
   qDebug() << "Stub";
 }
 
-QSize PlaylistDelegate::sizeHint(const QStyleOptionViewItem& opt, 
+QSize PlaylistDelegate::sizeHint(const QStyleOptionViewItem& opt,
                               const QModelIndex& in_idx) const
 {
 

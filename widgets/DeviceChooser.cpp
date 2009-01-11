@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -25,15 +25,15 @@
  * Care should be taken with the no device widget as it is destroyed after
  * devices are added and should be recreated when devices are removed..
  */
-DeviceChooser::DeviceChooser(QWidget* parent)
+DeviceChooser::DeviceChooser(QWidget* parent) : QScrollArea(parent)
 {
   createNoDeviceWidget();
   createDetectDevicesWidget();
   initialize();
 }
 
-/* 
- * Initializes a button for each device detected, or displays the No devices 
+/*
+ * Initializes a button for each device detected, or displays the No devices
  * detected screen
  */
 void DeviceChooser::initialize()
@@ -120,7 +120,7 @@ void DeviceChooser::createNoDeviceWidget()
 }
 
 
-/** 
+/**
  * Creates the Detecting Devices widget
  */
 void DeviceChooser::createDetectDevicesWidget()
@@ -135,13 +135,13 @@ void DeviceChooser::deviceCountChanged()
 { }
 
 /*
- * Connects a button check box to the ExclusivelySelected() slot 
+ * Connects a button check box to the ExclusivelySelected() slot
  * @param idx the index of the button to connect
  */
 void DeviceChooser::setupConnections(count_t idx)
 {
   assert (idx <(int) _deviceButtons.size());
-  QObject::connect(_deviceButtons[idx], 
+  QObject::connect(_deviceButtons[idx],
                    SIGNAL(Checked(DeviceButton*, QMtpDevice*) ),
                    this,
                    SLOT(ExclusivelySelected(DeviceButton*, QMtpDevice*)));

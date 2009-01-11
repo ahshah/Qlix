@@ -123,7 +123,7 @@ int DirModel::rowCount(const QModelIndex& parent) const
   }
 }
 
-int DirModel::columnCount(const QModelIndex& parent ) const
+int DirModel::columnCount(const QModelIndex& ) const
 {
     return 1;
 }

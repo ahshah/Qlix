@@ -53,6 +53,7 @@ public:
   count_t ID() const;
   void SetID(count_t);
   virtual count_t Depth() const;
+  virtual uint32_t StorageID() const;
   MtpObjectType Type() const;
   virtual const char* Name() const;
 
@@ -80,13 +81,15 @@ class File : public GenericFileObject
 {
 public:
   File(LIBMTP_file_t*, count_t);
-  File(Track* in_track, Folder* in_parent, uint32_t in_storage_id);
+  File(Track*, Folder* );
+  File(Album*, Folder* );
   count_t ParentID() const;
   virtual const char * Name() const;
 
   void SetParentFolder(Folder const* );
   Folder* ParentFolder() const;
 
+  virtual uint32_t StorageID() const;
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);
 
@@ -111,6 +114,7 @@ public:
   virtual count_t Depth() const;
   Folder* ParentFolder() const;
 
+  virtual uint32_t StorageID() const;
   virtual char const * Name() const;
   Folder* ChildFolder(count_t ) const;
   File* ChildFile(count_t ) const;
@@ -152,6 +156,7 @@ public:
   size_t FileSize() const;
   LIBMTP_filetype_t FileType() const;
   //Not such a hot idea..
+  virtual uint32_t StorageID() const;
   LIBMTP_track_t* RawTrack() const;
 
   count_t GetRowIndex() const;
@@ -201,6 +206,7 @@ private:
 */
 class Album : public GenericFileObject
 {
+
 public:
   Album(LIBMTP_album_t*, const LIBMTP_filesampledata_t&);
   const LIBMTP_filesampledata_t& SampleData() const;
@@ -212,6 +218,7 @@ public:
   void SetInitialized();
   bool Initialized();
   Track* ChildTrack(count_t ) const;
+  uint32_t ParentFolderID() const;
 
   void AddTrack(Track*);
   void AddTrackToRawAlbum(Track* in_track);
@@ -227,6 +234,7 @@ public:
 
   void SetAssociation(File*);
 
+  virtual uint32_t StorageID() const;
 private:
   bool _initialized;
   LIBMTP_album_t* _rawAlbum;
@@ -252,6 +260,7 @@ public:
   uint32_t ChildTrackID(count_t idx) const;
   void SetInitialized();
 
+  virtual uint32_t StorageID() const;
   count_t GetRowIndex() const;
   void SetRowIndex(count_t);
 

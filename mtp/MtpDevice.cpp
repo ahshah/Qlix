@@ -1141,13 +1141,13 @@ bool MtpDevice::RemoveFolder(MTP::Folder* in_folder)
     cout << "Debug this immediately! "<< endl;
     assert(false);
   }
-  MTP::Folder* parentFolder = in_folder->ParentFolder();
 
   if (_commandLineOpts.SimulateTransfers)
     return true;
  /**
   *  There should be no need to do this since there is no metadata to update on
   *   the device.
+  MTP::Folder* parentFolder = in_folder->ParentFolder();
   if (parentFolder != NULL)
     parentFolder->RemoveFolderFromRawFolder(in_folder->GetRowIndex());
   */

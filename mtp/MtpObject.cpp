@@ -45,6 +45,13 @@ GenericObject::~GenericObject() {}
 count_t GenericObject::ID() const { return _id; }
 
 /**
+ * @return the storage ID this object resides on
+ */
+uint32_t GenericObject::StorageID() const
+{
+  return 0;
+}
+/**
  * Sets the ID of this object
  */
 void GenericObject::SetID( count_t in_id) { _id = in_id; }
@@ -192,6 +199,14 @@ char const * Track::Genre() const
 }
 
 /**
+ * @return the storage ID that this track resides on
+ */
+uint32_t Track::StorageID() const
+{
+  return _rawTrack->storage_id;
+}
+
+/**
  * Associates a shadow track to this track- this helps us keep track of
  * playlist membership when a track is deleted
  * @returns the association index of the track
@@ -318,17 +333,26 @@ File::File(LIBMTP_file_t* in_file, count_t in_depth) :
  * @param in_storage_id The storage ID that this file resides on
  * @return a new File object
  */
-File::File(Track* in_track, Folder* in_parent, uint32_t in_storage_id) :
+File::File(Track* in_track, Folder* in_parent) :
           GenericFileObject(MtpFile, in_track->ID()),
           _depth(in_parent->Depth())
 {
   assert(in_parent->ID() == in_track->ParentFolderID());
+  assert(in_parent->StorageID() == in_track->StorageID());
   _rawFile = new LIBMTP_file_t();
   _rawFile->parent_id = in_parent->ID();
-  _rawFile->storage_id = in_storage_id;
+  _rawFile->storage_id = in_track->StorageID();
   _rawFile->filename = strdup(in_track->FileName());
   _rawFile->filesize = in_track->FileSize();
   _rawFile->filetype = in_track->FileType();
+}
+
+File::File(Album* in_album, Folder* in_parent) :
+          GenericFileObject(MtpFile, in_album->ID()),
+          _depth(in_parent->Depth())
+{
+  assert(in_parent->ID() == in_album->ParentFolderID());
+  assert(in_parent->StorageID() == in_album->StorageID());
 }
 
 /**
@@ -342,6 +366,11 @@ count_t File::ParentID() const { return _rawFile->parent_id; }
  * @return the file's parent Folder or NULL if it exists in the root dir
  */
 Folder* File::ParentFolder() const { return _parent; }
+
+/**
+ * @return the storage ID that this file resides on
+ */
+uint32_t File::StorageID() const { return _rawFile->storage_id; }
 
 /**
  * Sets the file's parent Folder
@@ -513,6 +542,15 @@ void Folder::RemoveChildFolder(Folder* in_folder)
  * @return The depth of this folder in the folder tree
  * */
 count_t Folder::Depth() const { return _depth; }
+
+/**
+ * @return the storage ID that this folder resides on
+ */
+uint32_t Folder::StorageID() const
+{
+  return _rawFolder->storage_id;
+}
+
 /**
  * Remove a direct child file from the folder's list of child files.
  * @param in_file The file to remove.
@@ -546,6 +584,7 @@ count_t Folder::GetRowIndex() const { return _rowIndex; }
  * @param in_row the new row of this folder
  * */
 void Folder::SetRowIndex(count_t in_row) { _rowIndex = in_row; }
+
 
 /** Creates a new Album object
  * @param in_album A pointer to the LIBMTP_album_t wrap over
@@ -760,6 +799,15 @@ Track* Album::ChildTrack(count_t idx) const
   assert(idx < _childTracks.size());
   return _childTracks[idx];
 }
+/**
+ * @return the storage ID that this album resides on
+ */
+uint32_t Album::StorageID() const { return _rawAlbum->storage_id; }
+
+/**
+ * @return the parent folder's ID that this album resides in
+ */
+uint32_t Album::ParentFolderID() const { return _rawAlbum->parent_id; }
 
 /**
  * The Initialized state tells us when to stop using the underlying
@@ -859,6 +907,14 @@ uint32_t Playlist::ChildTrackID(count_t idx) const
     return _rawPlaylist->tracks[idx];
   else
     return _childTracks[idx]->GetTrack()->ID();
+}
+
+/**
+ * @return the storage ID that this playlist resides on.
+ */
+uint32_t Playlist::StorageID() const
+{
+  return _rawPlaylist->storage_id;
 }
 
 /**

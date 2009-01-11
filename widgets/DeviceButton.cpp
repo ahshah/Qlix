@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,6 +27,7 @@
  * @return Returns a DeviceButton object
  */
 DeviceButton::DeviceButton (QMtpDevice* in_device, QWidget* parent) :
+                            QVBoxLayout(parent),
                             _comboBox(NULL)
 {
   _device = in_device;
@@ -95,8 +96,8 @@ void DeviceButton::setupConnections()
  * Private slot that gets called when the button is clicked
  * it emits the Selected button
  */
-void DeviceButton::buttonClicked() 
-{ 
+void DeviceButton::buttonClicked()
+{
   QSettings settings;
   count_t id;
   if (!_comboBox)
@@ -112,11 +113,11 @@ void DeviceButton::buttonClicked()
   settings.sync();
 
   qDebug() << "Storing and syncing: " << _device->Serial();
-  emit Selected(_device); 
+  emit Selected(_device);
 }
 
 /**
- * Private slot that is called when the checkbox is checked 
+ * Private slot that is called when the checkbox is checked
  * See also setupConnections()
  */
 void DeviceButton::stateChanged(int in)
