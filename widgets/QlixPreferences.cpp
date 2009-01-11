@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,7 +19,7 @@
  */
 
 #include "QlixPreferences.h"
-QlixPreferences::QlixPreferences(QObject* parent)
+QlixPreferences::QlixPreferences(QWidget* parent) : QWidget(parent)
 {
   _layout = new QGridLayout(this);
   _defaultDeviceLabel = new QLabel("Default Device:");

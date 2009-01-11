@@ -293,7 +293,6 @@ void AlbumModel::RemoveAlbum(MTP::Album* in_album)
   for (index_t i =in_album->GetRowIndex()+1; i < _albumList.size(); i++)
     _albumList[i]->SetRowIndex(i -1);
 
-  MTP::Album* deleteThisAlbum = _albumList[in_album->GetRowIndex()];
   std::vector<MTP::Album*>::iterator iter= _albumList.begin() + in_album->GetRowIndex();
   _albumList.erase(iter);
   emit endRemoveRows();
@@ -310,7 +309,7 @@ void AlbumModel::RemoveTrack(MTP::Track* in_track)
    * We cannot assert the existence of a parentAlbum since some tracks such as
    * recordings do not have a parent album!
    */
-  if(!parentAlbum);
+  if(!parentAlbum)
     return;
 
   QModelIndex parentIdx = createIndex(parentAlbum->GetRowIndex(), 0,

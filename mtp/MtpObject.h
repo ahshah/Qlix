@@ -27,6 +27,8 @@
 #include "types.h"
 #include <iostream>
 #include <string>
+#include <string.h>
+
 namespace MTP
 {
 
@@ -78,6 +80,7 @@ class File : public GenericFileObject
 {
 public:
   File(LIBMTP_file_t*, count_t);
+  File(Track* in_track, Folder* in_parent, uint32_t in_storage_id);
   count_t ParentID() const;
   virtual const char * Name() const;
 
@@ -146,6 +149,8 @@ public:
   const char* AlbumName() const;
   const char* ArtistName() const;
   Album* ParentAlbum() const;
+  size_t FileSize() const;
+  LIBMTP_filetype_t FileType() const;
   //Not such a hot idea..
   LIBMTP_track_t* RawTrack() const;
 

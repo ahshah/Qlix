@@ -251,6 +251,17 @@ void Track::SetParentAlbum(Album* in_album) {_parentAlbum = in_album; }
  */
 Album* Track::ParentAlbum() const { return _parentAlbum; }
 
+/**
+ * @return the size in bytes this track takes up on the device
+ */
+count_t Track::FileSize() const { return _rawTrack->filesize; }
+
+/**
+ * @return the LIBMTP filetype of this track
+ */
+LIBMTP_filetype_t Track::FileType() const { return _rawTrack->filetype; }
+
+
 ShadowTrack::ShadowTrack(Track* in_track, Playlist* in_pl, count_t in_idx) :
                          GenericObject(MtpShadowTrack, 0),
                          _track(in_track),
@@ -285,6 +296,7 @@ const Track* ShadowTrack::GetTrack() const
   return _track;
 }
 
+
 /**
  * Creates a new File object and and stores its representative data
  * @param in_file A pointer to the LIBMTP_file_to wrap over
@@ -297,6 +309,26 @@ File::File(LIBMTP_file_t* in_file, count_t in_depth) :
            _depth(in_depth)
 {
   _rawFile = in_file;
+}
+
+/**
+ * Creates a new File object from a track and sets up the association
+ * @param in_track A pointer to the associated track
+ * @param in_parent A pointer to the parent folder for this file
+ * @param in_storage_id The storage ID that this file resides on
+ * @return a new File object
+ */
+File::File(Track* in_track, Folder* in_parent, uint32_t in_storage_id) :
+          GenericFileObject(MtpFile, in_track->ID()),
+          _depth(in_parent->Depth())
+{
+  assert(in_parent->ID() == in_track->ParentFolderID());
+  _rawFile = new LIBMTP_file_t();
+  _rawFile->parent_id = in_parent->ID();
+  _rawFile->storage_id = in_storage_id;
+  _rawFile->filename = strdup(in_track->FileName());
+  _rawFile->filesize = in_track->FileSize();
+  _rawFile->filetype = in_track->FileType();
 }
 
 /**

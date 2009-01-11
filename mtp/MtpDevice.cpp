@@ -1107,13 +1107,13 @@ bool MtpDevice::RemoveFile(MTP::File* in_file)
 {
   assert(in_file);
   assert(in_file->ParentFolder());
-  MTP::Folder* parentFolder = in_file->ParentFolder();
 
   if (_commandLineOpts.SimulateTransfers)
     return true;
   /**
-  *  There should be no need to do this since there is no metadata to update on
-  *   the device.
+  * There should be no need to do this since there is no metadata to update on
+  * the device.
+  * MTP::Folder* parentFolder = in_file->ParentFolder();
   * parentFolder->RemoveFileFromRawFolder(in_file->GetRowIndex());
   */
   bool ret = removeObject(in_file->ID());

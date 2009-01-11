@@ -22,6 +22,7 @@
 #include "widgets/DirModel.h"
 
 DirModel::DirModel(MTP::Folder* in_rootFolder, QObject* parent) :
+                                                      QAbstractItemModel(parent),
                                                       _rootFolder(in_rootFolder)
 { }
 
@@ -87,8 +88,6 @@ QModelIndex DirModel::parent(const QModelIndex& idx) const
     MTP::Folder* parent = ((MTP::File*)obj)->ParentFolder();
     if (!parent)
       return QModelIndex();
-     MTP::File* fobj = (MTP::File*) obj;
-//    qDebug() << "file" << QString::fromUtf8(fobj->Name()) << " 's parent is: " << QString::fromUtf8(parent->Name());
     return createIndex(parent->GetRowIndex(), 0, parent);
   }
   else

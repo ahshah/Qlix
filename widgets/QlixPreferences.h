@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,7 +33,7 @@ class QlixPreferences: public QWidget
 {
   Q_OBJECT
 public:
-  QlixPreferences(QObject* parent = NULL);
+  QlixPreferences(QWidget* parent = NULL);
 
 private slots:
   void saveSettings();

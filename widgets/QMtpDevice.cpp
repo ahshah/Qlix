@@ -400,6 +400,12 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
       IssueCommand(cmd);
       break;
     }
+    case MtpInvalid:
+    {
+      assert(false);
+      break;
+    }
+    }
   }
 }
 
@@ -682,6 +688,7 @@ void QMtpDevice::syncTrack(const TagLib::FileRef& tagFile, MTP::Folder const * p
     return;
   }
   newTrack->SetParentAlbum(trackAlbum);
+
   qDebug() << "About to emit AddedTrackToAlbum thread id is: " << currentThread();
   emit AddedTrack(newTrack);
   return ;
