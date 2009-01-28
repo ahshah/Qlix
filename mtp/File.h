@@ -1,5 +1,6 @@
-#ifndef MTP_OBJECT
-#define MTP_OBJECT
+#ifndef MTP_FILE
+#define MTP_FILE
+#include "GenericObjects.h"
 /*
  *   Copyright (C) 2008 Ali Shah <caffein@gmail.com>
  *
@@ -18,21 +19,44 @@
  *   You should have received a copy of the GNU General Public License along
  *   with this program; if not, write to the Free Software Foundation, Inc.,
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *   TODO error checking when returning char* ?
- *   TODO use multimap for track/file distinction
- *        RESOLVED by Association() parameter (I think)
- *   TODO Figure out if we need to actually implement removeFromRawPlaylist/album/folder etc
- *      RESOLVED: Yes we do- we call removeFromRawPlaylist() then update the device by reuploading
- *      the raw container
- *      However removeFromRawFolder does not need to be implemented because of lack of async
- *      method calls available in libmtp to update teh raw folder containers
  */
 
-#include "GenericObjects.h"
-#include "File.h"
-#include "Folder.h"
-#include "Track.h"
-#include "ShadowTrack.h"
-#include "Album.h"
-#include "Playlist.h"
+/**
+ * @class File is a class that wraps around LIBMTP_file_t
+*/
+
+
+namespace MTP
+{
+class Folder;
+class Track;
+class Album;
+
+class File : public GenericFileObject
+{
+public:
+  File(LIBMTP_file_t*, count_t);
+  File(Track*, Folder* );
+  File(Album*, Folder* );
+
+  count_t ParentID() const;
+  virtual const char * Name() const;
+
+  void SetParentFolder(Folder const* );
+  Folder* ParentFolder() const;
+
+  virtual uint32_t StorageID() const;
+  count_t GetRowIndex() const;
+  void SetRowIndex(count_t);
+
+  LIBMTP_file_t* RawFile() const;
+private:
+  LIBMTP_file_t* _rawFile;
+  LIBMTP_filesampledata_t _sampleData;
+  Folder* _parent;
+  count_t _rowIndex;
+  count_t _depth;
+};
+
+}
 #endif

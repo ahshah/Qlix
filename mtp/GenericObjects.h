@@ -1,5 +1,5 @@
-#ifndef MTP_OBJECT
-#define MTP_OBJECT
+#ifndef GENERIC_OBJECTS
+#define GENERIC_OBJECTS
 /*
  *   Copyright (C) 2008 Ali Shah <caffein@gmail.com>
  *
@@ -22,17 +22,53 @@
  *   TODO use multimap for track/file distinction
  *        RESOLVED by Association() parameter (I think)
  *   TODO Figure out if we need to actually implement removeFromRawPlaylist/album/folder etc
- *      RESOLVED: Yes we do- we call removeFromRawPlaylist() then update the device by reuploading
+ *      RESOLVED: Yes we do- we removeFromRawPlaylist() then update the device by reuploading
  *      the raw container
- *      However removeFromRawFolder does not need to be implemented because of lack of async
- *      method calls available in libmtp to update teh raw folder containers
  */
 
-#include "GenericObjects.h"
-#include "File.h"
-#include "Folder.h"
-#include "Track.h"
-#include "ShadowTrack.h"
-#include "Album.h"
-#include "Playlist.h"
+
+
+#include <libmtp.h>
+#include <vector>
+#include <assert.h>
+#include "types.h"
+#include <iostream>
+#include <string>
+#include <string.h>
+
+namespace MTP
+{
+/**
+ * @class Generic base class for other MTP object types
+*/
+class GenericObject
+{
+public:
+  GenericObject(MtpObjectType, uint32_t);
+  virtual ~GenericObject();
+  count_t ID() const;
+  void SetID(count_t);
+  virtual count_t Depth() const;
+  virtual uint32_t StorageID() const;
+  MtpObjectType Type() const;
+  virtual const char* Name() const;
+
+private:
+  MtpObjectType _type;
+  count_t _id;
+  count_t _depth;
+};
+
+class GenericFileObject : public GenericObject
+{
+  public:
+  GenericFileObject(MtpObjectType, uint32_t);
+  void Associate(GenericFileObject* );
+  GenericFileObject* Association() const;
+
+  private:
+  GenericFileObject* _association;
+};
+
+}
 #endif

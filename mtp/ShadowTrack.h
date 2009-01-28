@@ -1,5 +1,5 @@
-#ifndef MTP_OBJECT
-#define MTP_OBJECT
+#ifndef MTP_SHADOW_TRACK
+#define MTP_SHADOW_TRACK
 /*
  *   Copyright (C) 2008 Ali Shah <caffein@gmail.com>
  *
@@ -18,21 +18,33 @@
  *   You should have received a copy of the GNU General Public License along
  *   with this program; if not, write to the Free Software Foundation, Inc.,
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *   TODO error checking when returning char* ?
- *   TODO use multimap for track/file distinction
- *        RESOLVED by Association() parameter (I think)
- *   TODO Figure out if we need to actually implement removeFromRawPlaylist/album/folder etc
- *      RESOLVED: Yes we do- we call removeFromRawPlaylist() then update the device by reuploading
- *      the raw container
- *      However removeFromRawFolder does not need to be implemented because of lack of async
- *      method calls available in libmtp to update teh raw folder containers
  */
-
 #include "GenericObjects.h"
-#include "File.h"
-#include "Folder.h"
-#include "Track.h"
-#include "ShadowTrack.h"
-#include "Album.h"
-#include "Playlist.h"
+namespace MTP
+{
+class Playlist;
+class Track;
+/**
+ * @class ShadowTrack is a class that provides an abstraction of the
+ * relationship between tracks and playlists.
+ * Since this relationship can be one(track)-to-many(playlists) we must create
+ * a relationship for each one the associations.
+ * This object does not exist in LIBMTP
+*/
+class ShadowTrack : public GenericObject
+{
+public:
+  ShadowTrack(Track*, Playlist*, count_t);
+  ~ShadowTrack();
+  void SetRowIndex(count_t);
+  count_t RowIndex() const;
+  Playlist* ParentPlaylist() const;
+  const Track* GetTrack() const;
+private:
+  Track* _track;
+  Playlist* _parentPlaylist;
+  count_t _rowIndex;
+  count_t _trackAssociationIndex;
+};
+}
 #endif

@@ -43,7 +43,7 @@ TODO ReWrite dbgPrintFolders to account for the fake root folder we create
 
 TODO Implement NewFolder and RemoveFolder
 TODO When a file transfer is complete the libmtp struct may have new information
-     this information needs to get propogated up the c++ structs
+     this information needs to get propagated up the c++ structs
      This is especially the case when some devices do not support utf8
      characters- libmtp modifies these names before sending it over the wire
 */
