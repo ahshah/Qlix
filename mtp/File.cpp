@@ -39,7 +39,7 @@ File::File(LIBMTP_file_t* in_file, count_t in_depth) :
 }
 
 /**
- * Creates a new File object from a track and sets up the association
+ * Creates a new File object from a track and sets up the association.
  * @param in_track A pointer to the associated track
  * @param in_parent A pointer to the parent folder for this file
  * @param in_storage_id The storage ID that this file resides on
@@ -59,12 +59,25 @@ File::File(Track* in_track, Folder* in_parent) :
   _rawFile->filetype = in_track->FileType();
 }
 
+/**
+ * Creates a new File object from a track and sets up the association.
+ * @param in_track A pointer to the associated track
+ * @param in_parent A pointer to the parent folder for this file
+ * @param in_storage_id The storage ID that this file resides on
+ * @return a new File object
+ */
 File::File(Album* in_album, Folder* in_parent) :
           GenericFileObject(MtpFile, in_album->ID()),
           _depth(in_parent->Depth())
 {
   assert(in_parent->ID() == in_album->ParentFolderID());
   assert(in_parent->StorageID() == in_album->StorageID());
+  _rawFile = new LIBMTP_file_t();
+  _rawFile->parent_id = in_parent->ID();
+  _rawFile->filename = strdup(in_album->Name());
+  //guess
+  _rawFile->filesize = 54;
+  _rawFile->filetype = LIBMTP_FILETYPE_UNKNOWN;
 }
 
 /**

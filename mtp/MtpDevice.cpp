@@ -46,6 +46,8 @@ TODO When a file transfer is complete the libmtp struct may have new information
      this information needs to get propagated up the c++ structs
      This is especially the case when some devices do not support utf8
      characters- libmtp modifies these names before sending it over the wire
+
+TODO !BLOCKING!: Find a way to retrieve default parent handles for albums and playlists
 */
 
 #include "MtpDevice.h"
@@ -921,7 +923,7 @@ bool MtpDevice::UpdateSpaceInformation()
  * @param in_storageID the storage id to create the album on
  * @param out_album the newly allocated MTP::Album, if the operation fails
  *        this value is NULL
- * @return true if successfull false otherwise
+ * @return true if successful false otherwise
  */
 bool MtpDevice::NewAlbum(MTP::Track* in_track, int in_storageID,
                          MTP::Album** out_album)

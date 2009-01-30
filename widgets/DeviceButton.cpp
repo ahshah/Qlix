@@ -123,5 +123,5 @@ void DeviceButton::buttonClicked()
 void DeviceButton::stateChanged(int in)
 {
   if (in == Qt::Checked)
-    emit Checked(this, _device);
+    emit Checked(this);
 }

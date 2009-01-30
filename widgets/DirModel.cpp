@@ -280,10 +280,9 @@ void DirModel::RemoveFile(MTP::File* in_file)
   MTP::Folder* parentFolder = in_file->ParentFolder();
   QModelIndex parentIdx = createIndex(parentFolder->GetRowIndex(), 0,
                                       parentFolder);
-  emit beginRemoveRows(parentIdx, in_file->GetRowIndex(),
-                       in_file->GetRowIndex());
-  for (count_t i =0; i < parentFolder->FileCount();
-      i++)
+  count_t startRowIndex = in_file->GetRowIndex()+parentFolder->FolderCount();
+  emit beginRemoveRows(parentIdx, startRowIndex, startRowIndex);
+  for (count_t i =0; i < parentFolder->FileCount(); i++)
   {
     assert(parentFolder->ChildFile(i)->GetRowIndex() == i);
   }

@@ -752,9 +752,8 @@ void DeviceExplorer::removeIndexDuplicates(
                                 const QSortFilterProxyModel* in_model)
 
 {
-  QAbstractItemModel* theModel = in_model->sourceModel();
   if(in_model == _albumModel || in_model== _plModel)
-    return removeTrackBasedIndexDuplicates(in_list, out_list, theModel);
+    return removeTrackBasedIndexDuplicates(in_list, out_list, in_model);
   //TODO fix dirmodel is not a proxymodel?
   else if (in_model == _dirModel)
     return removeFileIndexDuplicates(in_list, out_list);
@@ -971,7 +970,7 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
 
   /*
    * Build file map- first add all the albums, as they are containers and their
-  * children might be selected
+   * children might be selected
    */
 
   foreach(idx, albumList)
@@ -1061,7 +1060,12 @@ void DeviceExplorer::removeFileIndexDuplicates(QModelIndexList& in_list,
   {
     out_list.push_back(genericFile);
     assert(genericFile->Type() != MtpInvalid);
-    qDebug() << "Pushed file : " << genericFile->Name();
+    if (genericFile->Type() == MtpFile )
+      qDebug() << "Pushed file : " << genericFile->Name();
+    else if (genericFile->Type() == MtpAlbum)
+      qDebug() << "Pushed album: " << genericFile->Name();
+    else if (genericFile->Type() == MtpPlaylist)
+      qDebug() << "Pushed playlist: " << genericFile->Name();
   }
 
   foreach(genericFolder, retDirList)

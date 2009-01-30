@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,7 +30,7 @@
 #include "widgets/QMtpDevice.h"
 #include "mtp/MtpStorage.h"
 
-/** 
+/**
  * @class a button class that displays the device icon and auto connect box,
  * and depending on how many storage devices exist on the device, a combo box
 */
@@ -42,7 +42,7 @@ public:
   void RemoveCheck();
 
 signals:
-  void Checked(DeviceButton*, QMtpDevice* _device);
+  void Checked(DeviceButton*);
   void Selected(QMtpDevice*);
 
 private slots:

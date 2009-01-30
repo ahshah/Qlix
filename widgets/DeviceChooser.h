@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -43,7 +43,7 @@
 
 typedef QVector<DeviceButton*> QButtonVector;
 
-/** 
+/**
  * @class This class displays the device chooser widget
  * which is a widget that display a series of buttons, one for each
  * device that has been detected by libMTP
@@ -56,7 +56,7 @@ public:
 signals:
   void DeviceSelected(QMtpDevice* );
 public slots:
-  void ExclusivelySelected(DeviceButton*, QMtpDevice*); 
+  void ExclusivelySelected(DeviceButton*);
   void Reinitialize();
   void AddDevice(QMtpDevice*);
   void NoDevices(bool);
@@ -95,9 +95,9 @@ private:
   /**
   * @class A private class to display the NoDevice Icon or alternatively
   * it shoulds the Detecting Devices Icon
-  * 
+  *
   */
-  class NoDevice : public QWidget 
+  class NoDevice : public QWidget
   {
     public:
     NoDevice(bool nodevice, QWidget* parent = NULL) : QWidget(parent)
@@ -127,7 +127,7 @@ private:
       _layout->addWidget(_image, 2, 0, 1, -1, Qt::AlignCenter);
       _layout->addItem(_bottom, 3, 0, 1, -1);
       setLayout(_layout);
-    } 
+    }
     /** This function changes the image to a recycle sign and tells the user
      * to connect a device as DBUS seems to be functioning
      */

@@ -195,14 +195,14 @@ void QMtpDevice::initializeDeviceStructures()
   _device->Initialize();
   _name = QString::fromUtf8(_device->Name());
   _serial = QString::fromUtf8(_device->SerialNumber());
-#ifdef QLIX_DEBUG
-//  qDebug() << "Discovered name to be: " << _name;
-#endif
+
   _albumModel = new AlbumModel(_device->Albums());
   new ModelTest(_albumModel);
   _dirModel = new DirModel(_device->RootFolder());
   new ModelTest(_dirModel);
   _plModel = new PlaylistModel(_device->Playlists());
+//TODO test out playlist model
+//  new ModelTest(_plModel);
 
   _sortedAlbums = new QSortFilterProxyModel();
   _sortedPlaylists = new QSortFilterProxyModel();
@@ -405,7 +405,7 @@ void QMtpDevice::DeleteObject(MTP::GenericObject* in_obj)
       assert(false);
       break;
     }
-    }
+  }
 }
 
 /**
@@ -925,9 +925,7 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
     case MtpShadowTrack:
     {
       MTP::ShadowTrack* deletedTrack = (MTP::ShadowTrack*) in_obj;
-      MTP::Playlist* parent = deletedTrack->ParentPlaylist();
-      bool ret;
-      ret = _device->RemoveShadowTrack(deletedTrack);
+      bool ret = _device->RemoveShadowTrack(deletedTrack);
       if (ret)
         emit RemovedTrackFromPlaylist(deletedTrack);
       break;
@@ -949,19 +947,8 @@ void QMtpDevice::deleteObject(MTP::GenericObject* in_obj)
       bool ret = false;
       //TODO make this a configurable option-
       //Delete tracks associated with albums on album deletions?
-      while(deletedAlb->TrackCount() > 0)
-      {
-        MTP::Track* deletedTrack = deletedAlb->ChildTrack(0);
-        assert(deletedTrack->Association()->Type() == MtpFile);
-
-        ret = _device->RemoveTrack(deletedTrack);
-        //TODO report error here ?
-        if (!ret)
-          return;
-        emit RemovedTrack( deletedTrack);
-        emit RemovedFile( (MTP::File*)deletedTrack->Association());
-      }
-
+      //Make sure the album has already been cleaned up from before
+      assert(deletedAlb->TrackCount()  == 0);
       ret = _device->RemoveAlbum( deletedAlb);
       MTP::File* association= (MTP::File*) deletedAlb->Association();
       if (ret)

@@ -54,8 +54,7 @@ void DeviceChooser::initialize()
  * to selected
  * @param selected the exclusively selected DeviceButton
  */
-void DeviceChooser::ExclusivelySelected(DeviceButton* selected,
-                                       QMtpDevice* selectedDev)
+void DeviceChooser::ExclusivelySelected(DeviceButton* selected)
 {
   for (int i = 0; i < _deviceButtons.size(); i++)
   {
@@ -140,11 +139,11 @@ void DeviceChooser::deviceCountChanged()
  */
 void DeviceChooser::setupConnections(count_t idx)
 {
-  assert (idx <(int) _deviceButtons.size());
+  assert (idx < _deviceButtons.size());
   QObject::connect(_deviceButtons[idx],
-                   SIGNAL(Checked(DeviceButton*, QMtpDevice*) ),
+                   SIGNAL(Checked(DeviceButton*) ),
                    this,
-                   SLOT(ExclusivelySelected(DeviceButton*, QMtpDevice*)));
+                   SLOT(ExclusivelySelected(DeviceButton*)));
   QObject::connect(_deviceButtons[idx], SIGNAL(Selected(QMtpDevice*)),
                    this, SIGNAL(DeviceSelected(QMtpDevice*)));
 }
