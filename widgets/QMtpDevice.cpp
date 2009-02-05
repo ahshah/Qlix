@@ -239,7 +239,7 @@ void QMtpDevice::findAndRetrieveDeviceIcon()
   MTP::Folder* rootFolder = _device->RootFolder();
   count_t fileCount = rootFolder->FileCount();
 
-  QString iconPath = QString("/tmp/QlixDeviceIcon-%1").arg( (int) this);
+  QString iconPath = QString("/tmp/QlixDeviceIcon-%1").arg( (uint64_t) this);
   MTP::File* iconFile= NULL;
   for (count_t i = 0; i < fileCount; i++)
   {

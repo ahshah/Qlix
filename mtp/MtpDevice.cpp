@@ -717,8 +717,10 @@ void MtpDevice::createTrackBasedStructures()
                << " has a non-existant track association. Autofixing.." << endl;
           currentAlbum->RemoveFromRawAlbum(j);
 
-          //If we simulate transfers then we do not make any calls that might update
-          //The underlying device
+          /**
+           * If we simulate transfers then we do not make any calls that might
+           * update the underlying device
+           **/
           if (!_commandLineOpts.SimulateTransfers)
           {
             int ret = LIBMTP_Update_Album(_device, currentAlbum->RawAlbum());
@@ -809,7 +811,8 @@ void MtpDevice::createTrackBasedStructures()
           if (_commandLineOpts.SimulateTransfers)
             continue;
 
-          int ret = LIBMTP_Update_Playlist(_device, currentPlaylist->RawPlaylist());
+          int ret = LIBMTP_Update_Playlist(_device,
+        		  const_cast<LIBMTP_playlist_t*> (currentPlaylist->RawPlaylist()));
           if (ret != 0)
           {
             processErrorStack();
@@ -1087,7 +1090,8 @@ bool MtpDevice::RemoveShadowTrack(MTP::ShadowTrack* in_track)
   if (_commandLineOpts.SimulateTransfers)
     return true;
 
-  int ret = LIBMTP_Update_Playlist(_device, pl->RawPlaylist());
+  int ret = LIBMTP_Update_Playlist(_device,
+						  const_cast<LIBMTP_playlist_t*> (pl->RawPlaylist()));
   if (ret != 0)
   {
     processErrorStack();
@@ -1200,7 +1204,8 @@ bool MtpDevice::RemoveTrack(MTP::Track* in_track)
       continue;
     MTP::Playlist* parentPl = strack->ParentPlaylist();
     parentPl->RemoveFromRawPlaylist(strack->RowIndex());
-    ret = LIBMTP_Update_Playlist(_device, parentPl->RawPlaylist());
+    ret = LIBMTP_Update_Playlist(_device,
+    		const_cast<LIBMTP_playlist_t*> (parentPl->RawPlaylist()));
     if (ret != 0 )
     {
       processErrorStack();

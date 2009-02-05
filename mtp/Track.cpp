@@ -169,7 +169,7 @@ Album* Track::ParentAlbum() const { return _parentAlbum; }
 /**
  * @return the size in bytes this track takes up on the device
  */
-count_t Track::FileSize() const { return _rawTrack->filesize; }
+size_t Track::FileSize() const { return _rawTrack->filesize; }
 
 /**
  * @return the LIBMTP filetype of this track

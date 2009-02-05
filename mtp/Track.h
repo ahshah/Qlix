@@ -45,8 +45,8 @@ public:
   Album* ParentAlbum() const;
   size_t FileSize() const;
   LIBMTP_filetype_t FileType() const;
-  //Not such a hot idea..
   virtual uint32_t StorageID() const;
+  //Not such a hot idea..
   LIBMTP_track_t* RawTrack() const;
 
   count_t GetRowIndex() const;
