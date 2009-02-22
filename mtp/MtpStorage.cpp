@@ -19,6 +19,7 @@
  */
 
 #include "MtpStorage.h"
+
 MtpStorage::MtpStorage(LIBMTP_devicestorage_t* in_storage) :
                        _totalSpace(0),
                        _freeSpace(0)

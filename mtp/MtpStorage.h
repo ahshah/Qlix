@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,6 +22,8 @@
 #define MTPSTORAGE
 #include <libmtp.h>
 #include <string.h>
+#include <iostream>
+using namespace std;
 
 /**
  * @class is an adapter class over LIBMTP_storage_t
