@@ -893,6 +893,9 @@ bool MtpDevice::UpdateSpaceInformation()
 {
   if (!_device)
     return false;
+  if (!_initialized)
+    assert(_storageDeviceList.size() == 0);
+
   int ret = LIBMTP_Get_Storage(_device, LIBMTP_STORAGE_SORTBY_NOTSORTED);
   if (ret != 0)
   {
