@@ -64,7 +64,7 @@ MtpDevice::MtpDevice(LIBMTP_mtpdevice_t* in_device, CommandLineOptions in_opts) 
 {
   _device = in_device;
   _serialNumber = LIBMTP_Get_Serialnumber(_device);
-  UpdateSpaceInformation();
+  //UpdateSpaceInformation();
 }
 
 /**
