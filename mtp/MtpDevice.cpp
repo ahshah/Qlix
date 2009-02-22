@@ -109,6 +109,7 @@ MtpDevice::~MtpDevice()
  */
 void MtpDevice::Initialize()
 {
+  cout << "Initializing device.. "  << endl;
   if (!_device)
     return;
 
