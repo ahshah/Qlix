@@ -6,9 +6,9 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
- *   This program is distributed in the hope that it will be useful,
+] *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License version 2.0 for more details.
@@ -23,6 +23,8 @@ MtpStorage::MtpStorage(LIBMTP_devicestorage_t* in_storage) :
                        _totalSpace(0),
                        _freeSpace(0)
 {
+  int descripLength = strlen(in_storage->StorageDescription);
+  int volumeLength =  strlen(in_storage->VolumeIdentifier);
   _description = new char[strlen(in_storage->StorageDescription)];
   _volumeID = new char[strlen(in_storage->VolumeIdentifier)];
   strcpy(_description, in_storage->StorageDescription);
