@@ -25,10 +25,16 @@ MtpStorage::MtpStorage(LIBMTP_devicestorage_t* in_storage) :
 {
   int descripLength = strlen(in_storage->StorageDescription);
   int volumeLength =  strlen(in_storage->VolumeIdentifier);
-  _description = new char[strlen(in_storage->StorageDescription)];
-  _volumeID = new char[strlen(in_storage->VolumeIdentifier)];
-  strcpy(_description, in_storage->StorageDescription);
-  strcpy(_volumeID, in_storage->VolumeIdentifier);
+  if (descripLength > 0)
+  {
+    _description = new char[strlen(in_storage->StorageDescription)];
+    strcpy(_description, in_storage->StorageDescription);
+  }
+  if (volumeLength > 0)
+  {
+    _volumeID = new char[strlen(in_storage->VolumeIdentifier)];
+    strcpy(_volumeID, in_storage->VolumeIdentifier);
+  }
   _totalSpace = in_storage->MaxCapacity;
   _freeSpace = in_storage->FreeSpaceInBytes;
   _id = in_storage->id;
@@ -36,10 +42,16 @@ MtpStorage::MtpStorage(LIBMTP_devicestorage_t* in_storage) :
 
 MtpStorage::~MtpStorage()
 {
-  delete _description;
-  _description = NULL;
-  delete _volumeID;
-  _volumeID= NULL;
+  if (_description)
+  {
+    delete _description;
+    _description = NULL;
+  }
+  if (_volumeID)
+  {
+    delete _volumeID;
+    _volumeID= NULL;
+  }
 }
 
 
