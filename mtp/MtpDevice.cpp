@@ -112,9 +112,8 @@ void MtpDevice::Initialize()
   cout << "Initializing device.. "  << endl;
   if (!_device)
     return;
-
   assert(_initialized== false);
-  _initialized = true;
+
 //  _progressFunc= NULL;
    _name = LIBMTP_Get_Friendlyname(_device);
    if (!_name)
@@ -153,6 +152,7 @@ void MtpDevice::Initialize()
     free(types);
   createObjectStructure();
   UpdateSpaceInformation();
+  _initialized = true;
 }
 
 /**
