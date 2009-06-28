@@ -233,10 +233,7 @@ void DeviceExplorer::UpdateProgressBar(const QString& label,
     _progressBar->show();
   _progressBar->setFormat(label);
   _progressBar->setValue(percent);
-  if (percent == 100)
-  {
-    UpdateDeviceSpace();
-  }
+
 }
 
 
@@ -333,9 +330,11 @@ void DeviceExplorer::setupConnections()
   connect(_transferToDevice, SIGNAL(triggered(bool)),
           this, SLOT(TransferToDevice()));
 
+
   connect(_device, SIGNAL(RemovedTrack(MTP::Track*)),
           this, SLOT( UpdateDeviceSpace()));
-
+  connect(_device, SIGNAL(AddedTrack(MTP::Track*)),
+          this, SLOT( UpdateDeviceSpace()));
 
   /**********************************
    *
@@ -361,8 +360,7 @@ void DeviceExplorer::setupConnections()
    *
    **********************************/
   connect(_device, SIGNAL(RemovedTrack(MTP::Track*)),
-          _albumModel->sourceModel(), SLOT(RemoveTrack(MTP::Track*)),
-          Qt::BlockingQueuedConnection);
+          _albumModel->sourceModel(), SLOT(RemoveTrack(
 
   connect(_device, SIGNAL(RemovedAlbum(MTP::Album*)),
           _albumModel->sourceModel(), SLOT(RemoveAlbum(MTP::Album*)),
@@ -619,7 +617,7 @@ void DeviceExplorer::TransferFromDevice()
     return;
   }
 
-  QAbstractItemModel* theModel = _deviceRightView->model();
+  QSortFilterProxyModel * theModel = (QSortFilterProxyModel*) _deviceRightView->model();
   assert(theModel == _albumModel || theModel == _plModel ||
          theModel == _dirModel);
 
@@ -632,6 +630,7 @@ void DeviceExplorer::TransferFromDevice()
   QModelIndex temp;
   foreach(temp, idxList)
   {
+    temp = theModel->mapToSource(temp);
     assert(temp.isValid());
     obj = (MTP::GenericObject*) temp.internalPointer();
     _device->TransferFrom(obj, transferPath);

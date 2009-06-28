@@ -24,7 +24,6 @@ MtpStorage::MtpStorage(LIBMTP_devicestorage_t* in_storage) :
                        _totalSpace(0),
                        _freeSpace(0)
 {
-  cout << "Created MtpStorage: " << endl;
   int descripLength = strlen(in_storage->StorageDescription);
   int volumeLength =  strlen(in_storage->VolumeIdentifier);
   if (descripLength > 0)

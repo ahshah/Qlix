@@ -29,8 +29,7 @@ INCLUDEPATH += . mtp widgets
 CONFIG += debug
 
 # Input
-HEADERS += build.h \
-           linuxsignals.h \
+HEADERS += linuxsignals.h \
            types.h \
            mtp/Album.h \
            mtp/BmpStructs.h \

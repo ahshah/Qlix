@@ -20,7 +20,7 @@
 
 //TODO Find out how to get TagLIB to print its version
 
-#include <libmtp.h>
+//#include <libmtp.h>
 #include <QMainWindow>
 #include <QApplication>
 #include <QPlastiqueStyle>

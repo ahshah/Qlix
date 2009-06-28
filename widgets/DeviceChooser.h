@@ -34,7 +34,6 @@
 
 #include <libmtp.h>
 #include "types.h"
-#include "build.h"
 #include "mtp/MtpSubSystem.h"
 #include "widgets/DeviceButton.h"
 #include "widgets/MtpWatchDog.h"

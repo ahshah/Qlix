@@ -6,7 +6,7 @@
  *   This file may be used under the terms of the GNU General Public
  *   License version 2.0 as published by the Free Software Foundation
  *   and appearing in the file COPYING included in the packaging of
- *   this file.  
+ *   this file.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +27,7 @@ QlixMainWindow::QlixMainWindow(MtpSubSystem* in_subsystem)
   setMinimumSize(800,500);
   QWidget::setWindowIcon(QIcon(":/pixmaps/qlix.xpm"));
 
-  QString buildStr = QString("Qlix (Build %1)").arg(BUILD_VERSION);
+  QString buildStr = QString("Qlix (Build %1)").arg("SVN");
   QWidget::setWindowTitle(buildStr);
 
   _watchDog = new MtpWatchDog(in_subsystem);
@@ -118,31 +118,31 @@ void QlixMainWindow::setupActions()
   _deviceExplorerActions = new QActionGroup(NULL);
   _deviceExplorerActions->setExclusive(true);
 
-  _albumlistAction= new QAction( QIcon(":/pixmaps/albumlist.png"), QString("View Albums"), NULL); 
+  _albumlistAction= new QAction( QIcon(":/pixmaps/albumlist.png"), QString("View Albums"), NULL);
   _albumlistAction->setCheckable(true);
   _deviceExplorerActions->addAction(_albumlistAction);
 
-  _playlistAction = new QAction( QIcon(":/pixmaps/playlist.png"), QString("View Playlists"), NULL); 
+  _playlistAction = new QAction( QIcon(":/pixmaps/playlist.png"), QString("View Playlists"), NULL);
   _playlistAction->setCheckable(true);
   _deviceExplorerActions->addAction(_playlistAction);
 
 
 
-  _filelistAction = new QAction( QIcon(":/pixmaps/filelist.png"), QString("View Files"), NULL); 
+  _filelistAction = new QAction( QIcon(":/pixmaps/filelist.png"), QString("View Files"), NULL);
   _filelistAction->setCheckable(true);
   _deviceExplorerActions->addAction(_filelistAction);
-   
-  _preferencesAction = new QAction( QIcon(":/pixmaps/preferences.png"), QString("Preferences"), NULL); 
+
+  _preferencesAction = new QAction( QIcon(":/pixmaps/preferences.png"), QString("Preferences"), NULL);
   _preferencesAction->setCheckable(true);
   _deviceExplorerActions->addAction(_preferencesAction);
 
-  _manageDeviceAction = new QAction( QIcon(":/pixmaps/managedevice.png"), QString("Manage Device"), NULL); 
+  _manageDeviceAction = new QAction( QIcon(":/pixmaps/managedevice.png"), QString("Manage Device"), NULL);
   _manageDeviceAction->setCheckable(true);
   _deviceExplorerActions->addAction(_manageDeviceAction);
 
   _showQueueSeparator = new QAction(NULL);
   _showQueueSeparator->setSeparator(true);
-  _showQueue = new QAction( QIcon(":/pixmaps/ShowQueue.png"), QString("Show Queue"), NULL); 
+  _showQueue = new QAction( QIcon(":/pixmaps/ShowQueue.png"), QString("Show Queue"), NULL);
   _showQueue->setCheckable(true);
 
 
@@ -213,10 +213,10 @@ void QlixMainWindow::setupConnections()
 
   connect(_playlistAction, SIGNAL(triggered(bool)),
           _deviceExplorer, SLOT(ShowPlaylists()));
-  
+
   connect(_filelistAction, SIGNAL(triggered(bool)),
           _deviceExplorer, SLOT(ShowFiles()));
- 
+
   //The following show the preferences menu and the device manager
   //And hides the toolbar
 
