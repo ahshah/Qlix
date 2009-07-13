@@ -64,7 +64,6 @@ MtpDevice::MtpDevice(LIBMTP_mtpdevice_t* in_device, CommandLineOptions in_opts) 
 {
   _device = in_device;
   _serialNumber = LIBMTP_Get_Serialnumber(_device);
-  UpdateSpaceInformation();
 }
 
 /**
@@ -337,7 +336,6 @@ MtpStorage* MtpDevice::StorageDevice(unsigned int in_idx) const
 {
   if (in_idx > _storageDeviceList.size())
     return NULL;
-  cout << "Created MtpStorage: " << endl;
   else
     return _storageDeviceList[in_idx];
 }
@@ -885,7 +883,7 @@ bool MtpDevice::TransferFile(const char* in_path, MTP::File* in_file)
 }
 
 /**
- * This function updates the space usage information, it should be called at
+ * This function updates the space usage information, it should be called after
  * every function call that could potentially change the space usage of the
  * device
  * @return true if successfully retreived, false otherwise

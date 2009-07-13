@@ -233,6 +233,8 @@ void DeviceExplorer::UpdateProgressBar(const QString& label,
     _progressBar->show();
   _progressBar->setFormat(label);
   _progressBar->setValue(percent);
+  if (percent == 100)
+      UpdateDeviceSpace();
 
 }
 
@@ -360,7 +362,8 @@ void DeviceExplorer::setupConnections()
    *
    **********************************/
   connect(_device, SIGNAL(RemovedTrack(MTP::Track*)),
-          _albumModel->sourceModel(), SLOT(RemoveTrack(
+          _albumModel->sourceModel(), SLOT(RemoveTrack()),
+          Qt::BlockingQueuedConnection);
 
   connect(_device, SIGNAL(RemovedAlbum(MTP::Album*)),
           _albumModel->sourceModel(), SLOT(RemoveAlbum(MTP::Album*)),
