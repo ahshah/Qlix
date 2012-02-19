@@ -82,19 +82,52 @@ SOURCES += main.cpp \
            widgets/QlixPreferences.cpp \
            widgets/QMtpDevice.cpp
 RESOURCES += Qlix.qrc
-unix {
+
+ParentDirectory =  .
+CONFIG(debug, debug|release) { 
+    DESTDIR = "$$ParentDirectory/build/debug"
+}
+CONFIG(release, debug|release) { 
+    DESTDIR = "$$ParentDirectory/build/release"
+}
+RCC_DIR     = "$$ParentDirectory/$$DESTDIR/RCCFiles"
+UI_DIR      = "$$ParentDirectory/$$DESTDIR/UICFiles"
+MOC_DIR     = "$$ParentDirectory/$$DESTDIR/MOCFiles"
+OBJECTS_DIR = "$$ParentDirectory/$$DESTDIR/ObjFiles"
+
+
+TAGLIB_INC = $$system(taglib-config --cflags)
+TAGLIB_LIBS = $$system(taglib-config --libs)
+
+linux {
+  message("Detected Linux")
   DEFINES += LINUX_SIGNALS
   DEFINES += LINUX_DBUS
   DEFINES += QLIX_DEBUG
-
-  TAGLIB_INC = $$system(taglib-config --cflags)
-  TAGLIB_LIBS = $$system(taglib-config --libs)
 
   LIBS += $$TAGLIB_LIBS
   LIBS += "-lmtp"
   LIBS += "-lusb"
 
   CONFIG += qdbus
+  TARGET = "qlix"
+  INCLUDEPATH +="/usr/include/"
+  INCLUDEPATH +="/usr/local/include/"
+  DEPENDPATH += "/usr/local/lib/"
+  QMAKE_CXXFLAGS += $$TAGLIB_INC
+  #target.path = /usr/bin
+  #INSTALLS += target
+}
+
+macx {
+  message("Detected OS X")
+  DEFINES += LINUX_SIGNALS
+  DEFINES += QLIX_DEBUG
+
+  LIBS += $$TAGLIB_LIBS
+  LIBS += "-lmtp"
+  LIBS += "-lusb-1.0"
+
   TARGET = "qlix"
   INCLUDEPATH +="/usr/include/"
   INCLUDEPATH +="/usr/local/include/"
