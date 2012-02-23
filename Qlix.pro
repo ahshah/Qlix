@@ -121,6 +121,7 @@ linux {
 
 macx {
   message("Detected OS X")
+  ICON = pixmaps/osx/qlix.icns
   DEFINES += LINUX_SIGNALS
   DEFINES += QLIX_DEBUG
 

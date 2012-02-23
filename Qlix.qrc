@@ -56,6 +56,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         <file>pixmaps/TreeView/branch-closed.png</file>
         <file>pixmaps/TreeView/branch-open.png</file>
         <file>pixmaps/qlix.xpm</file>
+        <file>pixmaps/osx/qlix.icns</file>
     </qresource>
 </RCC>
 
