@@ -202,14 +202,14 @@ QVariant AlbumModel::data(const QModelIndex& index, int role ) const
       }
       else
       {
-        QPixmap ret("pixmaps/miscAlbumCover.png");
+        QPixmap ret("pixmaps/AlbumIcon.png");
         return ret.scaledToWidth(24, Qt::SmoothTransformation);
       }
     }
 
     else if (temp->Type() == MtpTrack && index.column() == 0)
     {
-        return QIcon(QPixmap (":/pixmaps/track.png"));
+        return QIcon(QPixmap (":/pixmaps/Track.png"));
     }
     else
       return QVariant();

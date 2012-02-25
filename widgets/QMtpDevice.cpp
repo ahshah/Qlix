@@ -34,7 +34,7 @@ QMtpDevice::QMtpDevice(MtpDevice* in_device, MtpWatchDog* in_watchDog,
                        QThread(parent),
                        _device(in_device),
                        _watchDog(in_watchDog),
-                       _icon(QImage(":/pixmaps/miscDev.png")),
+                       _icon(QImage(":/pixmaps/DefaultDevice.png")),
                        _iconBuf(NULL)
 {
   _device->SetProgressFunction(progressWrapper, this);
@@ -197,9 +197,9 @@ void QMtpDevice::initializeDeviceStructures()
   _serial = QString::fromUtf8(_device->SerialNumber());
 
   _albumModel = new AlbumModel(_device->Albums());
-  new ModelTest(_albumModel);
+  new ModelTest(_albumModel, this);
   _dirModel = new DirModel(_device->RootFolder());
-  new ModelTest(_dirModel);
+  new ModelTest(_dirModel, this);
   _plModel = new PlaylistModel(_device->Playlists());
 //TODO test out playlist model
 //  new ModelTest(_plModel);
@@ -275,7 +275,7 @@ void QMtpDevice::findAndRetrieveDeviceIcon()
       }
     }
     else
-      _icon = QImage(":/pixmaps/miscDev.png");
+      _icon = QImage(":/pixmaps/DefaultDevice.png");
   }
   else
     qDebug() << "No device icon found";

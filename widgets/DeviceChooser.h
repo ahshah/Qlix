@@ -117,9 +117,9 @@ private:
 
       _image = new QLabel();
       if (nodevice)
-        _image->setPixmap(QPixmap(":/pixmaps/noDevice.png"));
+        _image->setPixmap(QPixmap(":/pixmaps/NoDevicesFound.png"));
       else
-        _image->setPixmap(QPixmap(":/pixmaps/DetectDevices.png"));
+        _image->setPixmap(QPixmap(":/pixmaps/DetectingDevices.png"));
 
       _layout->addItem(_top, 0, 0, 1, -1);
       _layout->addWidget(_text, 1, 0, 1, -1, Qt::AlignCenter);
@@ -134,7 +134,7 @@ private:
     {
       QString txt ("<h2>No devices found. Please connect a device..<h2>");
       _text->setText(txt);
-      _image->setPixmap(QPixmap(":/pixmaps/DetectDevices.png"));
+      _image->setPixmap(QPixmap(":/pixmaps/DetectingDevices.png"));
     }
 
     private:

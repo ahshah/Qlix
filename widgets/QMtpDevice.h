@@ -53,138 +53,139 @@ class MtpWatchDog;
  * A threaded version of MtpDevice representing device attributes using QT
  * objects and models
  */
+class MtpDirSorter;
 class QMtpDevice : public QThread
 {
-  Q_OBJECT
+Q_OBJECT
 public:
-  QMtpDevice(MtpDevice*, MtpWatchDog*, QObject* parent = NULL);
-  virtual ~QMtpDevice();
-  QString Name();
-  QString Serial();
-  QImage IconImage();
+    QMtpDevice(MtpDevice*, MtpWatchDog*, QObject* parent = NULL);
+    virtual ~QMtpDevice();
+    QString Name();
+    QString Serial();
+    QImage IconImage();
 
-  void TransferTrack(const QString& , MTP::Folder*);
-  void TransferFrom(MTP::GenericObject*, QString );
-  void DeleteObject(MTP::GenericObject*);
+    void TransferTrack(const QString& , MTP::Folder*);
+    void TransferFrom(MTP::GenericObject*, QString );
+    void DeleteObject(MTP::GenericObject*);
 
-  void IssueCommand (GenericCommand* in_command);
-  QSortFilterProxyModel* GetAlbumModel() const;
-  QSortFilterProxyModel* GetPlaylistModel() const;
-  QSortFilterProxyModel* GetDirModel() const;
-  void Progress(uint64_t const sent, uint64_t const total);
-  void FreeSpace(uint64_t* , uint64_t*);
-  void SetSelectedStorage(count_t);
-  unsigned int SelectedStorage();
-  unsigned int StorageDeviceCount();
-  MtpStorage* StorageDevice(unsigned int);
+    void IssueCommand (GenericCommand* in_command);
+    QSortFilterProxyModel* GetAlbumModel() const;
+    QSortFilterProxyModel* GetPlaylistModel() const;
+    QSortFilterProxyModel* GetDirModel() const;
+    void Progress(uint64_t const sent, uint64_t const total);
+    void FreeSpace(uint64_t* , uint64_t*);
+    void SetSelectedStorage(count_t);
+    unsigned int SelectedStorage();
+    unsigned int StorageDeviceCount();
+    MtpStorage* StorageDevice(unsigned int);
 
 signals:
-  void Initialized(QMtpDevice*);
-  void UpdateProgress(QString, count_t);
-  void NotATrack(SendFileCmd*);
-  void TrackTransferComplete(MTP::Track*);
+    void Initialized(QMtpDevice*);
+    void UpdateProgress(QString, count_t);
+    void NotATrack(SendFileCmd*);
+    void TrackTransferComplete(MTP::Track*);
 
-  void AddedFile(MTP::File*);
-  void RemovedFile(MTP::File*);
+    void AddedFile(MTP::File*);
+    void RemovedFile(MTP::File*);
 
-  void CreatedAlbum(MTP::Album*);
-  void RemovedAlbum(MTP::Album*);
+    void CreatedAlbum(MTP::Album*);
+    void RemovedAlbum(MTP::Album*);
 
-  void AddedTrack(MTP::Track*);
-  void RemovedTrack(MTP::Track*);
+    void AddedTrack(MTP::Track*);
+    void RemovedTrack(MTP::Track*);
 
-  void RemovedFolder(MTP::Folder*);
-  void AddedFolder(MTP::Folder*);
+    void RemovedFolder(MTP::Folder*);
+    void AddedFolder(MTP::Folder*);
 
+    void CreatedPlaylist(MTP::Playlist*);
+    void RemovedPlaylist(MTP::Playlist*);
 
-  void CreatedPlaylist(MTP::Playlist*);
-  void RemovedPlaylist(MTP::Playlist*);
-
-  void AddedTrackToPlaylist(MTP::Playlist*);
-  void RemovedTrackFromPlaylist(MTP::ShadowTrack*);
+    void AddedTrackToPlaylist(MTP::ShadowTrack*);
+    void RemovedTrackFromPlaylist(MTP::ShadowTrack*);
 protected:
-  void run();
+    void run();
 
 private:
 
-  void findAndRetrieveDeviceIcon();
-  void initializeDeviceStructures();
+        void findAndRetrieveDeviceIcon();
+        void initializeDeviceStructures();
 
-  void proccessJob(GenericCommand*);
+        void proccessJob(GenericCommand*);
 
-  MTP::Track* SetupTrackTransfer(TagLib::FileRef tagFile, const QString&,
-                                 uint64_t, uint32_t,  LIBMTP_filetype_t);
+        MTP::Track* SetupTrackTransfer(TagLib::FileRef tagFile, const QString&,
+                uint64_t, uint32_t,  LIBMTP_filetype_t);
 
-  MTP::File* SetupFileTransfer(const char*,  uint64_t,  count_t,
-                               LIBMTP_filetype_t);
+        MTP::File* SetupFileTransfer(const char*,  uint64_t,  count_t,
+                LIBMTP_filetype_t);
 
-  void syncTrack(const TagLib::FileRef&, MTP::Folder const* );
-  void deleteObject(MTP::GenericObject*);
-  void syncFile(const QString& path, MTP::Folder const* );
+        void syncTrack(const TagLib::FileRef&, MTP::Folder const* );
+        void deleteObject(MTP::GenericObject*);
+        void syncFile(const QString& path, MTP::Folder const* );
 
-  void lockusb();
-  void unlockusb();
+        void lockusb();
+        void unlockusb();
 
-  bool discoverCoverArt(const QString& in_path,
-                        const QString& in_albumName,
-                        QFileInfo* outFile);
+        bool discoverCoverArt(const QString& in_path,
+                const QString& in_albumName,
+                QFileInfo* outFile);
 
-  MtpDevice* _device;
+        MtpDevice* _device;
 
-  MtpWatchDog* _watchDog;
-  QImage _icon;
-  //delete this when done
-  char* _iconBuf;
-  QString _name;
-  QString _serial;
-  count_t _storageID;
+        MtpWatchDog* _watchDog;
+        QImage _icon;
+        //delete this when done
+        char* _iconBuf;
+        QString _name;
+        QString _serial;
+        count_t _storageID;
 
-  QQueue <GenericCommand*> _jobs;
-  QMutex _jobLock;
-  QWaitCondition _noJobsCondition;
+        QQueue <GenericCommand*> _jobs;
+        QMutex _jobLock;
+        QWaitCondition _noJobsCondition;
 
-  AlbumModel* _albumModel;
-  DirModel* _dirModel;
-  PlaylistModel* _plModel;
+        AlbumModel* _albumModel;
+        DirModel* _dirModel;
+        PlaylistModel* _plModel;
 
-  static int progressWrapper(uint64_t const sent, uint64_t const total,
-                             const void* const data);
-  /**
-   * A private class to manage sorting of the Directory model
-   * it sorts directories before files.
-   */
-  class MtpDirSorter  : public QSortFilterProxyModel
-  {
-  public:
-    MtpDirSorter(QObject* parent = NULL) : QSortFilterProxyModel(parent) { }
-    bool lessThan(const QModelIndex& left, const QModelIndex& right) const
-    {
-      MTP::GenericObject* leftobj = (MTP::GenericObject*) left.internalPointer();
-      MTP::GenericObject* rightobj = (MTP::GenericObject*) right.internalPointer();
-      if (leftobj->Type() == MtpFolder && rightobj->Type() == MtpFolder)
-      {
-        MTP::Folder* leftFolder = (MTP::Folder*) leftobj;
-        MTP::Folder* rightFolder = (MTP::Folder*) rightobj;
-        return ( QString::fromUtf8(leftFolder->Name()  ) <
-                 QString::fromUtf8(rightFolder->Name() ) );
-      }
-      else if (leftobj->Type() == MtpFolder && rightobj->Type() == MtpFile)
-        return true;
-      else if (leftobj->Type() == MtpFile && rightobj->Type() == MtpFolder)
-        return false;
-      else if (leftobj->Type() == MtpFile && rightobj->Type() == MtpFile)
-      {
-        MTP::File* leftFile = (MTP::File*) leftobj;
-        MTP::File* rightFile = (MTP::File*) rightobj;
-        return ( QString::fromUtf8(leftFile->Name()  ) <
-                 QString::fromUtf8(rightFile->Name() ) );
-       }
-       assert(false);
-      }
-    };
+        static int progressWrapper(uint64_t const sent, uint64_t const total,
+                const void* const data);
+        /**
+         * A private class to manage sorting of the Directory model
+         * it sorts directories before files.
+         */
     MtpDirSorter* _sortedFiles;
     QSortFilterProxyModel* _sortedAlbums;
     QSortFilterProxyModel* _sortedPlaylists;
 
+};
+
+class MtpDirSorter  : public QSortFilterProxyModel
+{
+public:
+    MtpDirSorter(QObject* parent = NULL) : QSortFilterProxyModel(parent) { }
+    bool lessThan(const QModelIndex& left, const QModelIndex& right) const
+    {
+        MTP::GenericObject* leftobj = (MTP::GenericObject*) left.internalPointer();
+        MTP::GenericObject* rightobj = (MTP::GenericObject*) right.internalPointer();
+        if (leftobj->Type() == MtpFolder && rightobj->Type() == MtpFolder)
+        {
+            MTP::Folder* leftFolder = (MTP::Folder*) leftobj;
+            MTP::Folder* rightFolder = (MTP::Folder*) rightobj;
+            return ( QString::fromUtf8(leftFolder->Name()  ) <
+                    QString::fromUtf8(rightFolder->Name() ) );
+        }
+        else if (leftobj->Type() == MtpFolder && rightobj->Type() == MtpFile)
+            return true;
+        else if (leftobj->Type() == MtpFile && rightobj->Type() == MtpFolder)
+            return false;
+        else if (leftobj->Type() == MtpFile && rightobj->Type() == MtpFile)
+        {
+            MTP::File* leftFile = (MTP::File*) leftobj;
+            MTP::File* rightFile = (MTP::File*) rightobj;
+            return ( QString::fromUtf8(leftFile->Name()  ) <
+                    QString::fromUtf8(rightFile->Name() ) );
+        }
+        assert(false);
+    }
 };
 #endif

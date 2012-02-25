@@ -18,20 +18,17 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-//TODO Use svn build numbers instead of arbitrary build numbers
 #include "QlixMainWindow.h"
-
 
 QlixMainWindow::QlixMainWindow(MtpSubSystem* in_subsystem)
 {
 	setupToolBar();
 	setMinimumSize(800,500);
-	QWidget::setWindowIcon(QIcon(":/pixmaps/qlix.xpm"));
+	QWidget::setWindowIcon(QIcon(":/pixmaps/Qlix.xpm"));
 
-	QString buildStr = QString("Qlix (Build %1)").arg("SVN");
-	QWidget::setWindowTitle(buildStr);
+	QWidget::setWindowTitle(QString("Qlix (Build %1)").arg("SVN"));
 
-	_watchDog = new MtpWatchDog(in_subsystem);
+	_watchDog      = new MtpWatchDog(in_subsystem);
 	_deviceChooser = new DeviceChooser(this);
 
 	setupWatchDogConnections();
@@ -44,12 +41,17 @@ QlixMainWindow::QlixMainWindow(MtpSubSystem* in_subsystem)
 
 void QlixMainWindow::setupWatchDogConnections()
 {
-	connect(_watchDog, SIGNAL(DefaultDevice(QMtpDevice*)),
-			this, SLOT(DeviceSelected(QMtpDevice*)), Qt::QueuedConnection);
-	connect(_watchDog, SIGNAL(NewDevice(QMtpDevice*)),
-			_deviceChooser, SLOT(AddDevice(QMtpDevice*)), Qt::QueuedConnection);
-	connect(_watchDog, SIGNAL(NoDevices(bool)),
-			_deviceChooser, SLOT(NoDevices(bool)), Qt::QueuedConnection);
+	connect(_watchDog,      SIGNAL(DefaultDevice(QMtpDevice*)),
+			this,           SLOT(DeviceSelected(QMtpDevice*)), 
+            Qt::QueuedConnection);
+
+	connect(_watchDog,      SIGNAL(NewDevice(QMtpDevice*)),
+			_deviceChooser, SLOT(AddDevice(QMtpDevice*)), 
+            Qt::QueuedConnection);
+
+	connect(_watchDog,      SIGNAL(NoDevices(bool)),
+			_deviceChooser, SLOT(NoDevices(bool)), 
+            Qt::QueuedConnection);
 }
 
 void QlixMainWindow::DeviceSelected(QMtpDevice* in_device)
@@ -99,25 +101,23 @@ void QlixMainWindow::setupActions()
 	_deviceExplorerActions = new QActionGroup(NULL);
 	_deviceExplorerActions->setExclusive(true);
 
-	_albumlistAction= new QAction( QIcon(":/pixmaps/albumlist.png"), QString("View Albums"), NULL);
+	_albumlistAction= new QAction( QIcon(":/pixmaps/AlbumList.png"), QString("View Albums"), NULL);
 	_albumlistAction->setCheckable(true);
 	_deviceExplorerActions->addAction(_albumlistAction);
 
-	_playlistAction = new QAction( QIcon(":/pixmaps/playlist.png"), QString("View Playlists"), NULL);
+	_playlistAction = new QAction( QIcon(":/pixmaps/PlayList.png"), QString("View Playlists"), NULL);
 	_playlistAction->setCheckable(true);
 	_deviceExplorerActions->addAction(_playlistAction);
 
-
-
-	_filelistAction = new QAction( QIcon(":/pixmaps/filelist.png"), QString("View Files"), NULL);
+	_filelistAction = new QAction( QIcon(":/pixmaps/FileList.png"), QString("View Files"), NULL);
 	_filelistAction->setCheckable(true);
 	_deviceExplorerActions->addAction(_filelistAction);
 
-	_preferencesAction = new QAction( QIcon(":/pixmaps/preferences.png"), QString("Preferences"), NULL);
+	_preferencesAction = new QAction( QIcon(":/pixmaps/Preferences.png"), QString("Preferences"), NULL);
 	_preferencesAction->setCheckable(true);
 	_deviceExplorerActions->addAction(_preferencesAction);
 
-	_manageDeviceAction = new QAction( QIcon(":/pixmaps/managedevice.png"), QString("Manage Device"), NULL);
+	_manageDeviceAction = new QAction( QIcon(":/pixmaps/ManageDevice.png"), QString("Manage Device"), NULL);
 	_manageDeviceAction->setCheckable(true);
 	_deviceExplorerActions->addAction(_manageDeviceAction);
 
@@ -125,7 +125,6 @@ void QlixMainWindow::setupActions()
 	_showQueueSeparator->setSeparator(true);
 	_showQueue = new QAction( QIcon(":/pixmaps/ShowQueue.png"), QString("Show Queue"), NULL);
 	_showQueue->setCheckable(true);
-
 
 	_navBar->addAction(_albumlistAction);
 	_navBar->addAction(_playlistAction);
@@ -136,59 +135,13 @@ void QlixMainWindow::setupActions()
 	_navBar->addAction(_showQueue);
 
 	_navBar->setIconSize(QSize(32,32));
-
-	//  setupAlbumActions();
-	//  setupPlaylistActions();
-	//  setupFileActions();
 }
-/*
 
-
-   void QlixMainWindow::showAlbumActions()
-   {
-   _playlistTools->hide();
-   _fileTools->hide();
-   _albumTools->show();
-   _currentView = Albums;
-   return;
-   }
-
-   void QlixMainWindow::hideAlbumActions()
-   {}
-
-   void QlixMainWindow::showPlaylistActions()
-   {
-   _albumTools->hide();
-   _fileTools->hide();
-   _playlistTools->show();
-   _currentView = Playlists;
-   return;
-   }
-
-   void QlixMainWindow::hidePlaylistActions()
-   {}
-
-
-   void QlixMainWindow::showFileActions()
-   {
-   _playlistTools->hide();
-   _albumTools->hide();
-   _fileTools->show();
-   _currentView = Files;
-   return;
-   }
-
-   void QlixMainWindow::hideFileActions()
-   {
-   for (int i =0; i < _fileActionList.size(); i++)
-   _fileActionList[i]->setVisible(false);
-   }
-   */
 void QlixMainWindow::setupConnections()
 {
-	//The following connections change DeviceExplorer's views
-	//And show the toolbar
-	//And show the right actions
+	/* The following connections change DeviceExplorer's views 
+     * And show the toolbar
+     * And show the right actions */
 	connect(_albumlistAction, SIGNAL(triggered(bool)),
 			_deviceExplorer, SLOT(ShowAlbums()));
 
@@ -198,12 +151,10 @@ void QlixMainWindow::setupConnections()
 	connect(_filelistAction, SIGNAL(triggered(bool)),
 			_deviceExplorer, SLOT(ShowFiles()));
 
-	//The following show the preferences menu and the device manager
-	//And hides the toolbar
-
+    /* The following show the preferences menu and the device manager
+     * And hides the toolbar */
 	connect(_manageDeviceAction, SIGNAL(triggered(bool)),
 			_deviceExplorer, SLOT(ShowDeviceManager()));
 	connect(_preferencesAction, SIGNAL(triggered(bool)),
 			_deviceExplorer, SLOT(ShowPreferences()));
-
 }

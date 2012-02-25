@@ -144,12 +144,12 @@ QVariant PlaylistModel::data(const QModelIndex& index, int role ) const
     MTP::GenericObject* temp = (MTP::GenericObject*) index.internalPointer();
     if (temp->Type() == MtpPlaylist && index.column() == 0)
     {
-          QPixmap ret(":/pixmaps/playlisticon.png");
+          QPixmap ret(":/pixmaps/PlayListIcon.png");
           return ret.scaledToWidth(24, Qt::SmoothTransformation);
     }
     else if (temp->Type() == MtpShadowTrack && index.column() == 0)
     {
-        return QIcon(QPixmap (":/pixmaps/track.png"));
+        return QIcon(QPixmap (":/pixmaps/Track.png"));
     }
     else
       return QVariant();

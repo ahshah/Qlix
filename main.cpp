@@ -18,99 +18,98 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-//TODO Find out how to get TagLIB to print its version
-
 //#include <libmtp.h>
-#include <QMainWindow>
 #include <QApplication>
 #include <QPlastiqueStyle>
-#include <QString>
-#include <QtDebug>
-
-#include "mtp/MtpSubSystem.h"
 #include "widgets/QlixMainWindow.h"
+
 #ifdef LINUX_SIGNALS
 #include "linuxsignals.h"
 #endif
 
-void printLibraryVersions();
-CommandLineOptions ParseCommandLineOptions(unsigned int argc, char* argv[]);
-
 MtpSubSystem _subSystem;
-int main(int argc, char* argv[])
-{
-  installSignalHandlers();
-  printLibraryVersions();
-
-  /** Setup D-BUS information */
-  QCoreApplication::setOrganizationName("QlixIsOSS");
-  QCoreApplication::setOrganizationDomain("Qlix.berlios.de");
-  QCoreApplication::setApplicationName("Qlix");
-  /** Setup QSettings */
-  QSettings settings;
-  QString ret = settings.value("DefaultDevice").toString();
-  
-  /** Setup QApplication */
-  QApplication app(argc, argv);
-  app.setStyle("Plastique");
-
-  /** Grab AutoFix options */
-  CommandLineOptions opts = ParseCommandLineOptions(argc, argv);
-
-  _subSystem.SetAutoFixOptions(opts); 
-  if (opts.AutoFixPlaylists)
-    cout << "Working" << endl;
-  //app.setStyleSheet("QTreeView::branch:!adjoins-item{ border-color: none;}"); works
-  //app.setStyleSheet("QTreeView::branch:!adjoins-item{ background: none}"); 
-  //app.setStyleSheet("QTreeView::branch:!adjoins-item:!has-children{ foreground: red}"); 
-  //app.setStyleSheet("QTreeView::branch:adjoins-item:has-children{ background: cyan}"); 
-
-  QlixMainWindow qmw(&_subSystem);
-  qmw.show();
-  Q_INIT_RESOURCE(Qlix);
-  app.exec();
-  return 0;
-} 
 
 /**
- * This function will print the version of all dependent  libraries
+ * This function prints the version of all relevant libraries
  **/
 void printLibraryVersions()
 { 
-  cout << "LIBMTP VERSION: " + string(LIBMTP_VERSION_STRING) << endl;
+    fprintf(stderr, "LibMTP version: " LIBMTP_VERSION_STRING "\n");
+    fprintf(stderr, "TagLIB version: %d.%d.%d\n", 
+            TAGLIB_MAJOR_VERSION, TAGLIB_MINOR_VERSION, TAGLIB_PATCH_VERSION);
 }
 
+/* Parse out command line options:
+ * --fix-playlists:
+ * --fix-albums:
+ * --simulate:
+ * --debug: 
+ */
 CommandLineOptions ParseCommandLineOptions(unsigned int argc, char* argv[])
 {
-  bool AutoFixPlaylists = false;
-  bool AutoFixAlbums= false;
-  bool SimulateTransfers= false;
-  bool DebugOutput = false;
-  for (unsigned int i =0; i < argc; i ++)
-  {
-    QString str(argv[i]);
-    str = str.toLower();
-    cout << "param: " << str.toStdString() << endl;
-    if (str == "--fixbadplaylists")
+    bool AutoFixPlaylists  = false;
+    bool AutoFixAlbums     = false;
+    bool SimulateTransfers = false;
+    bool DebugOutput       = false;
+    for (unsigned int i =0; i < argc; i ++)
     {
-      AutoFixPlaylists = true;
-      cout << "FOUND PL FIX!!!" << endl;
+        QString str(argv[i]);
+        str = str.toLower();
+        if (str == "--fix-playlists")
+        {
+            AutoFixPlaylists = true;
+            cerr << "Automatically fixing bad playlists" << endl;
+        }
+        else if (str == "--fix-albums")
+        {
+            AutoFixAlbums = true;
+            cerr << "Automatically fixing bad albums" << endl;
+        }
+        else if (str == "--simulate")
+        {
+            SimulateTransfers = true;
+            cerr << "Simulating device transfers" << endl;
+        }
+        else if (str == "--debug")
+        {
+            DebugOutput = true;
+            cerr << "Debug output enabled" << endl;
+        }
     }
-    else if (str == "--autofixalbums")
-    {
-      AutoFixAlbums = true;
-      cout << "FOUND ALBUM FIX!!!" << endl;
-    }
-    else if (str == "--simulate")
-    {
-      SimulateTransfers = true;
-      cout << "FOUND SIMULATE TRANSFERS FIX!!!" << endl;
-    }
-    else if (str == "--debug")
-    {
-      DebugOutput = true;
-    }
-  }
 
-  return CommandLineOptions(AutoFixPlaylists, AutoFixAlbums, SimulateTransfers, DebugOutput);
+    return CommandLineOptions(AutoFixPlaylists, AutoFixAlbums, SimulateTransfers, DebugOutput);
+}
+
+int main(int argc, char* argv[])
+{
+    installSignalHandlers();
+    printLibraryVersions();
+
+    /** Setup Application information, used for settings */
+    QCoreApplication::setOrganizationName("OSS");
+    QCoreApplication::setOrganizationDomain("github.com/ahshah/Qlix");
+    QCoreApplication::setApplicationName("Qlix");
+
+    /** Setup QSettings */
+    QSettings settings;
+    QString ret = settings.value("DefaultDevice").toString();
+
+    /** Setup QApplication */
+    QApplication app(argc, argv);
+
+    /* Plastique doesn't look so great on OSX */
+#ifdef LINUX_UI 
+    app.setStyle("Plastique"); 
+#endif
+
+    /** Grab AutoFix options */
+    CommandLineOptions opts = ParseCommandLineOptions(argc, argv);
+    _subSystem.SetAutoFixOptions(opts); 
+
+    /** Let the games begin! **/
+    Q_INIT_RESOURCE(Qlix);
+    QlixMainWindow qmw(&_subSystem);
+    qmw.show();
+    app.exec();
+    return 0;
 }

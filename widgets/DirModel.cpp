@@ -156,7 +156,7 @@ QVariant DirModel::data(const QModelIndex& index, int role ) const
     MTP::GenericObject* temp = (MTP::GenericObject*) index.internalPointer();
     if (temp->Type() == MtpFolder && index.column() == 0)
     {
-      QPixmap ret(":/pixmaps/folder.png");
+      QPixmap ret(":/pixmaps/Folder.png");
       return ret.scaledToWidth(24, Qt::SmoothTransformation);
     }
     else if (temp->Type() == MtpFile && index.column() == 0)
@@ -171,7 +171,7 @@ QVariant DirModel::data(const QModelIndex& index, int role ) const
           return ret.scaledToWidth(24, Qt::SmoothTransformation);
       }
       */
-      ret.load(":/pixmaps/file.png");
+      ret.load(":/pixmaps/File.png");
       return ret.scaledToWidth(24, Qt::SmoothTransformation);
     }
     return QVariant();

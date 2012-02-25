@@ -18,24 +18,30 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 -->
 <!DOCTYPE RCC><RCC version="1.0">
     <qresource>
-        <file>pixmaps/connected.png</file>
-        <file>pixmaps/disconnected.png</file>
         <file>pixmaps/settings.png</file>
-        <file>pixmaps/device.png</file>
-        <file>pixmaps/file.png</file>
-        <file>pixmaps/folder.png</file>
-        <file>pixmaps/rootDevice.png</file>
-        <file>pixmaps/miscDev.png</file>
-        <file>pixmaps/noDevice.png</file>
-        <file>pixmaps/albumlist.png</file>
-        <file>pixmaps/track.png</file>
-        <file>pixmaps/miscAlbumCover.png</file>
-        <file>pixmaps/playlist.png</file>
-        <file>pixmaps/filelist.png</file>
-        <file>pixmaps/preferences.png</file>
-        <file>pixmaps/managedevice.png</file>
+
+        <file>pixmaps/File.png</file>
+        <file>pixmaps/Folder.png</file>
+        <file>pixmaps/Track.png</file>
+
+        <file>pixmaps/AlbumList.png</file>
+        <file>pixmaps/PlayList.png</file>
+        <file>pixmaps/FileList.png</file>
+
+        <file>pixmaps/Preferences.png</file>
+        <file>pixmaps/ManageDevice.png</file>
         <file>pixmaps/ShowQueue.png</file>
-        <file>pixmaps/playlisticon.png</file>
+
+        <file>pixmaps/PlayListIcon.png</file>
+        <file>pixmaps/AlbumIcon.png</file>
+
+        <file>pixmaps/DetectingDevices.png</file>
+        <file>pixmaps/NoDevicesFound.png</file>
+        <file>pixmaps/DefaultDevice.png</file>
+
+        <file>pixmaps/Qlix.xpm</file>
+        <file>pixmaps/osx/Qlix.icns</file>
+
         <file>pixmaps/ActionBar/AddToPlaylist.png</file>
         <file>pixmaps/ActionBar/AddToQueue.png</file>
         <file>pixmaps/ActionBar/DeleteFile.png</file>
@@ -52,11 +58,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         <file>pixmaps/ActionBar/SyncQueue.png</file>
         <file>pixmaps/ActionBar/TransferFile.png</file>
         <file>pixmaps/ActionBar/TransferFromDevice.png</file>
-        <file>pixmaps/DetectDevices.png</file>
         <file>pixmaps/TreeView/branch-closed.png</file>
         <file>pixmaps/TreeView/branch-open.png</file>
-        <file>pixmaps/qlix.xpm</file>
-        <file>pixmaps/osx/qlix.icns</file>
     </qresource>
 </RCC>
 

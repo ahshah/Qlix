@@ -101,6 +101,7 @@ TAGLIB_LIBS = $$system(taglib-config --libs)
 
 linux {
   message("Detected Linux")
+  DEFINES += LINUX_UI
   DEFINES += LINUX_SIGNALS
   DEFINES += LINUX_DBUS
   DEFINES += QLIX_DEBUG
